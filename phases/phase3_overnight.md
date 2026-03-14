@@ -21,9 +21,9 @@ Before starting the overnight loop:
 ```bash
 export ANTHROPIC_API_KEY=your_key_here
 
-python shared/agent/improve_loop.py \
+node --experimental-transform-types shared/agent/improve-loop.ts \
   --bot-dir challenges/groceries/bot \
-  --sim-script challenges/groceries/sim/run_sim.py \
+  --sim-script challenges/groceries/sim/run_sim.ts \
   --replay-dir challenges/groceries/replays \
   --games-per-eval 20 \
   --max-iterations 50 \
@@ -70,7 +70,7 @@ This keeps our leaderboard score up-to-date and locks in the tie-breaker timesta
 
 Use the runner:
 ```bash
-python shared/runner/runner.py \
+node --experimental-transform-types shared/runner/runner.ts \
   --bot-dir challenges/groceries/bot \
   --games medium:TOKEN_HERE hard:TOKEN_HERE
 ```

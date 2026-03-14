@@ -8,8 +8,8 @@ Claude is the fourth team member. Use it aggressively throughout.
 
 Every time you're about to spend more than 20 minutes figuring something out, ask Claude first.
 
-**Don't ask:** "How do I do X in Python?"
-**Do ask:** "Here is my `planner.py` file and here is a replay showing the bot waiting for 40 rounds doing nothing. What's the most likely cause and what's the minimal fix?"
+**Don't ask:** "How do I do X in TypeScript?"
+**Do ask:** "Here is my `planner.ts` file and here is a replay showing the bot waiting for 40 rounds doing nothing. What's the most likely cause and what's the minimal fix?"
 
 Give Claude context. Get specific answers.
 
@@ -37,13 +37,13 @@ Give Claude a replay file (or summary) + the relevant bot file and ask:
 > "The bot scores 47 in this replay. Looking at rounds 120–180, it seems to be waiting a lot. What's causing it and what's the fix?"
 
 ### Writing specific functions
-> "In pathfinding.py, the `bfs` function doesn't handle the case where the goal cell is a wall. Fix this."
+> "In pathfinding.ts, the `bfs` function doesn't handle the case where the goal cell is a wall. Fix this."
 
 ### Debugging
-> "This error occurs when running client.py: [paste traceback]. Here's the file: [paste code]"
+> "This error occurs when running client.ts: [paste traceback]. Here's the file: [paste code]"
 
 ### Implementing new algorithms
-> "Replace the greedy task assignment in assignment.py with the Hungarian algorithm using scipy."
+> "Replace the greedy task assignment in assignment.ts with the Hungarian algorithm."
 
 ### Analyzing competitor replays
 > "Here's a competitor's replay JSON. Our bot scores 80 on medium, theirs scores 140. What are they doing differently?"
@@ -52,11 +52,11 @@ Give Claude a replay file (or summary) + the relevant bot file and ask:
 
 ## Overnight Improve Loop — How Claude Runs It
 
-The loop in `shared/agent/improve_loop.py` runs Claude automatically. You just start it before sleeping.
+The loop in `shared/agent/improve-loop.ts` runs Claude automatically. You just start it before sleeping.
 
 **What it does each iteration:**
 1. Reads recent replay files from `challenges/groceries/replays/`
-2. Reads all bot Python files
+2. Reads all bot TypeScript files
 3. Asks Claude: "What's the single most impactful failure pattern? Propose a minimal fix."
 4. Applies the fix, runs eval games in the local sim
 5. If score improves: commits the change
@@ -84,7 +84,7 @@ What are the top 3 reasons the bot is underperforming and which one is easiest t
 
 ### Writing a fix
 ```
-Here is the current [file.py]:
+Here is the current [file.ts]:
 [paste file]
 
 The problem: [describe problem from replay analysis]
@@ -94,7 +94,7 @@ Write a minimal fix — change as few lines as possible. Only touch [function na
 
 ### Reviewing a fix before committing
 ```
-I'm about to commit this change to [file.py]:
+I'm about to commit this change to [file.ts]:
 [paste diff]
 
 Does this look correct? Are there any edge cases I'm missing, particularly:

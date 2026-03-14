@@ -1,0 +1,13 @@
+{
+  "name": "shared-utils",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5"
+  },
+  "packageManager": "yarn@4.13.0"
+}

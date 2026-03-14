@@ -88,7 +88,7 @@ You have 300 games/day. Suggested allocation:
 | Nightmare | 100 | Highest ceiling, most effort |
 | Buffer | 30 | Unexpected issues |
 
-Use `shared/runner/runner.py` to stay within limits automatically.
+Use `shared/runner/runner.ts` to stay within limits automatically.
 
 ---
 

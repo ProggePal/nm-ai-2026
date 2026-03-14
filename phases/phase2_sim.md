@@ -39,13 +39,13 @@ That's it. It does not need a visual interface. It does not need to be perfectly
 
 ```
 Read the game specification in Pre-comp/challange-groceries.md.
-Build a Python local game simulator in challenges/groceries/sim/simulator.py.
+Build a TypeScript local game simulator in challenges/groceries/sim/simulator.ts.
 
 The simulator should:
 - Accept a map file path (from challenges/groceries/maps/)
 - Run N games with a given bot directory
 - Output one score per line to stdout (for the improve loop to parse)
-- CLI: python simulator.py --map-file maps/easy.json --bot-dir bot/ --games 20
+- CLI: node --experimental-transform-types simulator.ts --map-file maps/easy.json --bot-dir bot/ --games 20
 
 Implement these game mechanics exactly per the spec:
 - Bot movement with wall collision
@@ -81,7 +81,7 @@ Once Person B has a simulator running, validate it:
 The improve loop expects to call the simulator like this:
 
 ```
-python challenges/groceries/sim/run_sim.py \
+node --experimental-transform-types challenges/groceries/sim/run_sim.ts \
   --bot-dir challenges/groceries/bot \
   --games 20 \
   --difficulty medium
@@ -117,7 +117,7 @@ If maps are fixed, the simulator loads the saved map file directly. This is simp
 
 ## End of Phase 2 — What We Should Have
 
-- [ ] `challenges/groceries/sim/run_sim.py` working
+- [ ] `challenges/groceries/sim/run_sim.ts` working
 - [ ] Simulator validated (< 15% score divergence from real server)
 - [ ] "Sim validated ✅" posted in Slack with divergence number
 - [ ] Person A can now iterate the bot locally without touching rate limits

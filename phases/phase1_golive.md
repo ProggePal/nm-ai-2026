@@ -20,12 +20,12 @@ The bot code is in `challenges/groceries/bot/`. It is ready to run.
 
 ```
 cd challenges/groceries/bot
-python client.py --token YOUR_TOKEN --difficulty easy
+node --experimental-transform-types client.ts --token YOUR_TOKEN --difficulty easy
 ```
 
 Get a token from `app.ainm.no/challenge` → click Play on the Easy map.
 
-**If the bot errors:** Paste the error and `client.py` into Claude. Say: "Fix this."
+**If the bot errors:** Paste the error and `client.ts` into Claude. Say: "Fix this."
 
 ### Step 2 — Extract map intelligence (Person A, during first game)
 
@@ -71,8 +71,8 @@ Post your observations in Slack for Person C (leaderboard monitor setup).
 While Person A is playing games, Person C should:
 1. Open `app.ainm.no` in browser, open devtools → Network tab
 2. Find the leaderboard API call (look for `/api/leaderboard` or similar)
-3. Update the URL in `shared/eval/leaderboard_monitor.py`
-4. Run it: `python shared/eval/leaderboard_monitor.py --team "YourTeamName" --interval 120`
+3. Update the URL in `shared/eval/leaderboard-monitor.ts`
+4. Run it: `node --experimental-transform-types shared/eval/leaderboard-monitor.ts --team "YourTeamName" --interval 120`
 5. Confirm it's logging to `shared/eval/leaderboard_history.jsonl`
 
 ---

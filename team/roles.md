@@ -26,7 +26,7 @@
 **How to use Claude:**
 - Paste a replay summary and ask "why is the bot waiting so much in rounds 150-200?"
 - Ask Claude to review a specific function and suggest improvements
-- Ask Claude to implement a specific algorithm (e.g. "implement A* pathfinding as a replacement for BFS in pathfinding.py")
+- Ask Claude to implement a specific algorithm (e.g. "implement A* pathfinding as a replacement for BFS in pathfinding.ts")
 
 ---
 
@@ -46,7 +46,7 @@ We have 300 games/day on the real server. With a local sim, we can run 10,000 ga
 **Your output:**
 - `challenges/groceries/sim/` — working local game simulator
 - Simulator validated: same bot scores within 15% on sim vs real server
-- Runner script working: `python shared/runner/runner.py --games easy:TOKEN ...`
+- Runner script working: `node --experimental-transform-types shared/runner/runner.ts --games easy:TOKEN ...`
 
 **How to use Claude:**
 - Share the game spec (`challenges-groceries.md`) and ask Claude to implement the simulator

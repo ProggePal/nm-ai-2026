@@ -12,7 +12,7 @@
 - [ ] Create a shared GitHub/GitLab repo and push this directory
 - [ ] Share repo link in Slack
 - [ ] Each person reads `team/roles.md` and confirms their track
-- [ ] Install dependencies: `pip install -r requirements.txt`
+- [ ] Install dependencies: `cd challenges/groceries/bot && yarn install`
 - [ ] Get the game URL and account sorted: `app.ainm.no/challenge`
 - [ ] Confirm everyone can get a JWT token from the challenge page
 - [ ] Set an alarm for a 15-min sync call within 2 hours
