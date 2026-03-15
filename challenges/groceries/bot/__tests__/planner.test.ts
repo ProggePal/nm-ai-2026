@@ -61,7 +61,7 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, null, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
     );
     expect(action.action).toBe("drop_off");
   });
@@ -83,7 +83,30 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, item, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
+    );
+    expect(action.action).toBe("pick_up");
+    expect(action.item_id).toBe("item_0");
+  });
+
+  it("picks up item when standing on it", () => {
+    const bot: Bot = { id: 0, position: [3, 3], inventory: [] };
+    const item: Item = { id: "item_0", type: "apple", position: [3, 3] };
+    const { state, dropDist } = makeState({
+      bots: [bot],
+      items: [item],
+      orders: [{
+        id: "o1",
+        itemsRequired: ["apple"],
+        itemsDelivered: [],
+        complete: false,
+        status: "active",
+      }],
+    });
+
+    const action = planBotAction(
+      bot, state, item, dropDist,
+      state.grid.walls, new Set(),
     );
     expect(action.action).toBe("pick_up");
     expect(action.item_id).toBe("item_0");
@@ -104,7 +127,7 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, null, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
     );
     // Should move toward (0,0) drop zone
     expect(["move_up", "move_left"]).toContain(action.action);
@@ -127,7 +150,7 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, null, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
     );
     expect(["move_up", "move_left"]).toContain(action.action);
   });
@@ -138,7 +161,7 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, null, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
     );
     expect(action.action).toBe("wait");
   });
@@ -169,7 +192,7 @@ describe("planBotAction", () => {
 
     const action = planBotAction(
       bot, state, null, dropDist,
-      state.grid.walls, new Set(), new Map(),
+      state.grid.walls, new Set(),
     );
     expect(action.action).toBe("pick_up");
     expect(action.item_id).toBe("item_p");

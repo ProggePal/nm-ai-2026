@@ -23,33 +23,29 @@ export function assignTasks(
 
   const { width, height } = state.grid;
 
-  // Build cost matrix [bots × items]
-  const cost: number[][] = [];
-  for (const bot of collectingBots) {
-    const row: number[] = [];
-    for (const item of items) {
-      const distToItem = bfsDistance(bot.position, item.position, walls, width, height);
-      const distToDrop = dropDist.get(posKey(item.position)) ?? INF;
-      row.push(distToItem + distToDrop);
+  // Build all (bot, item, cost) pairs for globally-optimal greedy matching
+  const pairs: { botIdx: number; itemIdx: number; cost: number }[] = [];
+  for (let bi = 0; bi < collectingBots.length; bi++) {
+    for (let ii = 0; ii < items.length; ii++) {
+      const distToItem = bfsDistance(collectingBots[bi].position, items[ii].position, walls, width, height);
+      const distToDrop = dropDist.get(posKey(items[ii].position)) ?? INF;
+      pairs.push({ botIdx: bi, itemIdx: ii, cost: distToItem + distToDrop });
     }
-    cost.push(row);
   }
 
-  // Greedy assignment (cost matrix is tiny: ~4 bots x ~20 items)
-  const claimed = new Set<number>();
-  for (let bi = 0; bi < collectingBots.length; bi++) {
-    let bestCost = INF;
-    let bestItemIdx: number | null = null;
-    for (let ii = 0; ii < items.length; ii++) {
-      if (!claimed.has(ii) && cost[bi][ii] < bestCost) {
-        bestCost = cost[bi][ii];
-        bestItemIdx = ii;
-      }
-    }
-    if (bestItemIdx !== null) {
-      assignment.set(collectingBots[bi].id, items[bestItemIdx]);
-      claimed.add(bestItemIdx);
-    }
+  // Sort by cost (cheapest first) — assigns globally cheapest pairs first
+  pairs.sort((a, b) => a.cost - b.cost);
+
+  const claimedBots = new Set<number>();
+  const claimedItems = new Set<number>();
+
+  for (const { botIdx, itemIdx, cost } of pairs) {
+    if (cost >= INF) continue;
+    if (claimedBots.has(botIdx) || claimedItems.has(itemIdx)) continue;
+    assignment.set(collectingBots[botIdx].id, items[itemIdx]);
+    claimedBots.add(botIdx);
+    claimedItems.add(itemIdx);
+    if (claimedBots.size === collectingBots.length) break;
   }
 
   return assignment;

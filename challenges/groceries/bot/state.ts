@@ -106,6 +106,10 @@ export function getBotById(state: GameState, botId: number): Bot | undefined {
   return state.bots.find((b) => b.id === botId);
 }
 
-export function isEndGame(state: GameState): boolean {
-  return state.round > state.maxRounds * 0.9;
+export function isEndGame(state: GameState, distanceToDrop = 0): boolean {
+  const buffer = Math.max(
+    Math.ceil(distanceToDrop * 1.5),
+    Math.floor(state.maxRounds * 0.1),
+  );
+  return state.round > state.maxRounds - buffer;
 }

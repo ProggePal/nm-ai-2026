@@ -1,6 +1,6 @@
 import type { Bot, Item, GameState, Position, BotAction, DistanceMap } from "./types.ts";
 import { posKey, positionsInclude, manhattanDistance } from "./utils.ts";
-import { nextStepToward } from "./pathfinding.ts";
+import { nextStepToward, nextStepViaGradient } from "./pathfinding.ts";
 import { stillNeeded, getActiveOrder, getPreviewOrder, trulyNeeded, availableItemsFor, isEndGame } from "./state.ts";
 
 export type BotStateName = "collecting" | "delivering" | "pre_fetching" | "idle";
@@ -33,7 +33,6 @@ export function planBotAction(
   dropDist: DistanceMap,
   walls: Set<string>,
   blocked: Set<string>,
-  dropoffCongestion: Map<string, number>,
 ): BotAction {
   const pos = bot.position;
   const inventory = bot.inventory;
@@ -41,6 +40,7 @@ export function planBotAction(
   const preview = getPreviewOrder(state);
   const dropZones = state.dropOffZones;
   const { width, height } = state.grid;
+  const myDropDist = dropDist.get(posKey(pos)) ?? 0;
 
   // Determine what's useful to deliver
   const activeNeeded = active ? stillNeeded(active) : [];
@@ -50,10 +50,9 @@ export function planBotAction(
   const onDropoff = positionsInclude(dropZones, pos);
 
   // END-GAME: deliver immediately if holding anything useful
-  if (isEndGame(state) && usefulInInv.length > 0) {
+  if (isEndGame(state, myDropDist) && usefulInInv.length > 0) {
     if (onDropoff) return { action: "drop_off" };
-    const target = nearestDropoff(pos, dropZones, dropoffCongestion);
-    const step = nextStepToward(pos, target, walls, width, height, blocked);
+    const step = nextStepViaGradient(pos, dropDist, walls, width, height, blocked);
     return { action: step ?? "wait" };
   }
 
@@ -64,12 +63,11 @@ export function planBotAction(
       inventory.length < 3 &&
       trulyNeededItems.length > 0 &&
       assignedItem !== null &&
-      !isEndGame(state);
+      !isEndGame(state, myDropDist);
 
     if (!shouldFillMore) {
       if (onDropoff) return { action: "drop_off" };
-      const target = nearestDropoff(pos, dropZones, dropoffCongestion);
-      const step = nextStepToward(pos, target, walls, width, height, blocked);
+      const step = nextStepViaGradient(pos, dropDist, walls, width, height, blocked);
       return { action: step ?? "wait" };
     }
   }
@@ -79,7 +77,7 @@ export function planBotAction(
     const itemPos = assignedItem.position;
     const dist = manhattanDistance(pos, itemPos);
 
-    if (dist === 1) {
+    if (dist <= 1) {
       return { action: "pick_up", item_id: assignedItem.id };
     }
     const step = nextStepToward(pos, itemPos, walls, width, height, blocked);
@@ -100,7 +98,7 @@ export function planBotAction(
           : closest,
       );
       const dist = manhattanDistance(pos, best.position);
-      if (dist === 1) {
+      if (dist <= 1) {
         return { action: "pick_up", item_id: best.id };
       }
       const step = nextStepToward(pos, best.position, walls, width, height, blocked);
@@ -111,8 +109,7 @@ export function planBotAction(
   // IDLE: move toward drop-off if holding anything, else wait
   if (inventory.length > 0) {
     if (onDropoff) return { action: "drop_off" };
-    const target = nearestDropoff(pos, dropZones, dropoffCongestion);
-    const step = nextStepToward(pos, target, walls, width, height, blocked);
+    const step = nextStepViaGradient(pos, dropDist, walls, width, height, blocked);
     return { action: step ?? "wait" };
   }
 

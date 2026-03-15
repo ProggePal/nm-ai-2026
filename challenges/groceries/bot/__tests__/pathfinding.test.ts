@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bfs, bfsDistance, reverseBfs, precomputeDropDistances, nextStepToward } from "../pathfinding.ts";
+import { bfs, bfsDistance, reverseBfs, precomputeDropDistances, nextStepToward, nextStepViaGradient } from "../pathfinding.ts";
 import type { Position } from "../types.ts";
 import { posKey } from "../utils.ts";
 
@@ -33,9 +33,23 @@ describe("bfs", () => {
     expect(path!.length).toBeGreaterThan(2);
   });
 
-  it("returns null when no path exists", () => {
-    // Surround (2,2) — target is (2,2) which IS a wall, so unreachable
+  it("reaches wall-cell goals via adjacent cells", () => {
+    // Wall at (2,2) — BFS can now reach it from adjacent walkable cells
     const path = bfs([0, 0], [2, 2], walls, width, height);
+    expect(path).not.toBeNull();
+    expect(path!.length).toBeGreaterThan(0);
+  });
+
+  it("returns null when goal is surrounded by walls", () => {
+    // Goal (2,2) with all adjacent cells also walled off
+    const boxedWalls = new Set([
+      posKey([2, 2]),
+      posKey([1, 2]),
+      posKey([3, 2]),
+      posKey([2, 1]),
+      posKey([2, 3]),
+    ]);
+    const path = bfs([0, 0], [2, 2], boxedWalls, width, height);
     expect(path).toBeNull();
   });
 
@@ -64,8 +78,22 @@ describe("bfsDistance", () => {
     expect(bfsDistance([0, 0], [4, 0], new Set(), width, height)).toBe(4);
   });
 
-  it("returns 9999 for unreachable", () => {
-    expect(bfsDistance([0, 0], [2, 2], walls, width, height)).toBe(9999);
+  it("reaches wall-cell goals", () => {
+    // Wall at (2,2) — distance-only BFS can now reach it via adjacent cell
+    const dist = bfsDistance([0, 0], [2, 2], walls, width, height);
+    expect(dist).toBeLessThan(9999);
+    expect(dist).toBeGreaterThan(0);
+  });
+
+  it("returns 9999 for unreachable goal", () => {
+    const boxedWalls = new Set([
+      posKey([2, 2]),
+      posKey([1, 2]),
+      posKey([3, 2]),
+      posKey([2, 1]),
+      posKey([2, 3]),
+    ]);
+    expect(bfsDistance([0, 0], [2, 2], boxedWalls, width, height)).toBe(9999);
   });
 });
 
@@ -117,8 +145,20 @@ describe("nextStepToward", () => {
     expect(nextStepToward([1, 1], [1, 1], new Set(), width, height)).toBeNull();
   });
 
-  it("returns null when unreachable", () => {
-    expect(nextStepToward([0, 0], [2, 2], walls, width, height)).toBeNull();
+  it("navigates toward wall-cell goals", () => {
+    const step = nextStepToward([0, 0], [2, 2], walls, width, height);
+    expect(step).not.toBeNull();
+  });
+
+  it("returns null when goal is surrounded by walls", () => {
+    const boxedWalls = new Set([
+      posKey([2, 2]),
+      posKey([1, 2]),
+      posKey([3, 2]),
+      posKey([2, 1]),
+      posKey([2, 3]),
+    ]);
+    expect(nextStepToward([0, 0], [2, 2], boxedWalls, width, height)).toBeNull();
   });
 
   it("respects blocked cells", () => {
@@ -126,5 +166,38 @@ describe("nextStepToward", () => {
     const step = nextStepToward([0, 0], [2, 0], new Set(), width, height, blocked);
     // Can't go right through (1,0), must go down first
     expect(step).toBe("move_down");
+  });
+});
+
+describe("nextStepViaGradient", () => {
+  it("follows distance gradient toward goal", () => {
+    const distMap = precomputeDropDistances([[0, 0]], new Set(), width, height);
+    const step = nextStepViaGradient([2, 2], distMap, new Set(), width, height);
+    expect(step).not.toBeNull();
+    expect(["move_up", "move_left"]).toContain(step);
+  });
+
+  it("avoids blocked cells", () => {
+    const distMap = precomputeDropDistances([[0, 0]], new Set(), width, height);
+    // Block the two improving neighbors (left and up)
+    const blocked = new Set([posKey([1, 2]), posKey([2, 1])]);
+    const step = nextStepViaGradient([2, 2], distMap, new Set(), width, height, blocked);
+    // Remaining neighbors [3,2] and [2,3] have higher distance — no improvement
+    expect(step).toBeNull();
+  });
+
+  it("returns null when already at goal", () => {
+    const distMap = precomputeDropDistances([[0, 0]], new Set(), width, height);
+    // At the goal, all neighbors have higher distance
+    const step = nextStepViaGradient([0, 0], distMap, new Set(), width, height);
+    expect(step).toBeNull();
+  });
+
+  it("avoids walls", () => {
+    const distMap = precomputeDropDistances([[0, 0]], walls, width, height);
+    // At (3,2), move_left would go to wall at (2,2) — should pick move_up instead
+    const step = nextStepViaGradient([3, 2], distMap, walls, width, height);
+    expect(step).not.toBeNull();
+    expect(step).not.toBe("move_left"); // wall at (2,2)
   });
 });

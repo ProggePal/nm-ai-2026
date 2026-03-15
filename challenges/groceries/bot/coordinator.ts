@@ -1,5 +1,5 @@
 import type { Bot, GameState, Position, BotAction, RoundAction, DistanceMap } from "./types.ts";
-import { posKey, positionsInclude } from "./utils.ts";
+import { posKey } from "./utils.ts";
 import { assignTasks } from "./assignment.ts";
 import { planBotAction } from "./planner.ts";
 import { stillNeeded, getActiveOrder, trulyNeeded, availableItemsFor } from "./state.ts";
@@ -38,7 +38,6 @@ export function planRound(
 ): RoundAction[] {
   const walls = state.grid.walls;
   const { width, height } = state.grid;
-  const dropZones = state.dropOffZones;
 
   // Needed items for active order (excluding in-transit)
   const active = getActiveOrder(state);
@@ -62,15 +61,6 @@ export function planRound(
     currentPositions.set(bot.id, bot.position);
   }
 
-  // Congestion counter for drop-off zones
-  const dropoffCongestion = new Map<string, number>();
-  for (const bot of state.bots) {
-    if (positionsInclude(dropZones, bot.position)) {
-      const key = posKey(bot.position);
-      dropoffCongestion.set(key, (dropoffCongestion.get(key) ?? 0) + 1);
-    }
-  }
-
   const results = new Map<number, BotAction>();
 
   for (const bot of botsOrdered) {
@@ -91,7 +81,6 @@ export function planRound(
       dropDist,
       walls,
       blocked,
-      dropoffCongestion,
     );
 
     let action = actionDict.action;
@@ -154,10 +143,10 @@ export function findSidestep(
   height: number,
 ): string | null {
   const perp: Record<string, string[]> = {
-    move_up: ["move_left", "move_right"],
-    move_down: ["move_left", "move_right"],
-    move_left: ["move_up", "move_down"],
-    move_right: ["move_up", "move_down"],
+    move_up: ["move_left", "move_right", "move_down"],
+    move_down: ["move_left", "move_right", "move_up"],
+    move_left: ["move_up", "move_down", "move_right"],
+    move_right: ["move_up", "move_down", "move_left"],
   };
 
   const candidates = perp[intendedAction] ?? [];

@@ -89,8 +89,17 @@ describe("findSidestep", () => {
     expect(["move_left", "move_right"]).toContain(step);
   });
 
-  it("returns null when all perpendicular moves are blocked", () => {
+  it("falls back to backward move when perpendicular moves are blocked", () => {
     const walls = new Set([posKey([4, 5])]);
+    const reserved = new Map<string, number>();
+    reserved.set(posKey([6, 5]), 99);
+
+    const step = findSidestep([5, 5], "move_up", walls, reserved, 10, 10);
+    expect(step).toBe("move_down");
+  });
+
+  it("returns null when all alternative moves are blocked", () => {
+    const walls = new Set([posKey([4, 5]), posKey([5, 6])]);
     const reserved = new Map<string, number>();
     reserved.set(posKey([6, 5]), 99);
 

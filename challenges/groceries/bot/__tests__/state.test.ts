@@ -230,4 +230,15 @@ describe("isEndGame", () => {
     const state = parseGameState(data);
     expect(isEndGame(state)).toBe(false);
   });
+
+  it("triggers earlier when far from drop-off", () => {
+    const data = makeGameStateData();
+    data.round = 75;
+    data.max_rounds = 100;
+    const state = parseGameState(data);
+    // Without distance: buffer=10, threshold=90. Round 75 < 90 → false
+    expect(isEndGame(state)).toBe(false);
+    // With distance 20: buffer=max(30, 10)=30, threshold=70. Round 75 > 70 → true
+    expect(isEndGame(state, 20)).toBe(true);
+  });
 });
