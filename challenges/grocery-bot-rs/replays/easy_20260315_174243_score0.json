@@ -1,0 +1,7802 @@
+[
+  {
+    "round": 0,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.733869+00:00"
+  },
+  {
+    "round": 1,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.774008+00:00"
+  },
+  {
+    "round": 2,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.814210+00:00"
+  },
+  {
+    "round": 3,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.854086+00:00"
+  },
+  {
+    "round": 4,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.892637+00:00"
+  },
+  {
+    "round": 5,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.930012+00:00"
+  },
+  {
+    "round": 6,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:43.969344+00:00"
+  },
+  {
+    "round": 7,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.008408+00:00"
+  },
+  {
+    "round": 8,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.043475+00:00"
+  },
+  {
+    "round": 9,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.084236+00:00"
+  },
+  {
+    "round": 10,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.125220+00:00"
+  },
+  {
+    "round": 11,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.162170+00:00"
+  },
+  {
+    "round": 12,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.206573+00:00"
+  },
+  {
+    "round": 13,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.241585+00:00"
+  },
+  {
+    "round": 14,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.279918+00:00"
+  },
+  {
+    "round": 15,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.320680+00:00"
+  },
+  {
+    "round": 16,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.361244+00:00"
+  },
+  {
+    "round": 17,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.399915+00:00"
+  },
+  {
+    "round": 18,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.439690+00:00"
+  },
+  {
+    "round": 19,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.475863+00:00"
+  },
+  {
+    "round": 20,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.515353+00:00"
+  },
+  {
+    "round": 21,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.551913+00:00"
+  },
+  {
+    "round": 22,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.590878+00:00"
+  },
+  {
+    "round": 23,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.626567+00:00"
+  },
+  {
+    "round": 24,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.666212+00:00"
+  },
+  {
+    "round": 25,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.701628+00:00"
+  },
+  {
+    "round": 26,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.741644+00:00"
+  },
+  {
+    "round": 27,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.777928+00:00"
+  },
+  {
+    "round": 28,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.820531+00:00"
+  },
+  {
+    "round": 29,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.856219+00:00"
+  },
+  {
+    "round": 30,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.894024+00:00"
+  },
+  {
+    "round": 31,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.935692+00:00"
+  },
+  {
+    "round": 32,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:44.973980+00:00"
+  },
+  {
+    "round": 33,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.013945+00:00"
+  },
+  {
+    "round": 34,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.052434+00:00"
+  },
+  {
+    "round": 35,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.089413+00:00"
+  },
+  {
+    "round": 36,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.126083+00:00"
+  },
+  {
+    "round": 37,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.163903+00:00"
+  },
+  {
+    "round": 38,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.205378+00:00"
+  },
+  {
+    "round": 39,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.243615+00:00"
+  },
+  {
+    "round": 40,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.282811+00:00"
+  },
+  {
+    "round": 41,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.319906+00:00"
+  },
+  {
+    "round": 42,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.357433+00:00"
+  },
+  {
+    "round": 43,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.397601+00:00"
+  },
+  {
+    "round": 44,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.433930+00:00"
+  },
+  {
+    "round": 45,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.472429+00:00"
+  },
+  {
+    "round": 46,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.508705+00:00"
+  },
+  {
+    "round": 47,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.548675+00:00"
+  },
+  {
+    "round": 48,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.584051+00:00"
+  },
+  {
+    "round": 49,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.624640+00:00"
+  },
+  {
+    "round": 50,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.663718+00:00"
+  },
+  {
+    "round": 51,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.701872+00:00"
+  },
+  {
+    "round": 52,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.744116+00:00"
+  },
+  {
+    "round": 53,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.779424+00:00"
+  },
+  {
+    "round": 54,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.817755+00:00"
+  },
+  {
+    "round": 55,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.856311+00:00"
+  },
+  {
+    "round": 56,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.891549+00:00"
+  },
+  {
+    "round": 57,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.931739+00:00"
+  },
+  {
+    "round": 58,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:45.971876+00:00"
+  },
+  {
+    "round": 59,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.011137+00:00"
+  },
+  {
+    "round": 60,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.050394+00:00"
+  },
+  {
+    "round": 61,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.088914+00:00"
+  },
+  {
+    "round": 62,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.127780+00:00"
+  },
+  {
+    "round": 63,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.163796+00:00"
+  },
+  {
+    "round": 64,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.199564+00:00"
+  },
+  {
+    "round": 65,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.236110+00:00"
+  },
+  {
+    "round": 66,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.274918+00:00"
+  },
+  {
+    "round": 67,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.311970+00:00"
+  },
+  {
+    "round": 68,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.349756+00:00"
+  },
+  {
+    "round": 69,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.386509+00:00"
+  },
+  {
+    "round": 70,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.421771+00:00"
+  },
+  {
+    "round": 71,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.458153+00:00"
+  },
+  {
+    "round": 72,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.497362+00:00"
+  },
+  {
+    "round": 73,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.532334+00:00"
+  },
+  {
+    "round": 74,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.569667+00:00"
+  },
+  {
+    "round": 75,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.608776+00:00"
+  },
+  {
+    "round": 76,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.645835+00:00"
+  },
+  {
+    "round": 77,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.685235+00:00"
+  },
+  {
+    "round": 78,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.724600+00:00"
+  },
+  {
+    "round": 79,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.761640+00:00"
+  },
+  {
+    "round": 80,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.799701+00:00"
+  },
+  {
+    "round": 81,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.835738+00:00"
+  },
+  {
+    "round": 82,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.871771+00:00"
+  },
+  {
+    "round": 83,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.909707+00:00"
+  },
+  {
+    "round": 84,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.950008+00:00"
+  },
+  {
+    "round": 85,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:46.988078+00:00"
+  },
+  {
+    "round": 86,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.028230+00:00"
+  },
+  {
+    "round": 87,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.068219+00:00"
+  },
+  {
+    "round": 88,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.109530+00:00"
+  },
+  {
+    "round": 89,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.145936+00:00"
+  },
+  {
+    "round": 90,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.182217+00:00"
+  },
+  {
+    "round": 91,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.227953+00:00"
+  },
+  {
+    "round": 92,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.265747+00:00"
+  },
+  {
+    "round": 93,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.302140+00:00"
+  },
+  {
+    "round": 94,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.340086+00:00"
+  },
+  {
+    "round": 95,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.375688+00:00"
+  },
+  {
+    "round": 96,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.415972+00:00"
+  },
+  {
+    "round": 97,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.460190+00:00"
+  },
+  {
+    "round": 98,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.496649+00:00"
+  },
+  {
+    "round": 99,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.536212+00:00"
+  },
+  {
+    "round": 100,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.575609+00:00"
+  },
+  {
+    "round": 101,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.613497+00:00"
+  },
+  {
+    "round": 102,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.651741+00:00"
+  },
+  {
+    "round": 103,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.688004+00:00"
+  },
+  {
+    "round": 104,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.725811+00:00"
+  },
+  {
+    "round": 105,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.767173+00:00"
+  },
+  {
+    "round": 106,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.804102+00:00"
+  },
+  {
+    "round": 107,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.844137+00:00"
+  },
+  {
+    "round": 108,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.885612+00:00"
+  },
+  {
+    "round": 109,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.921974+00:00"
+  },
+  {
+    "round": 110,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:47.958242+00:00"
+  },
+  {
+    "round": 111,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.000353+00:00"
+  },
+  {
+    "round": 112,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.039741+00:00"
+  },
+  {
+    "round": 113,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.079451+00:00"
+  },
+  {
+    "round": 114,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.117135+00:00"
+  },
+  {
+    "round": 115,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.152217+00:00"
+  },
+  {
+    "round": 116,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.196277+00:00"
+  },
+  {
+    "round": 117,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.237383+00:00"
+  },
+  {
+    "round": 118,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.274220+00:00"
+  },
+  {
+    "round": 119,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.313163+00:00"
+  },
+  {
+    "round": 120,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.349728+00:00"
+  },
+  {
+    "round": 121,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.387914+00:00"
+  },
+  {
+    "round": 122,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.424015+00:00"
+  },
+  {
+    "round": 123,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.463759+00:00"
+  },
+  {
+    "round": 124,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.504170+00:00"
+  },
+  {
+    "round": 125,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.543466+00:00"
+  },
+  {
+    "round": 126,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.581838+00:00"
+  },
+  {
+    "round": 127,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.618016+00:00"
+  },
+  {
+    "round": 128,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.655800+00:00"
+  },
+  {
+    "round": 129,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.692068+00:00"
+  },
+  {
+    "round": 130,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.728398+00:00"
+  },
+  {
+    "round": 131,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.765616+00:00"
+  },
+  {
+    "round": 132,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.802004+00:00"
+  },
+  {
+    "round": 133,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.840428+00:00"
+  },
+  {
+    "round": 134,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.875718+00:00"
+  },
+  {
+    "round": 135,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.913445+00:00"
+  },
+  {
+    "round": 136,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.951882+00:00"
+  },
+  {
+    "round": 137,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:48.990961+00:00"
+  },
+  {
+    "round": 138,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.027881+00:00"
+  },
+  {
+    "round": 139,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.069515+00:00"
+  },
+  {
+    "round": 140,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.108551+00:00"
+  },
+  {
+    "round": 141,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.144498+00:00"
+  },
+  {
+    "round": 142,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.180356+00:00"
+  },
+  {
+    "round": 143,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.218897+00:00"
+  },
+  {
+    "round": 144,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.256314+00:00"
+  },
+  {
+    "round": 145,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.297729+00:00"
+  },
+  {
+    "round": 146,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.335051+00:00"
+  },
+  {
+    "round": 147,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.372577+00:00"
+  },
+  {
+    "round": 148,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.410441+00:00"
+  },
+  {
+    "round": 149,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.447661+00:00"
+  },
+  {
+    "round": 150,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.489080+00:00"
+  },
+  {
+    "round": 151,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.525570+00:00"
+  },
+  {
+    "round": 152,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.563417+00:00"
+  },
+  {
+    "round": 153,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.605438+00:00"
+  },
+  {
+    "round": 154,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.637945+00:00"
+  },
+  {
+    "round": 155,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.680487+00:00"
+  },
+  {
+    "round": 156,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.719440+00:00"
+  },
+  {
+    "round": 157,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.755820+00:00"
+  },
+  {
+    "round": 158,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.795774+00:00"
+  },
+  {
+    "round": 159,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.833935+00:00"
+  },
+  {
+    "round": 160,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.870875+00:00"
+  },
+  {
+    "round": 161,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.905564+00:00"
+  },
+  {
+    "round": 162,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.942241+00:00"
+  },
+  {
+    "round": 163,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:49.981786+00:00"
+  },
+  {
+    "round": 164,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.019809+00:00"
+  },
+  {
+    "round": 165,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.056656+00:00"
+  },
+  {
+    "round": 166,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.101658+00:00"
+  },
+  {
+    "round": 167,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.139439+00:00"
+  },
+  {
+    "round": 168,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.177985+00:00"
+  },
+  {
+    "round": 169,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.215832+00:00"
+  },
+  {
+    "round": 170,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.255951+00:00"
+  },
+  {
+    "round": 171,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.297034+00:00"
+  },
+  {
+    "round": 172,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.340416+00:00"
+  },
+  {
+    "round": 173,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.376892+00:00"
+  },
+  {
+    "round": 174,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.413660+00:00"
+  },
+  {
+    "round": 175,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.455542+00:00"
+  },
+  {
+    "round": 176,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.494938+00:00"
+  },
+  {
+    "round": 177,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.534917+00:00"
+  },
+  {
+    "round": 178,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.576858+00:00"
+  },
+  {
+    "round": 179,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.613410+00:00"
+  },
+  {
+    "round": 180,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.652424+00:00"
+  },
+  {
+    "round": 181,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.688323+00:00"
+  },
+  {
+    "round": 182,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.723696+00:00"
+  },
+  {
+    "round": 183,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.765601+00:00"
+  },
+  {
+    "round": 184,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.805382+00:00"
+  },
+  {
+    "round": 185,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.842246+00:00"
+  },
+  {
+    "round": 186,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.882103+00:00"
+  },
+  {
+    "round": 187,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.920529+00:00"
+  },
+  {
+    "round": 188,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:50.957581+00:00"
+  },
+  {
+    "round": 189,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.000681+00:00"
+  },
+  {
+    "round": 190,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.038939+00:00"
+  },
+  {
+    "round": 191,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.078171+00:00"
+  },
+  {
+    "round": 192,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.115060+00:00"
+  },
+  {
+    "round": 193,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.154694+00:00"
+  },
+  {
+    "round": 194,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.192185+00:00"
+  },
+  {
+    "round": 195,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.229878+00:00"
+  },
+  {
+    "round": 196,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.266898+00:00"
+  },
+  {
+    "round": 197,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.304145+00:00"
+  },
+  {
+    "round": 198,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.348731+00:00"
+  },
+  {
+    "round": 199,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.384494+00:00"
+  },
+  {
+    "round": 200,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.424421+00:00"
+  },
+  {
+    "round": 201,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.462055+00:00"
+  },
+  {
+    "round": 202,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.503431+00:00"
+  },
+  {
+    "round": 203,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.542411+00:00"
+  },
+  {
+    "round": 204,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.578136+00:00"
+  },
+  {
+    "round": 205,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.615982+00:00"
+  },
+  {
+    "round": 206,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.660493+00:00"
+  },
+  {
+    "round": 207,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.700151+00:00"
+  },
+  {
+    "round": 208,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.736373+00:00"
+  },
+  {
+    "round": 209,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.779825+00:00"
+  },
+  {
+    "round": 210,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.820333+00:00"
+  },
+  {
+    "round": 211,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.860855+00:00"
+  },
+  {
+    "round": 212,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.900139+00:00"
+  },
+  {
+    "round": 213,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.937050+00:00"
+  },
+  {
+    "round": 214,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:51.972931+00:00"
+  },
+  {
+    "round": 215,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.015653+00:00"
+  },
+  {
+    "round": 216,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.051732+00:00"
+  },
+  {
+    "round": 217,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.088915+00:00"
+  },
+  {
+    "round": 218,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.128479+00:00"
+  },
+  {
+    "round": 219,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.169244+00:00"
+  },
+  {
+    "round": 220,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.206772+00:00"
+  },
+  {
+    "round": 221,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.245013+00:00"
+  },
+  {
+    "round": 222,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.283877+00:00"
+  },
+  {
+    "round": 223,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.322311+00:00"
+  },
+  {
+    "round": 224,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.358366+00:00"
+  },
+  {
+    "round": 225,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.398725+00:00"
+  },
+  {
+    "round": 226,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.440684+00:00"
+  },
+  {
+    "round": 227,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.477635+00:00"
+  },
+  {
+    "round": 228,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.518111+00:00"
+  },
+  {
+    "round": 229,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.559932+00:00"
+  },
+  {
+    "round": 230,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.600767+00:00"
+  },
+  {
+    "round": 231,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.637920+00:00"
+  },
+  {
+    "round": 232,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.681446+00:00"
+  },
+  {
+    "round": 233,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.716328+00:00"
+  },
+  {
+    "round": 234,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.756470+00:00"
+  },
+  {
+    "round": 235,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.795755+00:00"
+  },
+  {
+    "round": 236,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.834247+00:00"
+  },
+  {
+    "round": 237,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.869760+00:00"
+  },
+  {
+    "round": 238,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.908827+00:00"
+  },
+  {
+    "round": 239,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.948812+00:00"
+  },
+  {
+    "round": 240,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:52.988661+00:00"
+  },
+  {
+    "round": 241,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.023939+00:00"
+  },
+  {
+    "round": 242,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.063609+00:00"
+  },
+  {
+    "round": 243,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.104217+00:00"
+  },
+  {
+    "round": 244,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.145681+00:00"
+  },
+  {
+    "round": 245,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.184113+00:00"
+  },
+  {
+    "round": 246,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.224627+00:00"
+  },
+  {
+    "round": 247,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.263804+00:00"
+  },
+  {
+    "round": 248,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.301728+00:00"
+  },
+  {
+    "round": 249,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.340017+00:00"
+  },
+  {
+    "round": 250,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.375820+00:00"
+  },
+  {
+    "round": 251,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.412157+00:00"
+  },
+  {
+    "round": 252,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.455149+00:00"
+  },
+  {
+    "round": 253,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.492290+00:00"
+  },
+  {
+    "round": 254,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.533699+00:00"
+  },
+  {
+    "round": 255,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.570121+00:00"
+  },
+  {
+    "round": 256,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.808080+00:00"
+  },
+  {
+    "round": 257,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.848238+00:00"
+  },
+  {
+    "round": 258,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.888526+00:00"
+  },
+  {
+    "round": 259,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.928265+00:00"
+  },
+  {
+    "round": 260,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:53.967768+00:00"
+  },
+  {
+    "round": 261,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.006025+00:00"
+  },
+  {
+    "round": 262,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.043628+00:00"
+  },
+  {
+    "round": 263,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.080628+00:00"
+  },
+  {
+    "round": 264,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.120399+00:00"
+  },
+  {
+    "round": 265,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.158069+00:00"
+  },
+  {
+    "round": 266,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.194255+00:00"
+  },
+  {
+    "round": 267,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.231620+00:00"
+  },
+  {
+    "round": 268,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.284547+00:00"
+  },
+  {
+    "round": 269,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.329587+00:00"
+  },
+  {
+    "round": 270,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.368657+00:00"
+  },
+  {
+    "round": 271,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.413213+00:00"
+  },
+  {
+    "round": 272,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.452408+00:00"
+  },
+  {
+    "round": 273,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.490998+00:00"
+  },
+  {
+    "round": 274,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.529533+00:00"
+  },
+  {
+    "round": 275,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.567839+00:00"
+  },
+  {
+    "round": 276,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.603425+00:00"
+  },
+  {
+    "round": 277,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.640206+00:00"
+  },
+  {
+    "round": 278,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.681624+00:00"
+  },
+  {
+    "round": 279,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.720172+00:00"
+  },
+  {
+    "round": 280,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.755869+00:00"
+  },
+  {
+    "round": 281,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.792071+00:00"
+  },
+  {
+    "round": 282,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.829857+00:00"
+  },
+  {
+    "round": 283,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.867014+00:00"
+  },
+  {
+    "round": 284,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.903077+00:00"
+  },
+  {
+    "round": 285,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.942726+00:00"
+  },
+  {
+    "round": 286,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:54.981997+00:00"
+  },
+  {
+    "round": 287,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.019909+00:00"
+  },
+  {
+    "round": 288,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.056384+00:00"
+  },
+  {
+    "round": 289,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.093453+00:00"
+  },
+  {
+    "round": 290,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.130495+00:00"
+  },
+  {
+    "round": 291,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.172151+00:00"
+  },
+  {
+    "round": 292,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.213533+00:00"
+  },
+  {
+    "round": 293,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.258279+00:00"
+  },
+  {
+    "round": 294,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.295485+00:00"
+  },
+  {
+    "round": 295,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.332354+00:00"
+  },
+  {
+    "round": 296,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.376911+00:00"
+  },
+  {
+    "round": 297,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.412812+00:00"
+  },
+  {
+    "round": 298,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.449682+00:00"
+  },
+  {
+    "round": 299,
+    "score": 0,
+    "actions": [
+      {
+        "bot": 0,
+        "action": "wait"
+      }
+    ],
+    "state_summary": {
+      "bots": [
+        {
+          "id": 0,
+          "position": [
+            10,
+            8
+          ],
+          "inventory": []
+        }
+      ],
+      "active_order": "order_0",
+      "items_on_map": 16
+    },
+    "planning_ms": 0,
+    "timestamp": "2026-03-15T17:42:55.488499+00:00"
+  }
+]

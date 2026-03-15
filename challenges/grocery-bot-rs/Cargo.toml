@@ -3,6 +3,14 @@ name = "grocery-bot-rs"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "grocery-bot"
+path = "src/main.rs"
+
+[[bin]]
+name = "simulate"
+path = "src/simulate.rs"
+
 [dependencies]
 chrono = "0.4"
 clap = { version = "4", features = ["derive"] }

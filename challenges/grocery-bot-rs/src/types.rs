@@ -50,7 +50,7 @@ pub struct RawOrder {
 
 // Parsed types
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GameState {
     pub round: u32,
     pub max_rounds: u32,
@@ -62,28 +62,28 @@ pub struct GameState {
     pub score: i64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Grid {
     pub width: u32,
     pub height: u32,
     pub walls: Vec<Position>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Bot {
     pub id: u32,
     pub position: Position,
     pub inventory: Vec<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Item {
     pub id: String,
     pub item_type: String,
     pub position: Position,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Order {
     pub id: String,
     pub items_required: Vec<String>,
@@ -96,11 +96,13 @@ pub struct Order {
 pub struct RoundAction {
     pub bot: u32,
     pub action: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub item_id: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
-pub struct ActionsResponse {
-    pub actions: Vec<RoundAction>,
+pub struct ActionsResponse<'a> {
+    pub actions: &'a [RoundAction],
 }
 
 // Replay/map storage types
@@ -142,4 +144,38 @@ pub struct MapGrid {
     pub width: u32,
     pub height: u32,
     pub walls: Vec<Position>,
+}
+
+// Recording types (for test server replay)
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordedMessage {
+    pub elapsed_ms: u64,
+    pub message: serde_json::Value,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Recording {
+    pub difficulty: String,
+    pub recorded_at: String,
+    pub messages: Vec<RecordedMessage>,
+}
+
+// Scenario types (extracted from recording for local simulation)
+
+#[derive(Debug, Clone)]
+pub struct Scenario {
+    pub difficulty: String,
+    pub max_rounds: u32,
+    pub grid: Grid,
+    pub items: Vec<Item>,
+    pub bots: Vec<Bot>,
+    pub drop_off_zones: Vec<Position>,
+    pub orders: Vec<ScenarioOrder>,
+}
+
+#[derive(Debug, Clone)]
+pub struct ScenarioOrder {
+    pub id: String,
+    pub items_required: Vec<String>,
 }

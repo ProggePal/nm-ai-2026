@@ -1,3 +1,4 @@
+mod planner;
 mod state;
 mod types;
 
@@ -13,7 +14,7 @@ use tokio_tungstenite::{connect_async, tungstenite::Message};
 use state::parse_game_state;
 use types::*;
 
-const WS_URL: &str = "wss://game.ainm.no/ws";
+const DEFAULT_WS_URL: &str = "wss://game.ainm.no/ws";
 
 fn log(level: &str, message: &str) {
     let timestamp = Utc::now().to_rfc3339();
@@ -32,9 +33,17 @@ fn replays_dir() -> PathBuf {
     project_dir().join("replays")
 }
 
+fn recordings_dir() -> PathBuf {
+    project_dir().join("recordings")
+}
+
 #[derive(Parser, Debug)]
 #[command(name = "grocery-bot-rs")]
 struct Args {
+    /// WebSocket server URL
+    #[arg(long, default_value = DEFAULT_WS_URL)]
+    url: String,
+
     /// JWT authentication token
     #[arg(long)]
     token: String,
@@ -46,9 +55,13 @@ struct Args {
     /// Disable map saving
     #[arg(long)]
     no_save_map: bool,
+
+    /// Disable recording raw server messages (used by test server)
+    #[arg(long)]
+    no_record: bool,
 }
 
-fn save_map(difficulty: &str, raw: &serde_json::Value) {
+fn save_map(difficulty: &str, session_ts: &str, raw: &serde_json::Value) {
     let dir = maps_dir();
     fs::create_dir_all(&dir).ok();
 
@@ -71,7 +84,7 @@ fn save_map(difficulty: &str, raw: &serde_json::Value) {
         captured_at: Utc::now().to_rfc3339(),
     };
 
-    let path = dir.join(format!("{difficulty}.json"));
+    let path = dir.join(format!("{difficulty}_{session_ts}.json"));
     match serde_json::to_string_pretty(&map_data) {
         Ok(json) => {
             if let Err(err) = fs::write(&path, json) {
@@ -84,12 +97,36 @@ fn save_map(difficulty: &str, raw: &serde_json::Value) {
     }
 }
 
-fn save_replay(difficulty: &str, final_score: i64, replay: &[ReplayFrame]) {
+fn save_recording(difficulty: &str, session_ts: &str, recording: &[RecordedMessage]) {
+    let dir = recordings_dir();
+    fs::create_dir_all(&dir).ok();
+
+    let filename = format!("{difficulty}_{session_ts}.json");
+    let path = dir.join(&filename);
+
+    let data = Recording {
+        difficulty: difficulty.to_string(),
+        recorded_at: Utc::now().to_rfc3339(),
+        messages: recording.to_vec(),
+    };
+
+    match serde_json::to_string_pretty(&data) {
+        Ok(json) => {
+            if let Err(err) = fs::write(&path, json) {
+                log("ERROR", &format!("Failed to write recording: {err}"));
+            } else {
+                log("INFO", &format!("Recording saved to {}", path.display()));
+            }
+        }
+        Err(err) => log("ERROR", &format!("Failed to serialize recording: {err}")),
+    }
+}
+
+fn save_replay(difficulty: &str, session_ts: &str, final_score: i64, replay: &[ReplayFrame]) {
     let dir = replays_dir();
     fs::create_dir_all(&dir).ok();
 
-    let timestamp = Utc::now().format("%Y%m%d_%H%M%S");
-    let filename = format!("{difficulty}_{timestamp}_score{final_score}.json");
+    let filename = format!("{difficulty}_{session_ts}_score{final_score}.json");
     let path = dir.join(&filename);
 
     match serde_json::to_string_pretty(replay) {
@@ -108,7 +145,7 @@ fn save_replay(difficulty: &str, final_score: i64, replay: &[ReplayFrame]) {
 async fn main() {
     let args = Args::parse();
 
-    let url = format!("{WS_URL}?token={}", args.token);
+    let url = format!("{}?token={}", args.url, args.token);
     log("INFO", &format!("Connecting to {url}"));
 
     let (ws_stream, _response) = connect_async(&url)
@@ -119,9 +156,12 @@ async fn main() {
 
     let (mut write, mut read) = ws_stream.split();
 
+    let session_ts = Utc::now().format("%Y%m%d_%H%M%S").to_string();
     let mut replay: Vec<ReplayFrame> = Vec::new();
+    let mut recording: Vec<RecordedMessage> = Vec::new();
     let mut final_score: i64 = 0;
     let mut map_saved = false;
+    let connection_start = Instant::now();
 
     while let Some(msg) = read.next().await {
         let msg = match msg {
@@ -151,6 +191,14 @@ async fn main() {
 
         let msg_type = raw["type"].as_str().unwrap_or("");
 
+        // Record raw message for test server replay
+        if !args.no_record {
+            recording.push(RecordedMessage {
+                elapsed_ms: connection_start.elapsed().as_millis() as u64,
+                message: raw.clone(),
+            });
+        }
+
         match msg_type {
             "game_state" => {
                 let raw_state: RawGameState = match serde_json::from_value(raw.clone()) {
@@ -177,34 +225,18 @@ async fn main() {
                     );
 
                     if !args.no_save_map && !map_saved {
-                        save_map(&args.difficulty, &raw);
+                        save_map(&args.difficulty, &session_ts, &raw);
                         map_saved = true;
                     }
                 }
 
-                // Plan actions — for now, all bots wait
                 let planning_start = Instant::now();
-                let actions: Vec<RoundAction> = state
-                    .bots
-                    .iter()
-                    .map(|bot| RoundAction {
-                        bot: bot.id,
-                        action: "wait".to_string(),
-                    })
-                    .collect();
+                let actions = planner::plan_round(&state);
                 let planning_ms = planning_start.elapsed().as_millis() as u64;
 
-                // Send response
-                let response = ActionsResponse {
-                    actions: actions
-                        .iter()
-                        .map(|a| RoundAction {
-                            bot: a.bot,
-                            action: a.action.clone(),
-                        })
-                        .collect(),
-                };
-                let response_json = serde_json::to_string(&response).unwrap();
+                // Send response (serialize before moving actions into replay)
+                let response_json =
+                    serde_json::to_string(&ActionsResponse { actions: &actions }).unwrap();
                 if let Err(err) = write.send(Message::Text(response_json)).await {
                     log("ERROR", &format!("Failed to send actions: {err}"));
                     break;
@@ -251,7 +283,10 @@ async fn main() {
                     final_score = score;
                 }
                 log("INFO", &format!("Game over! Final score: {final_score}"));
-                save_replay(&args.difficulty, final_score, &replay);
+                save_replay(&args.difficulty, &session_ts, final_score, &replay);
+                if !args.no_record {
+                    save_recording(&args.difficulty, &session_ts, &recording);
+                }
                 break;
             }
             "error" => {
