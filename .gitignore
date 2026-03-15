@@ -1,5 +1,3 @@
 node_modules/
 *.tsbuildinfo
 *.ts.bak
-.yarn
-.pnp.*

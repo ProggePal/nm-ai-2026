@@ -12,5 +12,5 @@
     "rewriteRelativeImportExtensions": true,
     "skipLibCheck": true
   },
-  "include": ["*.ts"]
+  "include": ["*.ts", "__tests__/*.ts"]
 }

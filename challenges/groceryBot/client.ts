@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const WS_URL = "wss://game.ainm.no/ws";
-const REPLAYS_DIR = path.resolve(__dirname, "..", "replays");
-const MAPS_DIR = path.resolve(__dirname, "..", "maps");
+const REPLAYS_DIR = path.resolve(__dirname, "replays");
+const MAPS_DIR = path.resolve(__dirname, "maps");
 const PLANNING_TIMEOUT = 1.5; // seconds
 
 function log(level: string, message: string): void {
