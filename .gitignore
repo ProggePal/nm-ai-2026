@@ -1,3 +1,7 @@
 node_modules/
 *.tsbuildinfo
 *.ts.bak
+
+# Rust
+target/
+Cargo.lock
