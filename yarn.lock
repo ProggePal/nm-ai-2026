@@ -585,6 +585,7 @@ __metadata:
   resolution: "grocery-bot@workspace:challenges/groceries/bot"
   dependencies:
     "@types/minimist": "npm:^1.2.5"
+    "@types/node": "npm:^25.5.0"
     "@types/ws": "npm:^8.18.1"
     minimist: "npm:^1.2.8"
     typescript: "npm:^5.9.3"
@@ -1131,6 +1132,7 @@ __metadata:
   dependencies:
     "@anthropic-ai/sdk": "npm:^0.78.0"
     "@types/minimist": "npm:^1.2.5"
+    "@types/node": "npm:^25.5.0"
     minimist: "npm:^1.2.8"
   languageName: unknown
   linkType: soft
