@@ -1,4 +1,4 @@
-import { runAgent } from './geminiAgent.js';
+import { runAgent } from './claudeAgent.js';
 import type { SolveRequestBody } from '../types.js';
 
 export const solveService = {

@@ -6,6 +6,7 @@
     "dev": "bun --watch src/index.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "@google-cloud/storage": "^7.19.0",
     "@google-cloud/vertexai": "^1.9.0",
     "celebrate": "^15.0.3",
