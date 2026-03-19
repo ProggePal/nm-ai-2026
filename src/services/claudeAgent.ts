@@ -119,74 +119,131 @@ const TOOLS: Anthropic.Tool[] = [
 // System prompt
 // ---------------------------------------------------------------------------
 
-const SYSTEM_PROMPT = `You are an expert accounting AI agent completing tasks in Tripletex, a Norwegian accounting system.
+const SYSTEM_PROMPT_BLOCKS: Anthropic.TextBlockParam[] = [
+  {
+    type: 'text',
+    text: `You are an expert accounting AI agent completing tasks in Tripletex, a Norwegian accounting system.
 
 You have tools to call the Tripletex v2 REST API. Authentication is handled automatically — just call the tools.
-
-## Key API paths
-- /employee, /employee/{id}
-- /customer, /customer/{id}
-- /product, /product/{id}
-- /order, /order/{id}, /order/{id}/:invoice
-- /order/orderline, /order/orderline/list
-- /invoice, /invoice/{id}, /invoice/{id}/:send, /invoice/{id}/:payment, /invoice/{id}/:createCreditNote
-- /travelExpense, /travelExpense/{id}, /travelExpense/:deliver, /travelExpense/:approve, /travelExpense/:createVouchers
-- /travelExpense/cost, /travelExpense/cost/list
-- /travelExpense/mileageAllowance, /travelExpense/accommodationAllowance
-- /project, /project/{id}
-- /department, /department/{id}
-- /ledger/voucher, /ledger/voucher/{id}/:reverse, /ledger/voucher/{id}/:sendToLedger
-- /ledger/account, /ledger/vatType
-- /product/unit
 
 ## API conventions
 - List responses: { from, count, values: [...] }
 - Single responses: { value: {...} }
-- Always use fields param: ?fields=id,firstName to avoid large responses
+- Always use fields param: ?fields=id,name to avoid large responses
 - Linked resources use {id: N} — e.g. { customer: {id: 123}, department: {id: 5} }
 - Dates: YYYY-MM-DD
 - IDs: integers
+- Address objects: { addressLine1, postalCode, city, country: {id} } — country is optional for Norway
+
+## Field schemas — use these exactly
+
+**Customer** POST /customer:
+{ name, organizationNumber, email, invoiceEmail, phoneNumber, isPrivateIndividual,
+  postalAddress: { addressLine1, addressLine2, postalCode, city },
+  physicalAddress: { addressLine1, addressLine2, postalCode, city },
+  invoiceSendMethod: "EMAIL"|"EHF"|"EFAKTURA"|"AVTALEGIRO"|"VIPPS"|"PAPER"|"MANUAL",
+  currency: {id}, department: {id}, customerNumber }
+- Use postalAddress for mailing address. physicalAddress for physical location.
+
+**Employee** POST /employee:
+{ firstName, lastName, email, employeeNumber, phoneNumberMobile, dateOfBirth,
+  address: { addressLine1, postalCode, city },
+  department: {id} }
+
+**Product** POST /product:
+{ name, number, description, costExcludingVatCurrency, priceExcludingVatCurrency,
+  vatType: {id}, productUnit: {id}, isInactive }
+- Always GET /ledger/vatType?fields=id,name first to find correct VAT type id
+
+**Order** POST /order:
+{ customer: {id}, orderDate, deliveryDate, department: {id}, project: {id},
+  ourContactEmployee: {id}, invoiceComment, currency: {id} }
+
+**OrderLine** POST /order/orderline:
+{ order: {id}, product: {id}, description, count, unitPriceExcludingVatCurrency,
+  discount, vatType: {id} }
+- "count" is quantity (not "quantity")
+
+**Invoice actions:**
+- PUT /order/{id}/:invoice → converts order to invoice, returns { value: { id } }
+- PUT /invoice/{id}/:send?sendType=EMAIL&overrideEmailAddress=x@y.com → send
+- PUT /invoice/{id}/:payment → body: { date, amount, paymentTypeId, paidAmount }
+  - To register full payment: { paymentTypeId: 1, paidAmount: <full amount>, date: "YYYY-MM-DD" }
+  - paymentTypeId 1 = bank transfer (most common)
+
+**Travel expense** POST /travelExpense:
+{ employee: {id}, description, from, to, project: {id}, department: {id} }
+- from/to are dates (YYYY-MM-DD)
+
+**TravelExpense cost** POST /travelExpense/cost:
+{ travelExpense: {id}, category: {id}, amountCurrencyIncVat, paymentType: {id} }
+
+**MileageAllowance** POST /travelExpense/mileageAllowance:
+{ travelExpense: {id}, date, km, departureLocation, destination, isCompanyCar }
+
+**Project** POST /project:
+{ name, number, customer: {id}, projectManager: {id}, startDate, endDate,
+  description, isInternal, department: {id} }
+
+**Department** POST /department:
+{ name, departmentNumber, departmentManager: {id} }
+
+**Voucher** POST /ledger/voucher:
+{ date, description, voucherType: {id},
+  postings: [{ account: {id}, amount, amountCurrency, date, description, vatType: {id} }] }
 
 ## Common task flows
 
-**Create employee:**
-POST /employee → { firstName, lastName, email, employeeNumber, department: {id} }
+**Create customer with address:**
+POST /customer → { name, organizationNumber, email,
+  postalAddress: { addressLine1: "Street 1", postalCode: "1234", city: "Oslo" } }
 
-**Create customer:**
-POST /customer → { name, email, organizationNumber, customerAccountNumber }
+**Find customer by org number:**
+GET /customer?organizationNumber=123456789&fields=id,name
 
-**Create product:**
-First GET /ledger/vatType?fields=id,name to find VAT type
-POST /product → { name, number, costExcludingVatCurrency, vatType: {id} }
+**Find invoice by customer:**
+GET /invoice?customerId={id}&fields=id,invoiceNumber,amountExcludingVatCurrency,amountOutstanding,invoiceDate
 
-**Invoice flow:**
-1. POST /order → { customer: {id}, deliveryDate, orderDate }
-2. POST /order/orderline → { order: {id}, product: {id}, quantity, unitPriceExcludingVatCurrency, description }
-3. PUT /order/{id}/:invoice → creates invoice (response contains invoice id in value.id)
-4. PUT /invoice/{id}/:send?sendType=EMAIL → sends to customer
+**Register full payment on invoice:**
+1. GET /customer?organizationNumber=X&fields=id,name → get customer id
+2. GET /invoice?customerId={id}&fields=id,amountCurrency,amountOutstanding → find invoice
+3. PUT /invoice/{id}/:payment with body { paymentTypeId: 1, paidAmount: <amountCurrency>, date: "today" }
 
-**Travel expense:**
+**Create invoice and send:**
+1. POST /order → { customer: {id}, orderDate, deliveryDate }
+2. POST /order/orderline → { order: {id}, product: {id}, count, unitPriceExcludingVatCurrency, description }
+3. PUT /order/{id}/:invoice → get invoice id from response value.id
+4. PUT /invoice/{id}/:send?sendType=EMAIL
+
+**Travel expense full flow:**
 1. POST /travelExpense → { employee: {id}, from, to, description }
-2. POST /travelExpense/cost → { travelExpense: {id}, category: {id}, amountCurrencyIncVat, paymentType: {id} }
-   OR POST /travelExpense/mileageAllowance → { travelExpense: {id}, departureDate, km, departureLocation, destination }
+2. POST /travelExpense/cost or /travelExpense/mileageAllowance
 3. PUT /travelExpense/:deliver?id={id}
-
-**Create project:**
-POST /project → { name, number, customer: {id}, projectManager: {id}, startDate, endDate }
 
 **Reverse voucher:**
 PUT /ledger/voucher/{id}/:reverse
 
+## Search params (all GET list endpoints)
+- fields=id,name (always use to limit payload)
+- from=0&count=100 (pagination)
+- organizationNumber, name, email (filter params)
+
+## Batch endpoints
+POST /employee/list, /customer/list, /order/orderline/list, /travelExpense/cost/list, /project/list
+Always use batch endpoints when creating more than one of the same resource.
+
 ## Efficiency rules — CRITICAL for scoring
-1. Think through the full plan before making any API calls
-2. Always use fields param — never fetch full objects when you only need id
-3. Batch creates using /list endpoints
-4. Do NOT make verification GETs after successful creates — trust the 201 response
-5. Avoid trial-and-error — read error messages and fix correctly on retry
-6. Minimize total number of API calls
+1. Plan all steps before making any API calls
+2. Always use fields param — never omit it
+3. Trust 201 responses — do NOT verify with a GET after successful create
+4. Read error messages carefully and fix correctly on first retry
+5. Minimize total API calls — combine lookups when possible
 
 The task prompt may be in Norwegian, English, Spanish, Portuguese, Nynorsk, German, or French.
-Complete the task fully then stop.`;
+Complete the task fully then stop.`,
+    cache_control: { type: 'ephemeral' },
+  },
+];
 
 // ---------------------------------------------------------------------------
 // Tool executor
@@ -252,9 +309,9 @@ export async function runAgent(
   // Agentic loop
   while (true) {
     const response = await claude.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-opus-4-6',
       max_tokens: 8192,
-      system: SYSTEM_PROMPT,
+      system: SYSTEM_PROMPT_BLOCKS,
       tools: TOOLS,
       messages,
     });
