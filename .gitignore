@@ -73,6 +73,9 @@ web_modules/
 .env.*
 !.env.example
 
+# Competition request logs (contain session tokens)
+test-requests/*.json
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
