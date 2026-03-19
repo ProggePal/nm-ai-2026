@@ -252,9 +252,8 @@ export async function runAgent(
   // Agentic loop
   while (true) {
     const response = await claude.messages.create({
-      model: 'claude-opus-4-6',
+      model: 'claude-sonnet-4-6',
       max_tokens: 8192,
-      thinking: { type: 'adaptive' },
       system: SYSTEM_PROMPT,
       tools: TOOLS,
       messages,
