@@ -1,5 +1,5 @@
 export interface TripletexCredentials {
-  proxy_url: string;
+  base_url: string;
   session_token: string;
 }
 

@@ -18,7 +18,7 @@ const solveSchema = Joi.object({
     )
     .optional(),
   tripletex_credentials: Joi.object({
-    proxy_url: Joi.string().uri().required(),
+    base_url: Joi.string().uri().required(),
     session_token: Joi.string().required(),
   }).required(),
 });

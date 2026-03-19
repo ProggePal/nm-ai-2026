@@ -13,7 +13,7 @@ export async function tripletexRequest(
   params?: Record<string, unknown>,
   body?: unknown
 ): Promise<TripletexResponse> {
-  const base = credentials.proxy_url.replace(/\/$/, '');
+  const base = credentials.base_url.replace(/\/$/, '');
   const url = new URL(`${base}${path.startsWith('/') ? path : `/${path}`}`);
 
   if (params) {
