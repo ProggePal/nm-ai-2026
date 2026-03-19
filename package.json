@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun --watch src/index.ts"
+    "dev": "bun --watch src/index.ts",
+    "solve": "bun scripts/solve.ts",
+    "solve:local": "bun scripts/solve.ts --local"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
