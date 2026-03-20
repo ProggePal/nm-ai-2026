@@ -5,8 +5,11 @@ mod params;
 mod world;
 mod engine;
 mod phases;
+mod scoring;
+mod postprocess;
+mod grid_search;
 
-use numpy::{PyArray3, PyArray2, PyReadonlyArray1, PyReadonlyArray2, PyArray1, PyArrayMethods};
+use numpy::{PyArray3, PyArray2, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3, PyArray1, PyArrayMethods};
 use pyo3::prelude::*;
 use pyo3::types::{PyList, PyDict};
 
@@ -51,12 +54,87 @@ fn generate_prediction<'py>(
     let h = state.height as usize;
     let w = state.width as usize;
 
-    // Create 1D array then reshape to 3D
     let arr1d = PyArray1::from_vec_bound(py, flat);
     let arr3d = arr1d.reshape([h, w, types::NUM_CLASSES])
         .map_err(|e| pyo3::exceptions::PyValueError::new_err(format!("reshape failed: {}", e)))?;
 
     Ok(arr3d)
+}
+
+/// Full Rust grid search. Accepts ground truth data, returns top N results as JSON string.
+///
+/// Args:
+///   rounds: list of lists of (grid_2d, settlements_list, ground_truth_3d) tuples
+///   num_candidates: number of candidate param sets
+///   mc_runs: MC runs per seed per candidate
+///   top_n: number of top results to return
+///
+/// Returns: list of dicts with keys: params (list[float]), mean_score (float), per_round_scores (list[float])
+#[pyfunction]
+fn run_grid_search<'py>(
+    py: Python<'py>,
+    rounds: &Bound<'py, PyList>,
+    num_candidates: usize,
+    mc_runs: usize,
+    top_n: usize,
+) -> PyResult<Bound<'py, PyList>> {
+    // Parse all round data from Python
+    let mut rust_rounds: Vec<Vec<grid_search::SeedData>> = Vec::new();
+
+    for round_item in rounds.iter() {
+        let round_list: &Bound<'py, PyList> = round_item.downcast()?;
+        let mut seeds = Vec::new();
+
+        for seed_item in round_list.iter() {
+            let seed_tuple: &Bound<'py, pyo3::types::PyTuple> = seed_item.downcast()?;
+
+            let grid: PyReadonlyArray2<'py, i32> = seed_tuple.get_item(0)?.extract()?;
+            let settlements_obj = seed_tuple.get_item(1)?;
+            let settlements: &Bound<'py, PyList> = settlements_obj.downcast()?;
+            let gt: PyReadonlyArray3<'py, f64> = seed_tuple.get_item(2)?.extract()?;
+
+            let state = parse_world_state(&grid, settlements)?;
+
+            let gt_arr = gt.as_array();
+            let height = gt_arr.shape()[0];
+            let width = gt_arr.shape()[1];
+            let mut gt_flat = vec![0.0_f64; height * width * types::NUM_CLASSES];
+            for y in 0..height {
+                for x in 0..width {
+                    for c in 0..types::NUM_CLASSES {
+                        gt_flat[(y * width + x) * types::NUM_CLASSES + c] = gt_arr[[y, x, c]];
+                    }
+                }
+            }
+
+            seeds.push(grid_search::SeedData {
+                initial_state: state,
+                ground_truth: gt_flat,
+                height,
+                width,
+            });
+        }
+        rust_rounds.push(seeds);
+    }
+
+    // Release GIL during computation
+    let results = py.allow_threads(|| {
+        grid_search::run_grid_search(&rust_rounds, num_candidates, mc_runs, top_n)
+    });
+
+    // Convert results back to Python
+    let result_list = PyList::empty_bound(py);
+    for r in &results {
+        let dict = PyDict::new_bound(py);
+        let params_list = PyList::new_bound(py, &r.params);
+        let scores_list = PyList::new_bound(py, &r.per_round_scores);
+        dict.set_item("params", params_list)?;
+        dict.set_item("mean_score", r.mean_score)?;
+        dict.set_item("per_round_scores", scores_list)?;
+        result_list.append(dict)?;
+    }
+
+    Ok(result_list)
 }
 
 /// Parse Python WorldState into Rust.
@@ -103,7 +181,6 @@ fn parse_world_state(
     })
 }
 
-/// Convert Rust grid back to numpy 2D array.
 fn array2d_to_numpy<'py>(py: Python<'py>, grid: &[Vec<i32>], height: usize, width: usize) -> Bound<'py, PyArray2<i32>> {
     let mut flat = Vec::with_capacity(height * width);
     for row in grid {
@@ -113,7 +190,6 @@ fn array2d_to_numpy<'py>(py: Python<'py>, grid: &[Vec<i32>], height: usize, widt
     arr1d.reshape([height, width]).unwrap()
 }
 
-/// Convert Rust settlements to Python list of dicts.
 fn settlements_to_py<'py>(py: Python<'py>, settlements: &[Settlement]) -> PyResult<Bound<'py, PyList>> {
     let list = PyList::empty_bound(py);
     for s in settlements {
@@ -138,5 +214,6 @@ fn settlements_to_py<'py>(py: Python<'py>, settlements: &[Settlement]) -> PyResu
 fn island_sim_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(simulate, m)?)?;
     m.add_function(wrap_pyfunction!(generate_prediction, m)?)?;
+    m.add_function(wrap_pyfunction!(run_grid_search, m)?)?;
     Ok(())
 }

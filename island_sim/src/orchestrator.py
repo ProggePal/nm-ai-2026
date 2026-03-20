@@ -257,7 +257,7 @@ def main() -> None:
             params = infer_params(
                 observations,
                 initial_states,
-                num_runs_per_eval=15,
+                num_runs_per_eval=50,
                 max_evaluations=200,
             )
         else:
@@ -298,7 +298,7 @@ def main() -> None:
                 params = infer_params(
                     observations,
                     initial_states,
-                    num_runs_per_eval=20,
+                    num_runs_per_eval=50,
                     max_evaluations=300,
                 )
 
@@ -311,13 +311,13 @@ def main() -> None:
     seed_obs_counts = {i: sum(1 for o in observations if o.seed_index == i) for i in range(NUM_SEEDS)}
     for seed_idx in range(NUM_SEEDS):
         n_obs = seed_obs_counts[seed_idx]
-        print(f"  Seed {seed_idx}: {n_obs} observations + 500 MC sims...")
+        print(f"  Seed {seed_idx}: {n_obs} observations + 2000 MC sims...")
         prediction = hybrid_prediction(
             initial_states[seed_idx],
             seed_idx,
             observations,
             params,
-            num_mc_runs=500,
+            num_mc_runs=2000,
             mc_base_seed=seed_idx * 100000,
         )
 
