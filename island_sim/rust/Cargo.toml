@@ -1,0 +1,15 @@
+[package]
+name = "island_sim_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "island_sim_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module"] }
+numpy = "0.22"
+rand = "0.8"
+rand_chacha = "0.3"
+rand_distr = "0.4"
