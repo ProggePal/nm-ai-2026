@@ -21,9 +21,10 @@ let listCache: { data: RunSummary[]; expiry: number } | null = null;
 export async function listRuns(limit = 50): Promise<RunSummary[]> {
   if (listCache && Date.now() < listCache.expiry) return listCache.data;
 
-  const [files] = await storage.bucket(BUCKET).getFiles({ prefix: 'result-', maxResults: limit });
+  // Fetch ALL result files (no maxResults limit), then sort and take latest
+  const [files] = await storage.bucket(BUCKET).getFiles({ prefix: 'result-' });
 
-  // Sort by name descending (names contain timestamps)
+  // Sort by name descending (names contain timestamps) — newest first
   files.sort((a, b) => b.name.localeCompare(a.name));
 
   const runs: RunSummary[] = [];
