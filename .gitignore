@@ -2,6 +2,12 @@ node_modules/
 *.tsbuildinfo
 *.ts.bak
 
+# Secrets
+.env
+
+# Fetched data
+data/
+
 # Rust
 target/
 Cargo.lock

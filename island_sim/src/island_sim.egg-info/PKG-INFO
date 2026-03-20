@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: island-sim
+Version: 0.1.0
+Summary: NM i AI 2026 — Astar Island simulator and prediction engine
+Requires-Python: >=3.11
+Requires-Dist: numpy
+Requires-Dist: requests
+Requires-Dist: python-dotenv
+Requires-Dist: cma
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: matplotlib; extra == "dev"
