@@ -1,0 +1,2 @@
+[console_scripts]
+island-sim = src.orchestrator:main

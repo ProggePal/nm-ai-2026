@@ -1,0 +1,20 @@
+[project]
+name = "island-sim"
+version = "0.1.0"
+description = "NM i AI 2026 — Astar Island simulator and prediction engine"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "requests",
+    "python-dotenv",
+    "cma",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "matplotlib",
+]
+
+[project.scripts]
+island-sim = "src.orchestrator:main"

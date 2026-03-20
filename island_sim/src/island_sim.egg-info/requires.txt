@@ -1,0 +1,8 @@
+numpy
+requests
+python-dotenv
+cma
+
+[dev]
+pytest
+matplotlib
