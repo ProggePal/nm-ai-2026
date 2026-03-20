@@ -26,8 +26,12 @@ def letterbox(img, new_shape=1280):
 
 def postprocess(output, conf_thres=0.25, iou_thres=0.45):
     """Process raw ONNX output [1, 5, N] into boxes, scores."""
-    # output shape: [1, 5, 33600] -> [33600, 5]
-    pred = output[0].squeeze(0).T  # [N, 5] = [cx, cy, w, h, conf]
+    # output shape: [1, 5, N] -> [N, 5] = [cx, cy, w, h, conf]
+    raw = output[0]
+    assert raw.ndim == 3 and raw.shape[1] == 5, (
+        f"Expected ONNX output shape [1, 5, N], got {raw.shape}"
+    )
+    pred = raw.squeeze(0).T
 
     # Filter by confidence
     scores = pred[:, 4]
@@ -114,8 +118,8 @@ def run():
         predictions = []
 
         for img_path in sorted(input_dir.glob("*.jpg")):
-            img_id_str = "".join(filter(str.isdigit, img_path.stem))
-            image_id = int(img_id_str) if img_id_str else 0
+            img_id_str = img_path.stem.split("_")[-1]
+            image_id = int(img_id_str) if img_id_str.isdigit() else 0
 
             pil_img = Image.open(str(img_path)).convert("RGB")
             orig_w, orig_h = pil_img.size
@@ -190,7 +194,8 @@ def run():
         with open(output_file, "w") as f:
             json.dump(predictions, f)
 
-    except Exception:
+    except Exception as e:
+        print(f"Error in run(): {e}")
         with open(str(output_file), "w") as f:
             json.dump([], f)
 
