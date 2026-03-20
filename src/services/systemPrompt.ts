@@ -171,8 +171,21 @@ GET /ledger/vatType?typeOfVat=INCOMING&fields=id,name,percentage to find incomin
 - PUT /timesheet/month/:approve?employeeIds={id}&monthYear=YYYY-MM-01 → approve month
 - PUT /timesheet/month/:complete?employeeIds={id}&monthYear=YYYY-MM-01 → complete month
 
-**Salary transaction** POST /salary/transaction:
-{ date, payslips: [{ employee: {id} }] }
+**Salary / Payroll:**
+POST /salary/transaction → create salary voucher:
+{ date (R), year, month, payslips: [{ employee: {id}, specifications: [
+  { salaryType: {id}, rate, count: 1, amount, description }
+] }] }
+- First GET /salary/type?fields=id,number,name to find salary type IDs.
+  Common types: number "1000" = Fastlønn/base salary, number "1000" may vary.
+  Look for names containing "fastlønn", "timelønn", "bonus", "overtid".
+- If salary API returns 422 or is unavailable, use MANUAL VOUCHER as fallback:
+  POST /ledger/voucher with salary accounts:
+  - 5000 = Lønn (salary expense) — debit
+  - 2910 = Skyldig lønn (salary payable) — credit
+  - 5001 = Bonus / tillegg — debit (for bonuses)
+  When using voucher: look up EACH account separately with GET /ledger/account?number=5000&fields=id,number,name
+  Do NOT search multiple numbers in one query — it won't work.
 
 **Accounting dimensions:**
 - POST /ledger/accountingDimensionName → { dimensionName (R), active: true } — create a free dimension (e.g. "Kostsenter")
