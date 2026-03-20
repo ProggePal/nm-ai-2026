@@ -23,6 +23,13 @@ test_output/predictions*.json
 # Python
 __pycache__/
 *.pyc
+.venv/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
 
 # Local JSON files that might be massive
 feature_bank.json
