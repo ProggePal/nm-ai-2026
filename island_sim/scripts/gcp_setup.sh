@@ -13,11 +13,16 @@
 set -euo pipefail
 
 # --- Configuration ---
+PROJECT_ID="ai-nm26osl-1886"
 VM_NAME="island-sim-search"
 ZONE="europe-north1-a"         # Low latency from Norway
 MACHINE_TYPE="n2-highcpu-96"   # 96 vCPUs, 96 GB RAM
 PROJECT_DIR="island_sim"
 
+echo "=== Step 0: Set project ==="
+gcloud config set project "$PROJECT_ID"
+
+echo ""
 echo "=== Step 1: Create VM ==="
 gcloud compute instances create "$VM_NAME" \
     --zone="$ZONE" \
@@ -42,7 +47,10 @@ gcloud compute ssh "$VM_NAME" --zone="$ZONE" --command="
 
 echo ""
 echo "=== Step 4: Upload project code and data ==="
-# Create a tarball of just what we need (no .env, no .git)
+# Resolve the project root (script is in island_sim/scripts/)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
 TMPTAR=$(mktemp /tmp/island_sim_XXXX.tar.gz)
 tar czf "$TMPTAR" \
     --exclude='.git' \
@@ -50,7 +58,7 @@ tar czf "$TMPTAR" \
     --exclude='__pycache__' \
     --exclude='*.pyc' \
     --exclude='data/grid_search' \
-    -C "$(dirname "$(cd "$(dirname "$0")/.." && pwd)")" \
+    -C "$REPO_ROOT" \
     "$PROJECT_DIR"
 
 gcloud compute scp "$TMPTAR" "$VM_NAME":~/island_sim.tar.gz --zone="$ZONE"
@@ -70,13 +78,15 @@ echo ""
 echo "1. SSH into the VM:"
 echo "   gcloud compute ssh $VM_NAME --zone=$ZONE"
 echo ""
-echo "2. Run the grid search:"
-echo "   cd ~/island_sim && ~/env/bin/python scripts/grid_search.py --workers 90 --candidates 2000 --mc-runs 50"
+echo "2. Run the grid search (nohup so it survives SSH disconnect):"
+echo "   cd ~/island_sim && nohup ~/env/bin/python scripts/grid_search.py --workers 90 --candidates 2000 --mc-runs 50 > search.log 2>&1 &"
 echo ""
-echo "3. When done, pull results back to your laptop:"
-echo "   gcloud compute scp $VM_NAME:~/island_sim/data/rounds/best_params.json data/rounds/best_params.json --zone=$ZONE"
-echo "   gcloud compute scp --recurse $VM_NAME:~/island_sim/data/grid_search data/ --zone=$ZONE"
+echo "3. Check progress (can disconnect and reconnect anytime):"
+echo "   tail -f ~/island_sim/search.log"
 echo ""
-echo "4. Delete the VM when finished:"
+echo "4. When done, exit SSH and pull results back to your laptop:"
+echo "   bash scripts/gcp_pull_results.sh"
+echo ""
+echo "5. Delete the VM when finished:"
 echo "   gcloud compute instances delete $VM_NAME --zone=$ZONE"
 echo ""

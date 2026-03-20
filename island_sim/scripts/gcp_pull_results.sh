@@ -2,8 +2,11 @@
 # Pull grid search results from GCP VM back to local machine
 set -euo pipefail
 
+PROJECT_ID="ai-nm26osl-1886"
 VM_NAME="island-sim-search"
 ZONE="europe-north1-a"
+
+gcloud config set project "$PROJECT_ID"
 
 echo "Pulling best_params.json..."
 gcloud compute scp "$VM_NAME":~/island_sim/data/rounds/best_params.json data/rounds/best_params.json --zone="$ZONE"
