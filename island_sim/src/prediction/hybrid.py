@@ -55,29 +55,14 @@ def hybrid_prediction(
         initial_state, params, num_runs=num_mc_runs, base_seed=mc_base_seed
     )
 
-    # Blend based on observation density
-    prediction = np.zeros((height, width, NUM_CLASSES), dtype=np.float64)
+    # Blend based on observation density (vectorized)
+    # Consistent formula: obs_weight = n_obs / (n_obs + obs_trust_threshold)
+    # This naturally scales: 0 obs → 0 weight, 3 obs → 0.5, 10 obs → 0.77, etc.
+    n_obs = obs_counts.astype(np.float64)
+    obs_weight = n_obs / (n_obs + obs_trust_threshold)
+    obs_weight = np.clip(obs_weight, 0.0, 0.95)[..., np.newaxis]  # cap at 95%, shape (H,W,1)
 
-    for y in range(height):
-        for x in range(width):
-            n_obs = obs_counts[y, x]
-            if n_obs >= obs_trust_threshold:
-                # Trust observations heavily, but mix in a small sim prior
-                obs_weight = min(n_obs / (n_obs + 2.0), 0.95)
-                prediction[y, x] = (
-                    obs_weight * obs_probs[y, x]
-                    + (1 - obs_weight) * sim_probs[y, x]
-                )
-            elif n_obs > 0:
-                # Partial observations — blend proportionally
-                obs_weight = n_obs / (n_obs + obs_trust_threshold)
-                prediction[y, x] = (
-                    obs_weight * obs_probs[y, x]
-                    + (1 - obs_weight) * sim_probs[y, x]
-                )
-            else:
-                # No observations — simulator only
-                prediction[y, x] = sim_probs[y, x]
+    prediction = obs_weight * obs_probs + (1 - obs_weight) * sim_probs
 
     # Postprocess: static overrides, probability floor, normalization
     prediction = postprocess(prediction, initial_state)

@@ -53,7 +53,7 @@ def postprocess(
 
     # Renormalize each cell to sum to 1.0
     row_sums = result.sum(axis=-1, keepdims=True)
-    result = result / row_sums
+    result = result / np.maximum(row_sums, 1e-10)
 
     return result
 

@@ -90,6 +90,9 @@ class Observation:
         """Create Observation from API simulate response."""
         vp = response["viewport"]
         grid = np.array(response["grid"], dtype=np.int32)
+        assert grid.shape == (vp["h"], vp["w"]), (
+            f"Grid shape {grid.shape} doesn't match viewport ({vp['h']}, {vp['w']})"
+        )
         settlements = []
         for sdata in response.get("settlements", []):
             settlements.append(Settlement(

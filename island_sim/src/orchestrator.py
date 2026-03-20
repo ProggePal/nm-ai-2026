@@ -156,15 +156,17 @@ def load_observations(round_id: str) -> list[Observation]:
     return observations
 
 
-def save_params(params: SimParams, score: float | None = None) -> None:
-    """Save params for warm-starting future runs."""
+def save_params(params: SimParams, round_id: str, score: float | None = None) -> None:
+    """Save CMA-ES inferred params per-round (does NOT overwrite grid search defaults)."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     data = {
         "params": params.to_array().tolist(),
         "score": score,
         "param_names": SimParams.param_names(),
+        "round_id": round_id,
+        "source": "cma_es",
     }
-    (DATA_DIR / "best_params.json").write_text(json.dumps(data, indent=2))
+    (DATA_DIR / f"params_round_{round_id[:8]}.json").write_text(json.dumps(data, indent=2))
 
 
 # ---------------------------------------------------------------------------
@@ -208,6 +210,8 @@ def main() -> None:
     if prior_observations:
         print(f"Loaded {len(prior_observations)} prior observations for this round")
 
+    new_observations: list[Observation] = []
+
     if queries_remaining <= 0:
         print("No queries remaining! Skipping observation phase.")
         observations: list[Observation] = prior_observations
@@ -240,10 +244,8 @@ def main() -> None:
                 print(f"  Query failed: {exc}")
                 break
 
-        # Save new observations to disk
-        if observations:
-            save_observations(round_id, observations)
-
+        # Track new observations from this run
+        new_observations = list(observations)
         # Merge with prior observations
         observations = prior_observations + observations
         print(f"Total observations: {len(observations)}")
@@ -287,6 +289,9 @@ def main() -> None:
                     print(f"  Query failed: {exc}")
                     break
 
+            # Track phase 2 observations (added after prior + phase 1)
+            new_observations = observations[len(prior_observations):]
+
             # Step 7: Re-infer with all observations (only if enough)
             if len(observations) >= MIN_OBS_FOR_INFERENCE:
                 print(f"\nRe-inferring parameters with {len(observations)} total observations...")
@@ -296,6 +301,10 @@ def main() -> None:
                     num_runs_per_eval=20,
                     max_evaluations=300,
                 )
+
+    # Save all new observations from this run
+    if new_observations:
+        save_observations(round_id, new_observations)
 
     # Step 8: Generate hybrid predictions for all 5 seeds
     print("\nGenerating hybrid predictions (observations + simulator)...")
@@ -326,9 +335,9 @@ def main() -> None:
         except Exception as exc:
             print(f"  Seed {seed_idx} submission failed: {exc}")
 
-    # Step 11: Save params for next run
-    save_params(params)
-    print("\nParams saved for warm-starting next round.")
+    # Step 11: Save CMA-ES params for this round (doesn't overwrite grid search defaults)
+    save_params(params, round_id)
+    print("\nRound params saved.")
 
     # Step 12: Post-round — wait for scoring and fetch results
     print("Run sync_history() after the round completes to fetch ground truth.")
