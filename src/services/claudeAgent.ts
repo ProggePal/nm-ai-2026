@@ -135,6 +135,8 @@ export async function runAgent(
             tripletex_travel_expense_payment_type_search: { defer_loading: false },
             tripletex_travel_expense_rate_category_search: { defer_loading: false },
             tripletex_travel_expense_rate_category_group_search: { defer_loading: false },
+            tripletex_travel_expense_cost_category_search: { defer_loading: false },
+            tripletex_travel_expense_deliver: { defer_loading: false },
             // -- Ledger / Accounting --
             tripletex_ledger_voucher_create: { defer_loading: false },
             tripletex_ledger_voucher_reverse: { defer_loading: false },
@@ -154,7 +156,7 @@ export async function runAgent(
             tripletex_supplier_create: { defer_loading: false },
             tripletex_supplier_invoice_search: { defer_loading: false },
             tripletex_supplier_invoice_approve: { defer_loading: false },
-            tripletex_incoming_invoice_create: { defer_loading: false },
+            // NOTE: tripletex_incoming_invoice_create intentionally NOT preloaded — BETA endpoint, use voucher approach
             // -- Salary --
             tripletex_salary_type_search: { defer_loading: false },
             tripletex_salary_transaction_create: { defer_loading: false },

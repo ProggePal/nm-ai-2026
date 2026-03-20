@@ -96,20 +96,24 @@ Authentication is handled automatically — just call the tools.
 - Search: GET /travelExpense?employeeId={id}&fields=id,title,date,state
 
 **TravelExpense cost** POST /travelExpense/cost:
-{ travelExpense: {id} (R), amountCurrencyIncVat (R), paymentType: {id} (R), category (string), date, comments }
-- travelExpense, amountCurrencyIncVat, and paymentType are REQUIRED.
-- category is a STRING (e.g. "Fly", "Taxi", "Hotell") — NOT an object with {id}.
+{ travelExpense: {id} (R), costCategory: {id} (R), amountCurrencyIncVat (R), paymentType: {id} (R), category (string), date, comments }
+- travelExpense, costCategory, amountCurrencyIncVat, and paymentType are REQUIRED.
+- costCategory is an OBJECT {id} — look up with tripletex_travel_expense_cost_category_search?showOnEmployeeExpenses=true&fields=id,description
+  Pick the cost category matching the expense type (e.g. "Fly", "Taxi", "Hotell", "Mat", "Representasjon").
+  NEVER guess costCategory IDs — always search first.
+- category is an optional display STRING (e.g. "Fly", "Taxi", "Hotell").
 - paymentType is an OBJECT with {id} — look up with tripletex_travel_expense_payment_type_search.
 - IMPORTANT: Create costs ONE AT A TIME, sequentially. Parallel creation causes 409 RevisionException.
 
 **Per diem (diett/dagpenger)** POST /travelExpense/perDiemCompensation:
-{ travelExpense: {id} (R), rateCategory: {id} (R), location, count, rate, overnightAccommodation }
+{ travelExpense: {id} (R), rateCategory: {id} (R), location, count, overnightAccommodation }
 - rateCategory is REQUIRED — look up with tripletex_travel_expense_rate_category_search.
   Use tripletex_travel_expense_rate_category_group_search first to find the group for domestic travel (isForeignTravel=false).
-  Then tripletex_travel_expense_rate_category_search with type=PER_DIEM and the group id.
-- Do NOT use countryCode — it causes "Country not enabled for travel expense" error.
+  Then tripletex_travel_expense_rate_category_search with type=PER_DIEM&travelReportRateCategoryGroupId={groupId}&fields=id,name
+- NEVER use countryCode — it causes "Country not enabled for travel expense" error.
+- NEVER use zone or requiresZone — these fields don't work as expected.
 - overnightAccommodation: "HOTEL", "BOARDING_HOUSE_WITHOUT_COOKING", "BOARDING_HOUSE_WITH_COOKING", "NONE"
-- count = number of days, rate = daily rate
+- count = number of days. Do NOT pass rate — let Tripletex calculate it from the rateCategory.
 
 **MileageAllowance** POST /travelExpense/mileageAllowance:
 { travelExpense: {id} (R), date (R), departureLocation (R), destination (R), km, isCompanyCar }
@@ -120,10 +124,12 @@ Authentication is handled automatically — just call the tools.
 2. tripletex_travel_expense_payment_type_search?showOnEmployeeExpenses=true — find payment type
 3. tripletex_travel_expense_rate_category_group_search?isForeignTravel=false — find domestic group
 4. tripletex_travel_expense_rate_category_search?type=PER_DIEM&travelReportRateCategoryGroupId={groupId} — find per diem rate
-5. tripletex_travel_expense_create with travelDetails (departureDate + returnDate)
-6. tripletex_travel_expense_per_diem_compensation_create with rateCategory: {id}
-7. tripletex_travel_expense_cost_create for each cost (flight, taxi, etc.)
-Do steps 1-4 in parallel to save time.
+5. tripletex_travel_expense_cost_category_search?showOnEmployeeExpenses=true&fields=id,description — find cost categories
+6. tripletex_travel_expense_create with travelDetails (departureDate + returnDate)
+7. tripletex_travel_expense_per_diem_compensation_create with rateCategory: {id} — do NOT pass countryCode
+8. tripletex_travel_expense_cost_create for each cost — include costCategory: {id} from step 5
+9. tripletex_travel_expense_deliver?id={travelExpenseId} — deliver the travel expense
+Do steps 1-5 in parallel to save time.
 
 **Project** POST /project:
 { name, number, projectManager: {id} (R), startDate (R), customer: {id}, endDate,
@@ -248,9 +254,12 @@ When asked to invoice a percentage of a fixed-price project:
 4. PUT /order/{id}/:invoice?invoiceDate=YYYY-MM-DD → creates the invoice
 
 **Travel expense full flow:**
-1. POST /travelExpense → { employee: {id}, from, to, description }
-2. POST /travelExpense/cost or /travelExpense/mileageAllowance
-3. PUT /travelExpense/:deliver?id={id}
+1. Parallel lookups: employee, payment types, rate category groups, cost categories
+2. POST /travelExpense → { employee: {id}, title, travelDetails: {departureDate, returnDate} }
+3. POST /travelExpense/perDiemCompensation (if per diem needed) — with rateCategory:{id}, NO countryCode
+4. POST /travelExpense/cost for each cost — with costCategory:{id}, paymentType:{id}
+5. POST /travelExpense/mileageAllowance (if mileage needed)
+6. PUT /travelExpense/:deliver?id={id} — deliver the expense report
 
 **Approve/pay supplier invoice:**
 1. GET /supplierInvoice?fields=id,amountCurrency,supplier → find invoice
