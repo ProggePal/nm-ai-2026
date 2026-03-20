@@ -73,7 +73,7 @@ gcloud compute ssh island-sim-search --zone=europe-north1-a
 
 # 3. Run the grid search with nohup (survives SSH disconnect, ~60-90 min)
 cd ~/island_sim
-nohup ~/env/bin/python scripts/grid_search.py --workers 90 --candidates 2000 --mc-runs 50 > search.log 2>&1 &
+nohup ~/env/bin/python scripts/grid_search.py --workers 220 --candidates 2000 --mc-runs 50 > search.log 2>&1 &
 
 # 4. Check progress (can disconnect and reconnect anytime)
 tail -f search.log

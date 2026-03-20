@@ -16,7 +16,7 @@ set -euo pipefail
 PROJECT_ID="ai-nm26osl-1886"
 VM_NAME="island-sim-search"
 ZONE="europe-north1-a"         # Low latency from Norway
-MACHINE_TYPE="n2-highcpu-96"   # 96 vCPUs, 96 GB RAM
+MACHINE_TYPE="n2d-highcpu-224"  # 224 vCPUs, 224 GB RAM
 PROJECT_DIR="island_sim"
 
 echo "=== Step 0: Set project ==="
@@ -79,7 +79,7 @@ echo "1. SSH into the VM:"
 echo "   gcloud compute ssh $VM_NAME --zone=$ZONE"
 echo ""
 echo "2. Run the grid search (nohup so it survives SSH disconnect):"
-echo "   cd ~/island_sim && nohup ~/env/bin/python scripts/grid_search.py --workers 90 --candidates 2000 --mc-runs 50 > search.log 2>&1 &"
+echo "   cd ~/island_sim && nohup ~/env/bin/python scripts/grid_search.py --workers 220 --candidates 2000 --mc-runs 50 > search.log 2>&1 &"
 echo ""
 echo "3. Check progress (can disconnect and reconnect anytime):"
 echo "   tail -f ~/island_sim/search.log"
