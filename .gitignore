@@ -47,7 +47,5 @@ wheels/
 .DS_Store
 Thumbs.db
 
-# Ralph loop state
+# Ralph loop runtime state
 ralph_state/
-ralph.sh
-OVERNIGHT_AGENT.md
