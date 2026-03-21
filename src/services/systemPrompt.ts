@@ -371,12 +371,13 @@ print(f"Created invoice {invoice['id']}")
 
 ## Cost analysis — finding accounts with largest increase
 When comparing expenses between two months:
-- GET /balanceSheet for January: dateFrom=YYYY-01-01, dateTo=YYYY-01-31, accountNumberFrom=4000, accountNumberTo=8000
-- GET /balanceSheet for February: dateFrom=YYYY-02-01, dateTo=YYYY-02-28
-- Compare balanceChange (NOT balanceOut) for each account between the two months
-- The "increase" = February balanceChange - January balanceChange (positive = costs went up)
+- GET /balanceSheet for January: dateFrom=YYYY-01-01, dateTo=YYYY-01-31, accountNumberFrom=6000, accountNumberTo=7999
+- GET /balanceSheet for February: dateFrom=YYYY-02-01, dateTo=YYYY-02-28, accountNumberFrom=6000, accountNumberTo=7999
+- Use range 6000-7999 (operating expenses only, NOT salary 5000-series or financial 8000-series)
+- Compare balanceChange for each account between the two months
+- The "increase" = February balanceChange - January balanceChange
 - Sort by increase descending, take top 3
-- Project names should match the ACCOUNT NAME (e.g. "Bilgodtgjørelse oppgavepliktig"), not the account number
+- Project names should match the ACCOUNT NAME exactly
 
 ## Fixed-price project invoicing (a-konto) — CRITICAL
 When creating an invoice for a project (budget/fixed price):
