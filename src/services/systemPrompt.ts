@@ -235,8 +235,9 @@ Common OUTGOING VAT types (for invoices/sales):
 - CRITICAL: Use "amountGross" and "amountGrossCurrency" for amounts on postings (NOT "amount" or "amountCurrency" — those get saved as 0!).
   When using vatType on a posting: amountGross = the GROSS amount (incl VAT). Tripletex auto-calculates the net.
   For supplier invoices: BOTH rows use the GROSS amount: expense row = +gross with vatType, AP row = -gross.
-  Example without VAT: {"amountGross": 5000, "amountGrossCurrency": 5000}
-  Example with 25% VAT: expense row {"amountGross": 6250, "amountGrossCurrency": 6250, "vatType": {"id": 1}}, AP row {"amountGross": -6250, "amountGrossCurrency": -6250}
+  WITHOUT vatType: use BOTH amount AND amountGross: {"amount": 5000, "amountCurrency": 5000, "amountGross": 5000, "amountGrossCurrency": 5000}
+  WITH vatType (25%): use amountGross for GROSS amount: {"amountGross": 6250, "amountGrossCurrency": 6250, "vatType": {"id": 1}}
+  Always include ALL four amount fields to be safe: amount, amountCurrency, amountGross, amountGrossCurrency.
   The sum of ALL amountGross values MUST equal 0 — otherwise you get 422 "Summen er ikke lik 0".
 - The API response shows amount=0 — this is a DISPLAY ISSUE, amounts ARE saved. Do NOT recreate.
 - CRITICAL: Postings to account 1500 (kundefordringer) REQUIRE customer: {id} on the posting.
