@@ -171,6 +171,7 @@ fn parse_world_state(
         rust_settlements.push(Settlement {
             x, y, population, food, wealth, defense, tech_level,
             has_port, has_longship, owner_id, alive,
+            raid_damage_taken: 0.0,
         });
     }
 
@@ -179,6 +180,7 @@ fn parse_world_state(
         settlements: rust_settlements,
         width,
         height,
+        war_pairs: std::collections::HashSet::new(),
     })
 }
 

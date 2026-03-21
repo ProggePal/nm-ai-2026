@@ -22,13 +22,16 @@ def run_trade(state: WorldState, params: SimParams, rng: np.random.Generator) ->
             port_a = ports[idx_a]
             port_b = ports[idx_b]
 
-            # Skip if same faction already has internal trade handled by growth
-            # But different factions CAN trade — that's the point
-            # Check they're not at war (different factions can still trade if not recently raided)
-            # Simplified: ports of different factions trade if in range
             dist = distance(port_a.x, port_a.y, port_b.x, port_b.y)
             if dist > params.trade_range:
                 continue
+
+            # Skip if factions are at war (raided each other this turn)
+            if port_a.owner_id != port_b.owner_id:
+                war_key = (min(port_a.owner_id, port_b.owner_id),
+                           max(port_a.owner_id, port_b.owner_id))
+                if war_key in state.war_pairs:
+                    continue
 
             pair_key = (
                 min((port_a.x, port_a.y), (port_b.x, port_b.y)),

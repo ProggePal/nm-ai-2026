@@ -6,6 +6,14 @@ use crate::world::*;
 use std::collections::HashMap;
 
 pub fn run_conflict<R: Rng>(state: &mut WorldState, params: &SimParams, rng: &mut R) {
+    // Reset per-turn tracking
+    state.war_pairs.clear();
+    for s in state.settlements.iter_mut() {
+        if s.alive {
+            s.raid_damage_taken = 0.0;
+        }
+    }
+
     let alive_indices: Vec<usize> = state.settlements.iter()
         .enumerate()
         .filter(|(_, s)| s.alive)
@@ -68,6 +76,11 @@ fn try_raid<R: Rng>(
     });
     let target_idx = targets[0];
 
+    // Record war between these factions
+    let target_owner = state.settlements[target_idx].owner_id;
+    let war_key = (attacker_owner.min(target_owner), attacker_owner.max(target_owner));
+    state.war_pairs.insert(war_key);
+
     let is_desperate = attacker_food < params.raid_desperation_threshold;
     let desperation_bonus = if is_desperate { 1.5 } else { 1.0 };
     let attack_strength = state.settlements[attacker_idx].population * params.raid_strength_factor * desperation_bonus;
@@ -89,13 +102,14 @@ fn try_raid<R: Rng>(
     state.settlements[attacker_idx].food += loot_food;
     state.settlements[attacker_idx].wealth += loot_wealth;
 
-    // Damage defender
+    // Damage defender and track accumulated raid damage
     let pop_dmg = params.raid_damage_factor * state.settlements[target_idx].population;
     let def_dmg = params.raid_damage_factor * state.settlements[target_idx].defense;
     state.settlements[target_idx].population -= pop_dmg;
     state.settlements[target_idx].defense -= def_dmg;
     state.settlements[target_idx].population = state.settlements[target_idx].population.max(0.1);
     state.settlements[target_idx].defense = state.settlements[target_idx].defense.max(0.0);
+    state.settlements[target_idx].raid_damage_taken += pop_dmg;
 
     // Conquest or destruction
     if state.settlements[target_idx].population < params.raid_kill_threshold {

@@ -35,7 +35,9 @@
     5.597791933857682,
     2.1446129621456222,
     0.19065584896609633,
-    0.18602545910697124
+    0.18602545910697124,
+    1.5,
+    0.3
   ],
   "named_params": {
     "base_food_production": 0.8319666203109993,
@@ -73,7 +75,9 @@
     "ruin_rebuild_range": 5.597791933857682,
     "ruin_rebuild_threshold": 2.1446129621456222,
     "ruin_rebuild_fraction": 0.19065584896609633,
-    "ruin_to_plains_probability": 0.18602545910697124
+    "ruin_to_plains_probability": 0.18602545910697124,
+    "harsh_winter_collapse_factor": 1.5,
+    "raid_collapse_threshold": 0.3
   },
   "score": 56.3026814425915,
   "param_names": [
@@ -112,7 +116,9 @@
     "ruin_rebuild_range",
     "ruin_rebuild_threshold",
     "ruin_rebuild_fraction",
-    "ruin_to_plains_probability"
+    "ruin_to_plains_probability",
+    "harsh_winter_collapse_factor",
+    "raid_collapse_threshold"
   ],
   "source": "grid_search_rust",
   "timestamp": "20260321_144259"

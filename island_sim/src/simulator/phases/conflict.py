@@ -13,6 +13,12 @@ def run_conflict(
     state: WorldState, params: SimParams, rng: np.random.Generator
 ) -> None:
     """Execute the conflict phase — raids between factions."""
+    # Reset per-turn tracking
+    state.war_pairs.clear()
+    for settlement in state.settlements:
+        if settlement.alive:
+            settlement.raid_damage_taken = 0.0
+
     alive = [s for s in state.settlements if s.alive]
 
     # Build spatial lookup for O(1) position checks
@@ -69,6 +75,10 @@ def _try_raid(
     targets.sort(key=lambda s: s.defense)
     target = targets[0]
 
+    # Record war between these factions
+    pair = (min(attacker.owner_id, target.owner_id), max(attacker.owner_id, target.owner_id))
+    state.war_pairs.add(pair)
+
     # Compute attack strength
     attack_strength = (
         attacker.population * params.raid_strength_factor * desperation_bonus
@@ -89,11 +99,13 @@ def _try_raid(
     attacker.food += loot_food
     attacker.wealth += loot_wealth
 
-    # Damage the defender
-    target.population -= params.raid_damage_factor * target.population
+    # Damage the defender and track accumulated raid damage
+    pop_damage = params.raid_damage_factor * target.population
+    target.population -= pop_damage
     target.defense -= params.raid_damage_factor * target.defense
     target.population = max(target.population, 0.1)
     target.defense = max(target.defense, 0.0)
+    target.raid_damage_taken += pop_damage
 
     # Check for conquest or destruction
     if target.population < params.raid_kill_threshold:

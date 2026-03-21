@@ -78,6 +78,7 @@ pub fn place_settlement(
     let settlement = Settlement {
         x, y, population, food, wealth, defense, tech_level,
         has_port, has_longship: false, owner_id, alive: true,
+        raid_damage_taken: 0.0,
     };
     state.settlements.push(settlement);
     state.grid[y as usize][x as usize] = if has_port { PORT } else { SETTLEMENT };

@@ -35,7 +35,13 @@ def fetch_all() -> None:
         round_num = rnd["round_number"]
         round_dir = DATA_DIR / f"round_{round_num:03d}"
 
-        if round_dir.exists() and (round_dir / "detail.json").exists():
+        # Skip only if we already have detail AND all analysis files
+        seeds_count = rnd.get("seeds_count", NUM_SEEDS)
+        has_all_analysis = all(
+            (round_dir / f"analysis_seed_{i}.json").exists()
+            for i in range(seeds_count)
+        )
+        if round_dir.exists() and (round_dir / "detail.json").exists() and has_all_analysis:
             print(f"Round {round_num}: already fetched, skipping")
             continue
 
@@ -45,15 +51,20 @@ def fetch_all() -> None:
         # Save round summary
         (round_dir / "summary.json").write_text(json.dumps(rnd, indent=2))
 
-        # Fetch round detail (initial states)
-        print(f"  Fetching round detail...")
-        try:
-            detail = get_round_detail(round_id)
-            (round_dir / "detail.json").write_text(json.dumps(detail, indent=2))
-            print(f"  Saved detail with {len(detail.get('initial_states', []))} initial states")
-        except Exception as exc:
-            print(f"  Failed to fetch detail: {exc}")
-            continue
+        # Fetch round detail (initial states) — skip if already exists
+        detail_path = round_dir / "detail.json"
+        if detail_path.exists():
+            detail = json.loads(detail_path.read_text())
+            print(f"  Detail already exists ({len(detail.get('initial_states', []))} initial states)")
+        else:
+            print(f"  Fetching round detail...")
+            try:
+                detail = get_round_detail(round_id)
+                detail_path.write_text(json.dumps(detail, indent=2))
+                print(f"  Saved detail with {len(detail.get('initial_states', []))} initial states")
+            except Exception as exc:
+                print(f"  Failed to fetch detail: {exc}")
+                continue
 
         # Fetch analysis (ground truth) for each seed
         seeds_count = rnd.get("seeds_count", detail.get("seeds_count", NUM_SEEDS))

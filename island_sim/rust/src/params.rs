@@ -43,11 +43,14 @@ pub struct SimParams {
     pub ruin_rebuild_threshold: f64,
     pub ruin_rebuild_fraction: f64,
     pub ruin_to_plains_probability: f64,
+    // Additional collapse triggers (appended to preserve indices)
+    pub harsh_winter_collapse_factor: f64,
+    pub raid_collapse_threshold: f64,
 }
 
 impl SimParams {
     /// Number of parameters (must match Python SimParams.ndim()).
-    pub const NDIM: usize = 36;
+    pub const NDIM: usize = 38;
 
     /// Create from a flat array of f64 values. Order must match Python param_names().
     pub fn from_array(arr: &[f64]) -> Self {
@@ -89,6 +92,8 @@ impl SimParams {
             ruin_rebuild_threshold: arr[33],
             ruin_rebuild_fraction: arr[34],
             ruin_to_plains_probability: arr[35],
+            harsh_winter_collapse_factor: arr[36],
+            raid_collapse_threshold: arr[37],
         }
     }
 }

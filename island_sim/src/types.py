@@ -23,6 +23,7 @@ class Settlement:
     has_longship: bool = False
     owner_id: int = 0
     alive: bool = True
+    raid_damage_taken: float = 0.0  # accumulated raid damage this turn
 
     def copy(self) -> Settlement:
         return Settlement(
@@ -37,6 +38,7 @@ class Settlement:
             has_longship=self.has_longship,
             owner_id=self.owner_id,
             alive=self.alive,
+            raid_damage_taken=self.raid_damage_taken,
         )
 
 
@@ -48,6 +50,7 @@ class WorldState:
     settlements: list[Settlement]
     width: int
     height: int
+    war_pairs: set[tuple[int, int]] = field(default_factory=set)  # faction pairs at war this turn
 
     def copy(self) -> WorldState:
         return WorldState(
@@ -55,6 +58,7 @@ class WorldState:
             settlements=[s.copy() for s in self.settlements],
             width=self.width,
             height=self.height,
+            war_pairs=set(self.war_pairs),
         )
 
     @classmethod

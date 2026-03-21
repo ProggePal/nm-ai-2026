@@ -21,6 +21,14 @@ pub fn run_trade(state: &mut WorldState, params: &SimParams) {
             );
             if dist > params.trade_range { continue; }
 
+            // Skip if factions are at war (raided each other this turn)
+            let owner_a = state.settlements[idx_a].owner_id;
+            let owner_b = state.settlements[idx_b].owner_id;
+            if owner_a != owner_b {
+                let war_key = (owner_a.min(owner_b), owner_a.max(owner_b));
+                if state.war_pairs.contains(&war_key) { continue; }
+            }
+
             // Trade
             state.settlements[idx_a].food += params.trade_food_gain;
             state.settlements[idx_b].food += params.trade_food_gain;

@@ -26,7 +26,7 @@ def run_winter(
     for settlement in list(alive):
         if not settlement.alive:
             continue
-        _check_collapse(settlement, state, params, rng)
+        _check_collapse(settlement, state, params, rng, severity)
 
 
 def _apply_winter(settlement: Settlement, severity: float, params: SimParams) -> None:
@@ -37,7 +37,7 @@ def _apply_winter(settlement: Settlement, severity: float, params: SimParams) ->
     settlement.food = max(settlement.food, 0.0)
 
     # Population also suffers directly from harsh winters
-    if severity > params.winter_severity_mean * 1.5:
+    if severity > params.harsh_winter_collapse_factor * params.winter_severity_mean:
         pop_loss = (severity - params.winter_severity_mean) * 0.1
         settlement.population -= pop_loss
         settlement.population = max(settlement.population, 0.1)
@@ -48,28 +48,42 @@ def _check_collapse(
     state: WorldState,
     params: SimParams,
     rng: np.random.Generator,
+    severity: float = 0.0,
 ) -> None:
-    """Check if a settlement collapses from starvation."""
-    if settlement.food >= params.collapse_food_threshold:
-        return
+    """Check if a settlement collapses from starvation, harsh winter, or sustained raids."""
+    collapse_prob = 0.0
 
-    # Collapse probability increases the more food-deprived the settlement is
-    food_ratio = settlement.food / max(params.collapse_food_threshold, 0.01)
-    adjusted_prob = params.collapse_probability * (1.0 - food_ratio)
+    # Trigger 1: Starvation (original mechanic)
+    if settlement.food < params.collapse_food_threshold:
+        food_ratio = settlement.food / max(params.collapse_food_threshold, 0.01)
+        collapse_prob += params.collapse_probability * (1.0 - food_ratio)
+
+    # Trigger 2: Harsh winter — severity exceeds threshold
+    harsh_threshold = params.harsh_winter_collapse_factor * max(params.winter_severity_mean, 0.01)
+    if severity > harsh_threshold:
+        excess = (severity - harsh_threshold) / max(params.winter_severity_mean, 0.01)
+        collapse_prob += params.collapse_probability * min(excess, 1.0)
+
+    # Trigger 3: Sustained raids — accumulated raid damage this turn
+    if settlement.raid_damage_taken > params.raid_collapse_threshold:
+        excess = (settlement.raid_damage_taken - params.raid_collapse_threshold) / max(params.raid_collapse_threshold, 0.01)
+        collapse_prob += params.collapse_probability * min(excess, 1.0)
+
+    if collapse_prob <= 0.0:
+        return
 
     # Small settlements are more vulnerable
     if settlement.population < 0.5:
-        adjusted_prob *= 1.5
+        collapse_prob *= 1.5
 
     # Large, established settlements resist collapse (survival bonus)
-    # population of 3+ halves the probability, 6+ quarters it
     if settlement.population > 1.0:
         survival_factor = 1.0 / (1.0 + (settlement.population - 1.0) * params.survival_bonus)
-        adjusted_prob *= survival_factor
+        collapse_prob *= survival_factor
 
-    adjusted_prob = min(adjusted_prob, 0.95)
+    collapse_prob = min(collapse_prob, 0.95)
 
-    if rng.random() < adjusted_prob:
+    if rng.random() < collapse_prob:
         _collapse(settlement, state, params, rng)
 
 

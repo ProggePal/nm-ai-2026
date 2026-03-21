@@ -183,6 +183,7 @@ fn default_params() -> Vec<f64> {
         4.0, 0.15, 0.1, 0.1,                                                   // trade
         0.5, 0.3, 0.4, 0.4, 0.3, 3.0, 0.5,                                   // winter (+survival_bonus)
         0.1, 4.0, 2.5, 0.2, 0.05,                                              // environment
+        1.5, 0.3,                                                               // collapse triggers
     ]
 }
 
@@ -193,6 +194,7 @@ fn bounds_lower() -> Vec<f64> {
         1.0, 0.02, 0.02, 0.01,
         0.1, 0.01, 0.05, 0.05, 0.0, 1.0, 0.1,
         0.01, 1.0, 1.0, 0.05, 0.01,
+        1.0, 0.1,                                                               // collapse triggers
     ]
 }
 
@@ -203,6 +205,7 @@ fn bounds_upper() -> Vec<f64> {
         8.0, 0.6, 0.5, 0.4,
         2.0, 0.8, 1.5, 0.9, 1.0, 6.0, 0.8,
         0.5, 6.0, 8.0, 0.5, 0.3,
+        3.0, 0.8,                                                               // collapse triggers
     ]
 }
 
@@ -226,6 +229,7 @@ impl SimParams {
             self.forest_reclaim_probability, self.ruin_rebuild_range,
             self.ruin_rebuild_threshold, self.ruin_rebuild_fraction,
             self.ruin_to_plains_probability,
+            self.harsh_winter_collapse_factor, self.raid_collapse_threshold,
         ]
     }
 }

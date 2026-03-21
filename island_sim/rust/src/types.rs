@@ -1,5 +1,7 @@
 /// Core data types for the simulation.
 
+use std::collections::HashSet;
+
 #[derive(Clone, Debug)]
 pub struct Settlement {
     pub x: i32,
@@ -13,6 +15,7 @@ pub struct Settlement {
     pub has_longship: bool,
     pub owner_id: i32,
     pub alive: bool,
+    pub raid_damage_taken: f64, // accumulated raid damage this turn
 }
 
 #[derive(Clone)]
@@ -21,6 +24,7 @@ pub struct WorldState {
     pub settlements: Vec<Settlement>,
     pub width: i32,
     pub height: i32,
+    pub war_pairs: HashSet<(i32, i32)>, // faction pairs at war this turn
 }
 
 // Terrain codes

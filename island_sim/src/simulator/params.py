@@ -58,6 +58,10 @@ class SimParams:
     ruin_rebuild_fraction: float = 0.2
     ruin_to_plains_probability: float = 0.05
 
+    # --- Additional collapse triggers (appended to preserve indices) ---
+    harsh_winter_collapse_factor: float = 1.5   # collapse check fires when severity > this * mean
+    raid_collapse_threshold: float = 0.3         # accumulated raid damage that triggers collapse
+
     # Bounds: (min, max) for each parameter
     BOUNDS: ClassVar[dict[str, tuple[float, float]]] = {
         # Growth
@@ -101,6 +105,9 @@ class SimParams:
         "ruin_rebuild_threshold": (1.0, 8.0),
         "ruin_rebuild_fraction": (0.05, 0.5),
         "ruin_to_plains_probability": (0.01, 0.3),
+        # Additional collapse triggers
+        "harsh_winter_collapse_factor": (1.0, 3.0),
+        "raid_collapse_threshold": (0.1, 0.8),
     }
 
     @classmethod
