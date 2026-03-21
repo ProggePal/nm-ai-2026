@@ -103,6 +103,7 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
   3. Retry the invoice creation.
 - \`api.put('/invoice/{id}/:createCreditNote', {}, { date: 'YYYY-MM-DD' })\` → creates credit note
   The credit note date MUST be on or after the original invoice date.
+  After creating credit note, SEND it: \`await tripletex_put(f"/invoice/{creditNoteId}/:send", {}, {"sendType": "EMAIL"})\`
 
 **Posting receipts/expenses:**
   When posting a receipt/kvittering to an expense account:
@@ -378,6 +379,19 @@ When comparing expenses between two months:
 - The "increase" = February balanceChange - January balanceChange
 - Sort by increase descending, take top 3
 - Project names should match the ACCOUNT NAME exactly
+
+## Full project lifecycle
+When asked to execute a complete project lifecycle:
+1. Create customer (if not exists) and employees (if not exists)
+2. Grant entitlements to project manager
+3. Create project with isFixedPrice=true, fixedprice=budget, customer, department
+4. Create activity and link to project
+5. Register timesheet hours for each employee (use the project's activity)
+6. Register supplier cost: find/create supplier, create voucher with Leverandørfaktura type and amountGross
+   - Store supplier_id in a variable BEFORE using it in the voucher
+   - Use voucherType Leverandørfaktura, include supplier:{id} on the 2400 posting
+7. Create invoice for the project: order + orderline (NO vatType!) + convert to invoice
+8. SEND the invoice: await tripletex_put(f"/invoice/{invoice_id}/:send", {}, {"sendType": "EMAIL"})
 
 ## Fixed-price project invoicing (a-konto) — CRITICAL
 When creating an invoice for a project (budget/fixed price):
