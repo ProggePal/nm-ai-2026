@@ -131,9 +131,12 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
   NOTE: The field is "invoiceDueDate" (NOT "paymentDeadline" — that doesn't exist).
 
 **Foreign currency invoices:**
-  When the task specifies a specific exchange rate (e.g. "rate was 10.11 NOK/EUR"):
-  Create the order in NOK (not EUR) with the pre-converted amount: amount_NOK = amount_EUR × rate.
-  This ensures the invoice reflects the correct rate. Do NOT create EUR orders.
+  When the task says "we SENT an invoice" at a specific rate — the invoice ALREADY EXISTS in Tripletex.
+  Do NOT create a new invoice. Instead:
+  1. Find the existing invoice: GET /invoice?customerId={id}&invoiceDateFrom=2020-01-01&invoiceDateTo=2030-01-01
+  2. Register payment on the EXISTING invoice
+  3. Book the exchange rate difference (agio/disagio)
+  Only create a new invoice if the task explicitly says to CREATE one.
   For payment at a different rate:
   1. Register payment: paidAmount = amount_EUR × new_rate
   2. After payment, GET the invoice to check amountOutstanding
@@ -178,7 +181,9 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
   GET /travelExpense/rateCategoryGroup?isForeignTravel=false → pick CURRENT year group (highest id, e.g. id=42 for 2026)
   GET /travelExpense/rateCategory?type=PER_DIEM&travelReportRateCategoryGroupId={groupId}&fields=id,name
   Then set BOTH rateCategory: {id: X} AND rateType: {id: X} with the SAME id.
-- NEVER use countryCode. Do NOT pass rate — let Tripletex calculate it.
+- NEVER use countryCode.
+- If the task specifies a daily rate (e.g. "dagsats 800 kr"), pass rate: 800 to override the default.
+  If no rate specified, omit the rate field and let Tripletex calculate it.
 - overnightAccommodation: "HOTEL"|"NONE"|"BOARDING_HOUSE_WITHOUT_COOKING"|"BOARDING_HOUSE_WITH_COOKING"
 - Valid fields for rateCategory: id,name (NOT description — causes 400)
 
@@ -325,6 +330,15 @@ invoice = (await tripletex_put(f"/order/{order['id']}/:invoice", {}, {"invoiceDa
 await tripletex_put(f"/invoice/{invoice['id']}/:send", {}, {"sendType": "EMAIL"})
 print(f"Created invoice {invoice['id']}")
 \`\`\`
+
+## Cost analysis — finding accounts with largest increase
+When comparing expenses between two months:
+- GET /balanceSheet for January: dateFrom=YYYY-01-01, dateTo=YYYY-01-31, accountNumberFrom=4000, accountNumberTo=8000
+- GET /balanceSheet for February: dateFrom=YYYY-02-01, dateTo=YYYY-02-28
+- Compare balanceChange (NOT balanceOut) for each account between the two months
+- The "increase" = February balanceChange - January balanceChange (positive = costs went up)
+- Sort by increase descending, take top 3
+- Project names should match the ACCOUNT NAME (e.g. "Bilgodtgjørelse oppgavepliktig"), not the account number
 
 ## Fixed-price project invoicing (a-konto) — CRITICAL
 When creating an invoice for a project (budget/fixed price):
