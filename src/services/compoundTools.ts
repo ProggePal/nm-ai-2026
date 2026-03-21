@@ -291,13 +291,18 @@ export async function setupProject(api: TripletexApi, input: {
 
   const project = (await api.post('/project', projectData)).value;
 
-  // Create activity linked to project
+  // Create activity and link to project
   let activity = null;
   if (input.createActivity !== false) {
-    activity = (await api.post('/project/projectActivity', {
-      project: { id: project.id },
+    // Step 1: Create the activity
+    const newActivity = (await api.post('/activity', {
       name: input.activityName || input.projectName,
       activityType: 'PROJECT_GENERAL_ACTIVITY',
+    })).value;
+    // Step 2: Link to project
+    activity = (await api.post('/project/projectActivity', {
+      project: { id: project.id },
+      activity: { id: newActivity.id },
     })).value;
   }
 

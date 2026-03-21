@@ -168,11 +168,11 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
 - ALWAYS grant entitlements BEFORE creating a project:
   \`api.put('/employee/entitlement/:grantEntitlementsByTemplate', {}, { employeeId, template: 'ALL_PRIVILEGES' })\`
 
-**Project activity** — link activity to project:
-  \`await tripletex_post("/project/projectActivity", {"project": {"id": projectId}, "name": "Activity name", "activityType": "PROJECT_GENERAL_ACTIVITY"})\`
-  PATH IS /project/projectActivity (NOT /project/{id}/projectActivity — that returns 404!)
-  Pass project as {"id": N} in the body.
-  Do NOT use POST /activity — that creates standalone activities not linked to projects.
+**Project activity** — link activity to project (2 steps):
+  1. First create the activity: \`await tripletex_post("/activity", {"name": "Activity name", "activityType": "PROJECT_GENERAL_ACTIVITY"})\`
+  2. Then link it to the project: \`await tripletex_post("/project/projectActivity", {"project": {"id": projectId}, "activity": {"id": activityId}})\`
+  PATH IS /project/projectActivity (NOT /project/{id}/projectActivity!)
+  The body needs activity:{id} referencing an existing activity — NOT a "name" field.
 
 **Department** POST /department: { name (R), departmentNumber, departmentManager: {id} }
 
