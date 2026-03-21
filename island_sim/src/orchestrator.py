@@ -31,8 +31,40 @@ from .simulator.params import SimParams
 from .types import Observation, WorldState
 
 NUM_SEEDS = 5
+MAX_QUERY_RETRIES = 3
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "rounds"
 OBS_DIR = Path(__file__).resolve().parent.parent / "data" / "observations"
+
+# --- Tunable hyperparameters ---
+PHASE1_BUDGET_FRACTION = 0.6       # fraction of query budget for Phase 1 (rest for Phase 2)
+MIN_OBS_FOR_INFERENCE = 10         # minimum observations needed to run CMA-ES
+MC_RUNS_PER_EVAL_PHASE1 = 100     # MC runs per CMA-ES evaluation (Phase 1 inference)
+MC_RUNS_PER_EVAL_PHASE2 = 100     # MC runs per CMA-ES evaluation (Phase 2 re-inference)
+MAX_EVALS_PHASE1 = 400            # CMA-ES max evaluations (Phase 1)
+MAX_EVALS_PHASE2 = 600            # CMA-ES max evaluations (Phase 2, more budget after observations)
+MC_RUNS_PREDICTION = 4000         # MC runs for final hybrid prediction
+
+
+def _query_with_retry(round_id: str, query: dict) -> Observation | None:
+    """Execute a simulate query with exponential backoff retry. Returns None on failure."""
+    for attempt in range(MAX_QUERY_RETRIES):
+        try:
+            return simulate_query(
+                round_id,
+                query["seed_index"],
+                query["viewport_x"],
+                query["viewport_y"],
+                query["viewport_w"],
+                query["viewport_h"],
+            )
+        except Exception as exc:
+            if attempt < MAX_QUERY_RETRIES - 1:
+                wait = 2 ** attempt
+                print(f"    Retry {attempt + 1}/{MAX_QUERY_RETRIES} in {wait}s ({exc})")
+                time.sleep(wait)
+            else:
+                print(f"    Query failed after {MAX_QUERY_RETRIES} attempts: {exc}")
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +261,7 @@ def main() -> None:
         if queries_remaining <= 10:
             systematic_budget = queries_remaining
         else:
-            systematic_budget = int(queries_remaining * 0.6)
+            systematic_budget = int(queries_remaining * PHASE1_BUDGET_FRACTION)
         print(f"\nPhase 1: {systematic_budget} systematic queries (spread evenly across seeds)...")
         systematic_queries = plan_viewports(initial_states, budget=systematic_budget)
 
@@ -237,19 +269,9 @@ def main() -> None:
         for idx, query in enumerate(systematic_queries):
             print(f"  Query {idx + 1}/{len(systematic_queries)}: seed={query['seed_index']} "
                   f"({query['viewport_x']},{query['viewport_y']})")
-            try:
-                obs = simulate_query(
-                    round_id,
-                    query["seed_index"],
-                    query["viewport_x"],
-                    query["viewport_y"],
-                    query["viewport_w"],
-                    query["viewport_h"],
-                )
+            obs = _query_with_retry(round_id, query)
+            if obs is not None:
                 observations.append(obs)
-            except Exception as exc:
-                print(f"  Query failed: {exc}")
-                break
 
         # Track new observations from this run
         new_observations = list(observations)
@@ -258,14 +280,13 @@ def main() -> None:
         print(f"Total observations: {len(observations)}")
 
         # Step 5: Infer parameters from concentrated observations
-        MIN_OBS_FOR_INFERENCE = 10
         if len(observations) >= MIN_OBS_FOR_INFERENCE:
             print(f"\nInferring parameters from {len(observations)} observations...")
             params = infer_params(
                 observations,
                 initial_states,
-                num_runs_per_eval=100,
-                max_evaluations=400,
+                num_runs_per_eval=MC_RUNS_PER_EVAL_PHASE1,
+                max_evaluations=MAX_EVALS_PHASE1,
                 warm_start=warm_params,
             )
         else:
@@ -283,19 +304,9 @@ def main() -> None:
             for idx, query in enumerate(adaptive_queries):
                 print(f"  Query {idx + 1}/{len(adaptive_queries)}: seed={query['seed_index']} "
                       f"({query['viewport_x']},{query['viewport_y']})")
-                try:
-                    obs = simulate_query(
-                        round_id,
-                        query["seed_index"],
-                        query["viewport_x"],
-                        query["viewport_y"],
-                        query["viewport_w"],
-                        query["viewport_h"],
-                    )
+                obs = _query_with_retry(round_id, query)
+                if obs is not None:
                     observations.append(obs)
-                except Exception as exc:
-                    print(f"  Query failed: {exc}")
-                    break
 
             # Track phase 2 observations (added after prior + phase 1)
             new_observations = observations[len(prior_observations):]
@@ -306,8 +317,8 @@ def main() -> None:
                 params = infer_params(
                     observations,
                     initial_states,
-                    num_runs_per_eval=100,
-                    max_evaluations=600,
+                    num_runs_per_eval=MC_RUNS_PER_EVAL_PHASE2,
+                    max_evaluations=MAX_EVALS_PHASE2,
                     warm_start=warm_params,
                 )
 
@@ -326,7 +337,7 @@ def main() -> None:
             seed_idx,
             observations,
             params,
-            num_mc_runs=4000,
+            num_mc_runs=MC_RUNS_PREDICTION,
             mc_base_seed=seed_idx * 100000,
         )
 

@@ -20,6 +20,7 @@ def hybrid_prediction(
     num_mc_runs: int = 500,
     mc_base_seed: int = 0,
     obs_trust_threshold: int = 3,
+    obs_max_weight: float = 0.95,
 ) -> np.ndarray:
     """Generate a hybrid prediction blending observations and simulator.
 
@@ -58,9 +59,11 @@ def hybrid_prediction(
     # Blend based on observation density (vectorized)
     # Consistent formula: obs_weight = n_obs / (n_obs + obs_trust_threshold)
     # This naturally scales: 0 obs → 0 weight, 3 obs → 0.5, 10 obs → 0.77, etc.
+    # Cap at obs_max_weight to always retain some simulator influence as a hedge
+    # against observation noise and stochastic outliers.
     n_obs = obs_counts.astype(np.float64)
     obs_weight = n_obs / (n_obs + obs_trust_threshold)
-    obs_weight = np.clip(obs_weight, 0.0, 0.95)[..., np.newaxis]  # cap at 95%, shape (H,W,1)
+    obs_weight = np.clip(obs_weight, 0.0, obs_max_weight)[..., np.newaxis]  # shape (H,W,1)
 
     prediction = obs_weight * obs_probs + (1 - obs_weight) * sim_probs
 

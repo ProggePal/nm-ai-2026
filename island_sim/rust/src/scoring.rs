@@ -5,6 +5,7 @@ use crate::types::NUM_CLASSES;
 /// Score a prediction against ground truth.
 /// Returns the competition score (0-100, higher is better).
 pub fn score_prediction(ground_truth: &[f64], prediction: &[f64], height: usize, width: usize) -> f64 {
+    // Must match Python src/constants.py ENTROPY_THRESHOLD
     let entropy_threshold = 0.01;
     let mut weighted_kl_sum = 0.0;
     let mut entropy_sum = 0.0;

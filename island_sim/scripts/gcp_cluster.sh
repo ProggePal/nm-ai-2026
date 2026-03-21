@@ -108,6 +108,10 @@ MC_RUNS="$3"
 TOP="$4"
 
 pkill -f grid_search_rust 2>/dev/null || true
+
+# Ensure build dependencies are installed (cmaes crate needs fontconfig)
+sudo apt-get update -qq && sudo apt-get install -y -qq pkg-config libfontconfig1-dev > /dev/null 2>&1 || true
+
 cd ~
 rm -rf island_sim
 tar xzf island_sim.tar.gz

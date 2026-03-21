@@ -43,3 +43,7 @@ LAND_TERRAINS = {PLAINS, EMPTY, FOREST}
 # Terrains that are buildable (new settlement can be founded here)
 # Includes FOREST (settlements clear forest) and RUIN (rebuild on ruins)
 BUILDABLE_TERRAINS = {PLAINS, EMPTY, FOREST, RUIN}
+
+# Scoring: cells with entropy below this are treated as static (excluded from scoring).
+# Must match rust/src/scoring.rs ENTROPY_THRESHOLD.
+ENTROPY_THRESHOLD = 0.01

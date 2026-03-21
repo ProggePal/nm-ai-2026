@@ -17,6 +17,8 @@ If you change how growth, conflict, trade, winter, or environment works:
 | Phase logic | `src/simulator/phases/*.py` AND `rust/src/phases/*.rs` |
 | New/changed param | `src/simulator/params.py` AND `rust/src/params.rs` (defaults, bounds, to_vec are all here now) |
 | Terrain constants | `src/constants.py` AND `rust/src/types.rs` |
+| Scoring constants | `src/constants.py` (`ENTROPY_THRESHOLD`) AND `rust/src/scoring.rs` |
+| Post-processing | `src/prediction/postprocess.py` AND `rust/src/postprocess.rs` |
 
 After changing Rust code:
 ```bash

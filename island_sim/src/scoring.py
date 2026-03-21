@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .constants import NUM_CLASSES
+from .constants import ENTROPY_THRESHOLD, NUM_CLASSES
 
 
 def entropy(probs: np.ndarray) -> np.ndarray:
@@ -40,8 +40,7 @@ def score_prediction(
     cell_kl = kl_divergence(ground_truth, prediction)
 
     # Dynamic cells are those with non-trivial entropy
-    entropy_threshold = 0.01
-    dynamic_mask = cell_entropy > entropy_threshold
+    dynamic_mask = cell_entropy > ENTROPY_THRESHOLD
     num_dynamic = int(np.sum(dynamic_mask))
 
     if num_dynamic == 0:

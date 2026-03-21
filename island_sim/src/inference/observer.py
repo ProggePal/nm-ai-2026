@@ -107,12 +107,15 @@ def _plan_seed_viewports(
         # Mark covered
         covered[best_y : best_y + MAX_VIEWPORT, best_x : best_x + MAX_VIEWPORT] = True
 
+        # Clip viewport to map bounds to avoid partial observations
+        vw = min(MAX_VIEWPORT, state.width - best_x)
+        vh = min(MAX_VIEWPORT, state.height - best_y)
         queries.append({
             "seed_index": seed_index,
             "viewport_x": best_x,
             "viewport_y": best_y,
-            "viewport_w": MAX_VIEWPORT,
-            "viewport_h": MAX_VIEWPORT,
+            "viewport_w": vw,
+            "viewport_h": vh,
         })
 
     return queries
@@ -216,12 +219,15 @@ def plan_adaptive_viewports(
                 best_y : best_y + MAX_VIEWPORT, best_x : best_x + MAX_VIEWPORT
             ] = 0
 
+            # Clip viewport to map bounds
+            vw = min(MAX_VIEWPORT, state.width - best_x)
+            vh = min(MAX_VIEWPORT, state.height - best_y)
             queries.append({
                 "seed_index": seed_idx,
                 "viewport_x": best_x,
                 "viewport_y": best_y,
-                "viewport_w": MAX_VIEWPORT,
-                "viewport_h": MAX_VIEWPORT,
+                "viewport_w": vw,
+                "viewport_h": vh,
             })
 
     return queries
