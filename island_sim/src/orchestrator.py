@@ -21,7 +21,7 @@ from .api_client import (
     simulate_query,
     submit_prediction,
 )
-from .inference.observer import plan_adaptive_viewports, plan_viewports
+from .inference.observer import plan_adaptive_viewports, plan_viewports, select_focus_seeds
 from .inference.optimizer import infer_params
 from .prediction.hybrid import hybrid_prediction
 from .prediction.monte_carlo import generate_prediction
@@ -224,14 +224,18 @@ def main() -> None:
         observations: list[Observation] = prior_observations
         params = warm_params or SimParams.default()
     else:
-        # Step 4: Phase 1 queries — systematic viewport placement
+        # Select 2 focus seeds for concentrated observation
+        focus_seeds = select_focus_seeds(initial_states, num_focus=2)
+        print(f"Focus seeds: {focus_seeds} (most settlements)")
+
+        # Step 4: Phase 1 queries — concentrated viewport placement
         # With small budgets, skip the split and use everything systematically
         if queries_remaining <= 10:
             systematic_budget = queries_remaining
         else:
             systematic_budget = int(queries_remaining * 0.6)
-        print(f"\nPhase 1: {systematic_budget} systematic queries...")
-        systematic_queries = plan_viewports(initial_states, budget=systematic_budget)
+        print(f"\nPhase 1: {systematic_budget} systematic queries (concentrated on seeds {focus_seeds})...")
+        systematic_queries = plan_viewports(initial_states, budget=systematic_budget, focus_seeds=focus_seeds)
 
         observations = []
         for idx, query in enumerate(systematic_queries):
@@ -257,15 +261,16 @@ def main() -> None:
         observations = prior_observations + observations
         print(f"Total observations: {len(observations)}")
 
-        # Step 5: Infer parameters (only if enough observations to be useful)
+        # Step 5: Infer parameters from concentrated observations
         MIN_OBS_FOR_INFERENCE = 10
         if len(observations) >= MIN_OBS_FOR_INFERENCE:
             print(f"\nInferring parameters from {len(observations)} observations...")
             params = infer_params(
                 observations,
                 initial_states,
-                num_runs_per_eval=50,
-                max_evaluations=200,
+                num_runs_per_eval=100,
+                max_evaluations=400,
+                warm_start=warm_params,
             )
         else:
             print(f"\nOnly {len(observations)} observations — skipping inference, using {'warm-start' if warm_params else 'default'} params")
@@ -275,9 +280,9 @@ def main() -> None:
         budget_info = get_budget()
         adaptive_remaining = budget_info["queries_max"] - budget_info["queries_used"]
         if adaptive_remaining > 0:
-            print(f"\nPhase 2: {adaptive_remaining} adaptive queries...")
+            print(f"\nPhase 2: {adaptive_remaining} adaptive queries (concentrated on seeds {focus_seeds})...")
             adaptive_queries = plan_adaptive_viewports(
-                initial_states, observations, adaptive_remaining
+                initial_states, observations, adaptive_remaining, focus_seeds=focus_seeds
             )
             for idx, query in enumerate(adaptive_queries):
                 print(f"  Query {idx + 1}/{len(adaptive_queries)}: seed={query['seed_index']} "
@@ -305,8 +310,9 @@ def main() -> None:
                 params = infer_params(
                     observations,
                     initial_states,
-                    num_runs_per_eval=50,
-                    max_evaluations=300,
+                    num_runs_per_eval=100,
+                    max_evaluations=600,
+                    warm_start=warm_params,
                 )
 
     # Save all new observations from this run
@@ -318,13 +324,13 @@ def main() -> None:
     seed_obs_counts = {i: sum(1 for o in observations if o.seed_index == i) for i in range(NUM_SEEDS)}
     for seed_idx in range(NUM_SEEDS):
         n_obs = seed_obs_counts[seed_idx]
-        print(f"  Seed {seed_idx}: {n_obs} observations + 2000 MC sims...")
+        print(f"  Seed {seed_idx}: {n_obs} observations + 4000 MC sims...")
         prediction = hybrid_prediction(
             initial_states[seed_idx],
             seed_idx,
             observations,
             params,
-            num_mc_runs=2000,
+            num_mc_runs=4000,
             mc_base_seed=seed_idx * 100000,
         )
 

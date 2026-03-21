@@ -16,6 +16,7 @@ def infer_params(
     max_evaluations: int = 300,
     population_size: int | None = None,
     sigma0: float = 0.3,
+    warm_start: SimParams | None = None,
 ) -> SimParams:
     """Infer simulation parameters from observations using CMA-ES.
 
@@ -26,6 +27,7 @@ def infer_params(
         max_evaluations: Maximum number of candidate evaluations.
         population_size: CMA-ES population size (None = auto).
         sigma0: Initial step size (in normalized [0,1] space).
+        warm_start: Starting params (e.g. from grid search). Falls back to default if None.
 
     Returns:
         Best-fit SimParams.
@@ -35,14 +37,14 @@ def infer_params(
     lower, upper = SimParams.bounds_arrays()
     ndim = SimParams.ndim()
 
-    # Normalize to [0, 1] space for CMA-ES
-    default_params = SimParams.default()
-    x0_raw = default_params.to_array()
+    # Normalize to [0, 1] space for CMA-ES — start from warm-start if available
+    start_params = warm_start or SimParams.default()
+    x0_raw = start_params.to_array()
     x0 = (x0_raw - lower) / (upper - lower)
 
     eval_count = 0
     best_loss = float("inf")
-    best_params = default_params
+    best_params = start_params
 
     def objective(x_normalized: np.ndarray) -> float:
         nonlocal eval_count, best_loss, best_params
