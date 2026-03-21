@@ -12,19 +12,19 @@ set -euo pipefail
 # --- Configuration ---
 PROJECT_ID="ai-nm26osl-1886"
 MACHINE_TYPE="c4d-highcpu-384"
-NUM_VMS=5
+NUM_VMS=6
 CANDIDATES=50000
 MC_RUNS=50
 TOP=20
 
 # Zones spread across regions (1 c4d-384 per region due to quota)
+# us-west1 has 0 C4D quota — excluded
 ALL_ZONES=(
     "us-central1-a"
     "europe-west1-b"
     "asia-southeast1-a"
     "us-east1-b"
     "us-east4-a"
-    "us-west1-a"
     "asia-northeast1-b"
 )
 
@@ -67,8 +67,8 @@ for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
     gcloud compute instances create "$VM_NAME" \
         --zone="$VM_ZONE" \
         --machine-type="$MACHINE_TYPE" \
-        --image-family=debian-12 \
-        --image-project=debian-cloud \
+        --image-family=island-sim \
+        --image-project="$PROJECT_ID" \
         --boot-disk-size=20GB \
         --boot-disk-type=hyperdisk-balanced \
         2>&1 | grep -E 'Created|ERROR|RUNNING' || echo "  $VM_NAME: may already exist, continuing..."
@@ -109,56 +109,44 @@ tar czf "$TMPTAR" \
     -C "$REPO_ROOT" \
     island_sim
 
-# --- Step 4: Setup each VM (parallel) ---
-echo "=== Setting up VMs ==="
-for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
-    VM_NAME="island-search-${idx}"
-    VM_ZONE="${ALL_ZONES[$idx]}"
-    (
-        echo "  [$VM_NAME] Uploading code..."
-        gcloud compute scp "$TMPTAR" "$VM_NAME":~/island_sim.tar.gz --zone="$VM_ZONE"
-
-        echo "  [$VM_NAME] Installing dependencies..."
-        gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" -- bash -s <<'REMOTE_SETUP'
-sudo apt-get update -qq
-sudo apt-get install -y -qq python3 python3-pip python3-venv python3-dev curl build-essential
-python3 -m venv ~/env
-~/env/bin/pip install -q numpy cma maturin
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-cd ~
-tar xzf island_sim.tar.gz
-source ~/.cargo/env
-export VIRTUAL_ENV=~/env
-export PATH="$VIRTUAL_ENV/bin:$PATH"
-cd ~/island_sim/rust
-maturin develop --release 2>&1
-python -c "import island_sim_core; print('Rust backend OK')"
-REMOTE_SETUP
-        echo "  [$VM_NAME] Ready!"
-    ) &
-done
-wait
-rm "$TMPTAR"
-
-# --- Step 5: Launch grid search on each VM ---
-echo ""
-echo "=== Launching grid search ==="
+# --- Step 4: Upload, build, and launch search (parallel per VM) ---
+# Each VM does everything in one SSH session: extract, build, start search.
+# No cross-VM dependencies — each VM is fully independent.
+echo "=== Setting up and launching on all VMs ==="
 for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
     VM_NAME="island-search-${idx}"
     VM_ZONE="${ALL_ZONES[$idx]}"
     SEED="$idx"
-    echo "  [$VM_NAME] Starting search with --seed $SEED..."
-    gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" -- bash -c "
-        cd ~/island_sim && \
-        nohup ~/env/bin/python -u scripts/grid_search_rust.py \
-            --candidates $CANDIDATES \
-            --mc-runs $MC_RUNS \
-            --top $TOP \
-            --seed $SEED \
-            > search.log 2>&1 &
-        echo 'PID: '\$!
-    "
+    (
+        echo "  [$VM_NAME] Uploading code..."
+        gcloud compute scp "$TMPTAR" "$VM_NAME":~/island_sim.tar.gz --zone="$VM_ZONE"
+
+        echo "  [$VM_NAME] Building and launching (seed=$SEED)..."
+        gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" -- bash -s <<REMOTE_ALL
+cd ~
+rm -rf ~/island_sim
+tar xzf island_sim.tar.gz
+source ~/.cargo/env
+export VIRTUAL_ENV=~/env
+export PATH="\$VIRTUAL_ENV/bin:\$PATH"
+cd ~/island_sim/rust
+maturin develop --release 2>&1
+python -c "import island_sim_core; print('Rust backend OK')"
+cd ~/island_sim
+nohup python -u scripts/grid_search_rust.py \
+    --candidates $CANDIDATES \
+    --mc-runs $MC_RUNS \
+    --top $TOP \
+    --seed $SEED \
+    > search.log 2>&1 &
+echo "PID: \$!"
+echo "Search launched on $VM_NAME with seed $SEED"
+REMOTE_ALL
+        echo "  [$VM_NAME] Done!"
+    ) &
 done
+wait
+rm "$TMPTAR"
 
 # --- Save cluster config for pull script ---
 CONFIG_FILE="$SCRIPT_DIR/../data/cluster_config.json"

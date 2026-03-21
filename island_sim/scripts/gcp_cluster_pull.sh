@@ -17,7 +17,13 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 gcloud config set project "$PROJECT_ID"
-mkdir -p data/grid_search
+
+DATA_DIR="$SCRIPT_DIR/../data"
+GRID_DIR="$DATA_DIR/grid_search"
+mkdir -p "$GRID_DIR"
+
+# Clean stale VM results from previous runs
+rm -f "$GRID_DIR"/best_params_vm*.json
 
 NUM_VMS=$(python3 -c "import json; print(len(json.load(open('$CONFIG_FILE'))))")
 
@@ -58,10 +64,10 @@ for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
     echo "  Pulling from $VM_NAME ($VM_ZONE)..."
 
     # Pull grid search results
-    gcloud compute scp --recurse "$VM_NAME":~/island_sim/data/grid_search/ data/grid_search/ --zone="$VM_ZONE" 2>/dev/null || echo "    No grid_search results from $VM_NAME"
+    gcloud compute scp --recurse "$VM_NAME":~/island_sim/data/grid_search/ "$GRID_DIR/" --zone="$VM_ZONE" 2>/dev/null || echo "    No grid_search results from $VM_NAME"
 
     # Pull best_params as a VM-specific file
-    gcloud compute scp "$VM_NAME":~/island_sim/data/rounds/best_params.json "data/grid_search/best_params_vm${idx}.json" --zone="$VM_ZONE" 2>/dev/null || echo "    No best_params from $VM_NAME"
+    gcloud compute scp "$VM_NAME":~/island_sim/data/rounds/best_params.json "$GRID_DIR/best_params_vm${idx}.json" --zone="$VM_ZONE" 2>/dev/null || echo "    No best_params from $VM_NAME"
 done
 
 # --- Merge: find global best ---
@@ -70,16 +76,26 @@ echo "=== Merging results ==="
 python3 -c "
 import json
 import glob
+import sys
+
+grid_dir = '$GRID_DIR'
+data_dir = '$DATA_DIR'
 
 best_score = -float('inf')
 best_file = None
 best_data = None
 
-for path in sorted(glob.glob('data/grid_search/best_params_vm*.json')):
+vm_files = sorted(glob.glob(f'{grid_dir}/best_params_vm*.json'))
+if not vm_files:
+    print('  No VM result files found!')
+    sys.exit(1)
+
+for path in vm_files:
     try:
         data = json.loads(open(path).read())
         score = data.get('score', -999)
-        print(f'  {path}: score={score:.1f}')
+        num_params = len(data.get('params', []))
+        print(f'  {path}: score={score:.1f} ({num_params} params)')
         if score > best_score:
             best_score = score
             best_file = path
@@ -90,13 +106,15 @@ for path in sorted(glob.glob('data/grid_search/best_params_vm*.json')):
 if best_data:
     best_data['source'] = 'cluster_grid_search'
     best_data['merged_from'] = best_file
-    with open('data/rounds/best_params.json', 'w') as f:
+    out_path = f'{data_dir}/rounds/best_params.json'
+    with open(out_path, 'w') as f:
         json.dump(best_data, f, indent=2)
     print(f'')
     print(f'  Global best: {best_score:.1f} (from {best_file})')
-    print(f'  Saved to data/rounds/best_params.json')
+    print(f'  Saved to {out_path}')
 else:
     print('  No valid results found!')
+    sys.exit(1)
 "
 
 echo ""
