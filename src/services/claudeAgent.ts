@@ -159,23 +159,16 @@ export async function runAgent(
       params.container = containerId;
     }
 
-    // Use streaming — collect raw response for container field
-    const stream = claude.messages.stream(params);
+    // Use non-streaming with explicit timeout to get container field
+    const response = await (claude.messages.create as Function)({
+      ...params,
+      timeout: 300000, // 5 min timeout
+    }) as any;
 
-    // Listen for message_start to capture container
-    stream.on('message', (msg: any) => {
-      if (msg.container?.id) {
-        containerId = msg.container.id;
-        console.log(`[AGENT] Container: ${containerId}`);
-      }
-    });
-
-    const response = await stream.finalMessage() as any;
-
-    // Also check finalMessage for container
+    // Track container for reuse
     if (response.container?.id) {
       containerId = response.container.id;
-      console.log(`[AGENT] Container (from finalMessage): ${containerId}`);
+      console.log(`[AGENT] Container: ${containerId}`);
     }
 
     // Log activity
