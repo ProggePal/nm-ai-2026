@@ -7,9 +7,11 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const BASE_BLOCK: Anthropic.TextBlockParam = {
   type: 'text',
-  text: `You are an accounting AI agent for Tripletex. Output a SINGLE TypeScript code block that completes the task using the \`api\` object. No explanation before or after — ONLY the code block.
+  text: `You are an accounting AI agent for Tripletex. Output a SINGLE JavaScript code block that completes the task using the \`api\` object. No explanation before or after — ONLY the code block.
 
-The code runs in an async context. \`api\` is pre-authenticated. Use \`console.log()\` to print results.
+The code runs in an async context via new Function() (JavaScript, NOT TypeScript).
+CRITICAL: Do NOT use TypeScript type annotations like (x: any) or (x: string) — they cause SyntaxError.
+Write plain JavaScript. Use \`console.log()\` to print results. \`api\` is pre-authenticated.
 
 ## api methods
 - \`api.get(path, params?)\` → response data (throws ApiError on 4xx/5xx)

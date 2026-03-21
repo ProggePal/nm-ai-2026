@@ -21,6 +21,28 @@ export function extractCode(responseText: string): string {
   return responseText.trim();
 }
 
+/**
+ * Strip TypeScript type annotations so code can run in new Function() (which is JS, not TS).
+ * Handles: (x: any) => ..., (x: string, y: number), function(x: Type), etc.
+ */
+function stripTypeAnnotations(code: string): string {
+  // Remove type annotations from arrow function and function parameters: (x: Type) → (x)
+  // Matches `: SomeType` after parameter names inside parentheses
+  let result = code;
+
+  // Remove `: type` annotations in function params — handles any, string, number, Type, Type[], etc.
+  // Pattern: word followed by colon and type, within param context
+  result = result.replace(/(\w)\s*:\s*(?:any|string|number|boolean|void|unknown|never|null|undefined|Record<[^>]*>|Array<[^>]*>|\w+(?:\[\])?)\s*(?=[,)\]=])/g, '$1');
+
+  // Remove `as Type` casts
+  result = result.replace(/\bas\s+(?:any|string|number|boolean|\w+(?:\[\])?)\b/g, '');
+
+  // Remove interface/type declarations (full lines)
+  result = result.replace(/^(?:interface|type)\s+\w+\s*(?:=\s*)?{[^}]*}\s*;?\s*$/gm, '');
+
+  return result;
+}
+
 export async function executeCode(
   code: string,
   api: TripletexApi,
@@ -34,11 +56,14 @@ export async function executeCode(
     info: (...args: unknown[]) => logs.push(args.map(String).join(' ')),
   };
 
+  // Strip TypeScript type annotations (new Function() runs JS, not TS)
+  const jsCode = stripTypeAnnotations(code);
+
   try {
     const fn = new Function(
       'api',
       'console',
-      `return (async () => {\n${code}\n})();`,
+      `return (async () => {\n${jsCode}\n})();`,
     );
 
     const result = fn(api, sandboxConsole);
