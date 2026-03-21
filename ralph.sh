@@ -77,6 +77,13 @@ while [ $ITER -le $MAX_ITER ]; do
 
   echo "$ITER" > "$LOOP_DIR/iteration.txt"
 
+  # Wait 50 minutes on first iteration to skip round 18
+  if [ "$ITER" -eq 1 ]; then
+    echo "  Waiting 50 minutes for round 19 to start..."
+    sleep 3000
+    echo "  Wait complete — starting!"
+  fi
+
   # Read state files
   CURRENT_STATE=$(cat "$LOOP_DIR/state.md" 2>/dev/null || echo "First iteration — no prior state.")
   BEST_SCORE=$(cat "$LOOP_DIR/best_score.txt" 2>/dev/null || echo "60.2")
@@ -125,7 +132,10 @@ Remember:
   # Run Gemini from the island_sim directory
   echo "Launching Gemini agent..."
   cd "$ISLAND_DIR"
-  echo "$PROMPT" | gemini 2>&1 | tee "$LOOP_DIR/iteration_${ITER}_output.log"
+  PROMPT_FILE=$(mktemp /tmp/ralph_prompt_XXXXXXXX)
+  printf '%s' "$PROMPT" > "$PROMPT_FILE"
+  cat "$PROMPT_FILE" | gemini --yolo -p "Execute the full instructions provided on stdin. Use tools to run commands." 2>&1 | tee "$LOOP_DIR/iteration_${ITER}_output.log"
+  rm -f "$PROMPT_FILE"
 
   echo "Iteration $ITER complete."
   ITER=$((ITER + 1))

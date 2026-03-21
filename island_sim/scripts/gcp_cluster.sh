@@ -115,7 +115,7 @@ sudo apt-get update -qq && sudo apt-get install -y -qq pkg-config libfontconfig1
 cd ~
 rm -rf island_sim
 tar xzf island_sim.tar.gz
-source .cargo/env
+source ~/.cargo/env
 export VIRTUAL_ENV=~/env
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 cd island_sim/rust
@@ -130,7 +130,9 @@ LAUNCHER
 chmod +x "$LAUNCH_SCRIPT"
 
 echo "=== Packaging code ==="
-TMPTAR=$(mktemp /tmp/island_sim_XXXXXXXXXX.tar.gz)
+TMPTAR=$(mktemp /tmp/island_sim_XXXXXXXXXX)
+mv "$TMPTAR" "${TMPTAR}.tar.gz"
+TMPTAR="${TMPTAR}.tar.gz"
 tar czf "$TMPTAR" \
     --exclude='.git' \
     --exclude='.env' \

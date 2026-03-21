@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Astar Island — Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+    --green: #3fb950; --red: #f85149; --yellow: #d29922; --purple: #bc8cff;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); font-size: 14px;
+    padding: 8px; max-width: 900px; margin: 0 auto;
+  }
+  h1 { font-size: 18px; margin-bottom: 4px; }
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border); margin-bottom: 8px;
+  }
+  .header .meta { font-size: 11px; color: var(--muted); text-align: right; }
+  .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); margin-right: 6px; animation: pulse 2s infinite; }
+  .pulse.inactive { background: var(--muted); animation: none; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* Cards */
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; margin-bottom: 8px;
+  }
+  .card-title { font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--muted); margin-bottom: 6px; }
+
+  /* Stats grid */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; }
+  .stat-val { font-size: 22px; font-weight: 700; line-height: 1.1; }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .stat-val.green { color: var(--green); }
+  .stat-val.yellow { color: var(--yellow); }
+  .stat-val.red { color: var(--red); }
+  .stat-val.accent { color: var(--accent); }
+  .stat-val.purple { color: var(--purple); }
+
+  /* Active round banner */
+  .active-banner {
+    background: linear-gradient(135deg, #1a2332, #162016);
+    border: 1px solid var(--green); border-radius: 8px;
+    padding: 12px; margin-bottom: 8px;
+  }
+  .active-banner .round-label { font-size: 12px; color: var(--green); font-weight: 600; }
+  .countdown { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .progress-bar {
+    height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden;
+  }
+  .progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 1s; }
+
+  /* Round history table */
+  .rounds-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .rounds-table th { text-align: left; color: var(--muted); font-weight: 500;
+    padding: 4px 6px; border-bottom: 1px solid var(--border); font-size: 10px;
+    text-transform: uppercase; letter-spacing: .3px; }
+  .rounds-table td { padding: 5px 6px; border-bottom: 1px solid var(--border); }
+  .rounds-table tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  }
+  .badge-completed { background: rgba(63,185,80,.15); color: var(--green); }
+  .badge-active { background: rgba(88,166,255,.15); color: var(--accent); }
+  .badge-scoring { background: rgba(210,153,34,.15); color: var(--yellow); }
+
+  /* Score chart */
+  .chart-container { height: 120px; position: relative; margin-top: 4px; }
+  .chart-svg { width: 100%; height: 100%; }
+
+  /* Seeds row */
+  .seeds { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .seed-chip {
+    font-size: 11px; padding: 2px 8px; border-radius: 4px; font-variant-numeric: tabular-nums;
+    background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.2);
+  }
+
+  /* No active round */
+  .no-active { text-align: center; padding: 16px; color: var(--muted); font-size: 13px; }
+
+  /* Scrollable table wrapper */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Loading state */
+  .loading { text-align: center; padding: 40px; color: var(--muted); }
+
+  @media (min-width: 600px) {
+    body { padding: 16px; font-size: 15px; }
+    .stat-val { font-size: 28px; }
+    .countdown { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>Astar Island</h1>
+    <span style="font-size:11px;color:var(--muted)">NM i AI 2026 — Team Appfarm</span>
+  </div>
+  <div class="meta">
+    <div id="update-indicator"><span class="pulse"></span>Live</div>
+    <div id="last-update">—</div>
+  </div>
+</div>
+
+<div id="dashboard" class="loading">Loading...</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let state = null;
+let countdownInterval = null;
+
+function fmt(n, d=1) { return n != null ? n.toFixed(d) : '—'; }
+function fmtInt(n) { return n != null ? n.toString() : '—'; }
+
+function fmtTime(sec) {
+  if (sec == null) return '—';
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
+  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function scoreColor(score) {
+  if (score == null) return '';
+  if (score >= 70) return 'green';
+  if (score >= 50) return 'yellow';
+  return 'red';
+}
+
+function rankColor(rank, total) {
+  if (rank == null) return '';
+  const pct = rank / (total || 1);
+  if (pct <= 0.1) return 'green';
+  if (pct <= 0.33) return 'accent';
+  if (pct <= 0.66) return 'yellow';
+  return 'red';
+}
+
+function buildChart(rounds) {
+  const completed = rounds.filter(r => r.round_score != null);
+  if (completed.length < 2) return '';
+  const scores = completed.map(r => r.round_score);
+  const min = Math.max(0, Math.min(...scores) - 5);
+  const max = Math.min(100, Math.max(...scores) + 5);
+  const w = 100, h = 100;
+  const step = w / (scores.length - 1);
+  const points = scores.map((s, i) => {
+    const x = i * step;
+    const y = h - ((s - min) / (max - min)) * h;
+    return `${x},${y}`;
+  });
+  const line = points.join(' ');
+  const area = `0,${h} ${line} ${(scores.length-1)*step},${h}`;
+  const dots = scores.map((s, i) => {
+    const x = i * step;
+    const y = h - ((s - min) / (max - min)) * h;
+    return `<circle cx="${x}" cy="${y}" r="2.5" fill="#58a6ff"/>`;
+  }).join('');
+  // Y-axis labels
+  const yLabels = [min, (min+max)/2, max].map(v => {
+    const y = h - ((v - min) / (max - min)) * h;
+    return `<text x="-2" y="${y+3}" fill="#8b949e" font-size="7" text-anchor="end">${v.toFixed(0)}</text>`;
+  }).join('');
+  // X-axis labels (round numbers)
+  const xLabels = completed.map((r, i) => {
+    const x = i * step;
+    return `<text x="${x}" y="${h+10}" fill="#8b949e" font-size="6" text-anchor="middle">${r.round_number}</text>`;
+  }).join('');
+
+  return `<div class="chart-container">
+    <svg class="chart-svg" viewBox="-20 -5 130 120" preserveAspectRatio="none">
+      <polygon points="${area}" fill="rgba(88,166,255,.08)"/>
+      <polyline points="${line}" fill="none" stroke="#58a6ff" stroke-width="1.5" stroke-linejoin="round"/>
+      ${dots}${yLabels}${xLabels}
+    </svg>
+  </div>`;
+}
+
+function render(data) {
+  state = data;
+  let html = '';
+
+  // Active round banner
+  if (data.active_round) {
+    const ar = data.active_round;
+    const windowSec = (ar.prediction_window_minutes || 165) * 60;
+    const pct = ar.remaining_seconds != null
+      ? Math.max(0, (1 - ar.remaining_seconds / windowSec) * 100)
+      : 0;
+    html += `<div class="active-banner">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="round-label">ROUND ${ar.round_number} — ACTIVE</div>
+        <div class="countdown" id="countdown">${fmtTime(ar.remaining_seconds)}</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="stats" style="margin-top:8px">
+        <div><div class="stat-val ${scoreColor(ar.round_score)}">${fmt(ar.round_score)}</div><div class="stat-label">Score</div></div>
+        <div><div class="stat-val ${rankColor(ar.rank, ar.total_teams)}">${ar.rank != null ? `#${ar.rank}` : '—'}</div><div class="stat-label">Rank${ar.total_teams ? ' / '+ar.total_teams : ''}</div></div>
+        <div><div class="stat-val accent">${fmtInt(ar.seeds_submitted)}/${ar.seeds_count||5}</div><div class="stat-label">Seeds</div></div>
+        <div><div class="stat-val">${ar.budget ? (ar.budget.queries_max - ar.budget.queries_used)+'/'+ar.budget.queries_max : '—'}</div><div class="stat-label">Queries</div></div>
+      </div>
+      ${ar.seed_scores ? `<div class="seeds">${ar.seed_scores.map((s,i) => `<span class="seed-chip">S${i}: ${fmt(s)}</span>`).join('')}</div>` : ''}
+    </div>`;
+  } else {
+    html += `<div class="card no-active">No active round</div>`;
+  }
+
+  // Overview stats
+  html += `<div class="card">
+    <div class="card-title">Overview</div>
+    <div class="stats">
+      <div><div class="stat-val purple">${fmt(data.weighted_score)}</div><div class="stat-label">Weighted Avg</div></div>
+      <div><div class="stat-val">${data.total_rounds_completed}</div><div class="stat-label">Rounds Done</div></div>
+      <div><div class="stat-val green">${data.best_params ? fmt(data.best_params.score) : '—'}</div><div class="stat-label">Best Params</div></div>
+    </div>
+  </div>`;
+
+  // Score trend chart
+  const chart = buildChart(data.rounds);
+  if (chart) {
+    html += `<div class="card">
+      <div class="card-title">Score Trend</div>
+      ${chart}
+    </div>`;
+  }
+
+  // Round history table
+  const sortedRounds = [...data.rounds].sort((a,b) => (b.round_number||0) - (a.round_number||0));
+  html += `<div class="card">
+    <div class="card-title">Round History</div>
+    <div class="table-wrap">
+    <table class="rounds-table">
+      <tr><th>#</th><th>Status</th><th>Score</th><th>Rank</th><th>Weight</th><th>Seeds</th></tr>
+      ${sortedRounds.map(r => {
+        const statusCls = r.status === 'completed' ? 'badge-completed' : r.status === 'active' ? 'badge-active' : 'badge-scoring';
+        return `<tr>
+          <td>${r.round_number || '?'}</td>
+          <td><span class="badge ${statusCls}">${r.status || '?'}</span></td>
+          <td style="font-weight:600;color:${r.round_score >= 70 ? 'var(--green)' : r.round_score >= 50 ? 'var(--yellow)' : r.round_score != null ? 'var(--red)' : 'var(--muted)'}">${fmt(r.round_score)}</td>
+          <td>${r.rank != null ? '#'+r.rank : '—'}${r.total_teams ? '<span style="color:var(--muted);font-size:10px"> /'+r.total_teams+'</span>' : ''}</td>
+          <td>${fmt(r.round_weight, 2)}</td>
+          <td style="font-size:10px">${(r.seed_scores||[]).map(s => fmt(s)).join(', ') || '—'}</td>
+        </tr>`;
+      }).join('')}
+    </table>
+    </div>
+  </div>`;
+
+  $('#dashboard').innerHTML = html;
+  $('#last-update').textContent = new Date().toLocaleTimeString();
+
+  // Start countdown
+  if (countdownInterval) clearInterval(countdownInterval);
+  if (data.active_round?.remaining_seconds != null) {
+    let remaining = data.active_round.remaining_seconds;
+    countdownInterval = setInterval(() => {
+      remaining = Math.max(0, remaining - 1);
+      const el = document.getElementById('countdown');
+      if (el) el.textContent = fmtTime(remaining);
+      if (remaining <= 0) clearInterval(countdownInterval);
+    }, 1000);
+  }
+}
+
+async function refresh() {
+  try {
+    const resp = await fetch('/api/state');
+    if (!resp.ok) throw new Error(resp.status);
+    const data = await resp.json();
+    render(data);
+    $('#update-indicator').innerHTML = '<span class="pulse"></span>Live';
+  } catch (e) {
+    console.error('Refresh failed:', e);
+    $('#update-indicator').innerHTML = '<span class="pulse inactive"></span>Offline';
+  }
+}
+
+// Initial load + auto-refresh every 30s
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

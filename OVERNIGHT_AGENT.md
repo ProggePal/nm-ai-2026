@@ -325,6 +325,10 @@ Only after verification passes AND VMs are deleted, move to phase `orchestrator`
 We have a **limited number of observations per round** (50 queries). Every orchestrator
 run consumes observations. Only run it **once per round** with the latest best params.
 
+**⚠ IMPORTANT: SKIP ROUND 18.** Round 18 is already covered — do NOT run the
+orchestrator for round 18. If the active round is 18, move directly to phase
+`wait_for_round` and wait for round 19. Our work starts at round 19.
+
 Before running, **verify there is an active round** and that you haven't already
 submitted for it this cycle:
 
@@ -338,6 +342,9 @@ if not active:
     print('NO ACTIVE ROUND — do not run orchestrator')
     sys.exit(1)
 print(f'Active round: {active[0][\"round_number\"]}')
+if active[0]['round_number'] == 18:
+    print('ROUND 18 — SKIP (already covered). Wait for round 19.')
+    sys.exit(1)
 my = get_my_rounds()
 for m in my:
     if m['round_number'] == active[0]['round_number']:

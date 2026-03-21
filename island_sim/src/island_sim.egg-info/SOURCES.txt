@@ -1,3 +1,4 @@
+README.md
 pyproject.toml
 src/__init__.py
 src/api_client.py
@@ -16,7 +17,9 @@ src/island_sim.egg-info/entry_points.txt
 src/island_sim.egg-info/requires.txt
 src/island_sim.egg-info/top_level.txt
 src/prediction/__init__.py
+src/prediction/hybrid.py
 src/prediction/monte_carlo.py
+src/prediction/observation_model.py
 src/prediction/postprocess.py
 src/simulator/__init__.py
 src/simulator/engine.py
@@ -28,3 +31,7 @@ src/simulator/phases/environment.py
 src/simulator/phases/growth.py
 src/simulator/phases/trade.py
 src/simulator/phases/winter.py
+tests/test_params.py
+tests/test_postprocess.py
+tests/test_scoring.py
+tests/test_sync.py
