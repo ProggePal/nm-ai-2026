@@ -126,10 +126,11 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
   Find the payment voucher via GET /ledger/posting?dateFrom=...&dateTo=...&customerId={id}
   Then reverse it: \`api.put('/ledger/voucher/{voucherId}/:reverse', {}, { date: TODAY })\`
 
-**Finding overdue invoices:**
+**Finding invoices:**
   GET /invoice?invoiceDateFrom=2020-01-01&invoiceDateTo=YYYY-MM-DD&fields=id,invoiceNumber,invoiceDate,invoiceDueDate,amountCurrency,amountOutstanding,customer
-  Filter: invoiceDueDate < today AND amountOutstanding > 0
-  NOTE: The field is "invoiceDueDate" (NOT "paymentDeadline" — that doesn't exist).
+  Valid fields: id, invoiceNumber, invoiceDate, invoiceDueDate, amountCurrency, amountOutstanding, customer
+  NOT valid: amountOutstandingCurrency, paymentDeadline, status — these DON'T EXIST and cause 400!
+  Filter overdue: invoiceDueDate < today AND amountOutstanding > 0
 
 **Foreign currency invoices:**
   When the task says "we SENT an invoice" at a specific rate — the invoice ALREADY EXISTS in Tripletex.
