@@ -8,6 +8,17 @@ const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const AGENT_TIMEOUT_MS = 4.5 * 60 * 1000; // 4.5 min
 
+// Use streaming to avoid SDK timeout with high max_tokens
+async function createMessage(params: {
+  model: string;
+  max_tokens: number;
+  system: any;
+  messages: any[];
+}): Promise<Anthropic.Message> {
+  const stream = claude.messages.stream(params);
+  return await stream.finalMessage();
+}
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -66,7 +77,7 @@ export async function runAgent(
 
   // --- Turn 1: Generate code ---
   console.log(`[AGENT] Calling Claude to generate code...`);
-  const response = await claude.messages.create({
+  const response = await createMessage({
     model: 'claude-opus-4-6',
     max_tokens: 32768,
     system: systemPrompt,
@@ -112,7 +123,7 @@ export async function runAgent(
   });
 
   console.log(`[AGENT] Retrying with error context...`);
-  const retryResponse = await claude.messages.create({
+  const retryResponse = await createMessage({
     model: 'claude-opus-4-6',
     max_tokens: 32768,
     system: systemPrompt,
