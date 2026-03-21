@@ -1,15 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { buildSystemPrompt } from './systemPrompt.js';
+import { TripletexApi } from './tripletexApi.js';
+import { extractCode, executeCode } from './codeExecutor.js';
 import type { TripletexCredentials } from '../types.js';
 
 const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-const MCP_SERVER_URL = 'https://tripletex-mcp-381079540280.europe-west4.run.app/mcp';
-
-const AGENT_TIMEOUT_MS = 4.5 * 60 * 1000; // 4.5 min — leave margin before 5 min competition timeout
+const AGENT_TIMEOUT_MS = 4.5 * 60 * 1000; // 4.5 min
 
 // ---------------------------------------------------------------------------
-// Main agent
+// Types
 // ---------------------------------------------------------------------------
 
 export interface AgentResult {
@@ -17,7 +17,14 @@ export interface AgentResult {
   errors: Array<{ tool: string; status: number }>;
   messages: any[];
   systemPrompt: any[];
+  generatedCode?: string;
+  executionLogs?: string[];
+  retried?: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Main agent — code-execution approach
+// ---------------------------------------------------------------------------
 
 export async function runAgent(
   prompt: string,
@@ -25,9 +32,12 @@ export async function runAgent(
   imageAttachments: Array<{ mimeType: string; data: string }> = [],
   pdfAttachments: Array<{ filename: string; data: string }> = [],
 ): Promise<AgentResult> {
+  const startTime = Date.now();
+  const systemPrompt = buildSystemPrompt(prompt);
+
+  // Build user message with attachments
   const content: any[] = [];
 
-  // Add images
   for (const img of imageAttachments) {
     content.push({
       type: 'image',
@@ -39,7 +49,6 @@ export async function runAgent(
     });
   }
 
-  // Add PDFs as documents
   for (const pdf of pdfAttachments) {
     content.push({
       type: 'document',
@@ -54,246 +63,108 @@ export async function runAgent(
   content.push({ type: 'text', text: prompt });
 
   const messages: any[] = [{ role: 'user', content }];
-  const systemPrompt = buildSystemPrompt(prompt);
-  let toolCallCount = 0;
-  const errors: AgentResult['errors'] = [];
-  const startTime = Date.now();
 
-  // Agentic loop — MCP tools execute server-side, but we loop in case
-  // Claude needs multiple turns (e.g. max_tokens reached mid-response)
-  while (true) {
-    // Timeout guard
-    if (Date.now() - startTime > AGENT_TIMEOUT_MS) {
-      console.warn(`[TIMEOUT] Agent loop exceeded ${AGENT_TIMEOUT_MS / 1000}s limit`);
-      break;
-    }
+  // --- Turn 1: Generate code ---
+  console.log(`[AGENT] Calling Claude to generate code...`);
+  const response = await claude.messages.create({
+    model: 'claude-opus-4-6',
+    max_tokens: 8192,
+    system: systemPrompt,
+    messages,
+  });
 
-    const response = await (claude.beta.messages.create as Function)({
-      model: 'claude-opus-4-6',
-      max_tokens: 4096,
-      betas: ['mcp-client-2025-11-20'],
-      system: systemPrompt,
-      mcp_servers: [
-        {
-          type: 'url',
-          url: `${MCP_SERVER_URL}?base_url=${encodeURIComponent(credentials.base_url)}`,
-          name: 'tripletex',
-          authorization_token: credentials.session_token,
-        },
-      ],
-      tools: [
-        { type: 'tool_search_tool_bm25_20251119', name: 'tool_search_tool_bm25' },
-        {
-          type: 'mcp_toolset',
-          mcp_server_name: 'tripletex',
-          default_config: { defer_loading: true },
-          configs: {
-            // ~120 preloaded tools — eliminates tool_search overhead for all competition tasks
+  const responseText = response.content.find((b) => b.type === 'text')?.text ?? '';
+  const code = extractCode(responseText);
+  const elapsed1 = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.log(`[AGENT] Code generated in ${elapsed1}s (${code.length} chars)`);
 
-            // -- Customers --
-            tripletex_customer_search: { defer_loading: false },
-            tripletex_customer_create: { defer_loading: false },
-            tripletex_customer_get: { defer_loading: false },
-            tripletex_customer_update: { defer_loading: false },
-            tripletex_customer_delete: { defer_loading: false },
-            tripletex_customer_create_many: { defer_loading: false },
+  // --- Execute code ---
+  const api = new TripletexApi(credentials);
+  console.log(`[AGENT] Executing code...`);
+  const execResult = await executeCode(code, api);
 
-            // -- Contacts --
-            tripletex_contact_search: { defer_loading: false },
-            tripletex_contact_create: { defer_loading: false },
-            tripletex_contact_update: { defer_loading: false },
+  const elapsed2 = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.log(`[AGENT] Execution done in ${elapsed2}s — success=${execResult.success} calls=${api.callLog.length} errors=${api.getErrorCount()}`);
 
-            // -- Employees --
-            tripletex_employee_search: { defer_loading: false },
-            tripletex_employee_create: { defer_loading: false },
-            tripletex_employee_get: { defer_loading: false },
-            tripletex_employee_update: { defer_loading: false },
-            tripletex_employee_entitlement_grant_entitlements_by_template: { defer_loading: false },
-            tripletex_employee_employment_create: { defer_loading: false },
-            tripletex_employee_employment_search: { defer_loading: false },
-
-            // -- Invoicing --
-            tripletex_invoice_search: { defer_loading: false },
-            tripletex_invoice_create: { defer_loading: false },
-            tripletex_invoice_get: { defer_loading: false },
-            tripletex_invoice_payment: { defer_loading: false },
-            tripletex_invoice_send: { defer_loading: false },
-            tripletex_invoice_create_credit_note: { defer_loading: false },
-            tripletex_invoice_payment_type_search: { defer_loading: false },
-            tripletex_invoice_get_pdf: { defer_loading: false },
-
-            // -- Orders --
-            tripletex_order_search: { defer_loading: false },
-            tripletex_order_create: { defer_loading: false },
-            tripletex_order_get: { defer_loading: false },
-            tripletex_order_update: { defer_loading: false },
-            tripletex_order_delete: { defer_loading: false },
-            tripletex_order_orderline_create: { defer_loading: false },
-            tripletex_order_orderline_create_many: { defer_loading: false },
-            tripletex_order_orderline_delete: { defer_loading: false },
-            tripletex_order_invoice: { defer_loading: false },
-            tripletex_order_invoice_multiple_orders: { defer_loading: false },
-
-            // -- Products --
-            tripletex_product_search: { defer_loading: false },
-            tripletex_product_create: { defer_loading: false },
-            tripletex_product_get: { defer_loading: false },
-            tripletex_product_update: { defer_loading: false },
-            tripletex_product_unit_search: { defer_loading: false },
-
-            // -- Departments --
-            tripletex_department_search: { defer_loading: false },
-            tripletex_department_create: { defer_loading: false },
-            tripletex_department_get: { defer_loading: false },
-            tripletex_department_update: { defer_loading: false },
-            tripletex_department_delete: { defer_loading: false },
-
-            // -- Projects --
-            tripletex_project_search: { defer_loading: false },
-            tripletex_project_create: { defer_loading: false },
-            tripletex_project_get: { defer_loading: false },
-            tripletex_project_update: { defer_loading: false },
-            tripletex_project_participant_create: { defer_loading: false },
-            tripletex_project_project_activity_create: { defer_loading: false },
-
-            // -- Activities & Timesheet --
-            tripletex_activity_for_time_sheet: { defer_loading: false },
-            tripletex_activity_search: { defer_loading: false },
-            tripletex_activity_create: { defer_loading: false },
-            tripletex_timesheet_entry_create: { defer_loading: false },
-            tripletex_timesheet_entry_search: { defer_loading: false },
-            tripletex_timesheet_entry_update: { defer_loading: false },
-            tripletex_timesheet_entry_delete: { defer_loading: false },
-            tripletex_timesheet_month_approve: { defer_loading: false },
-            tripletex_timesheet_month_complete: { defer_loading: false },
-
-            // -- Travel expenses --
-            tripletex_travel_expense_create: { defer_loading: false },
-            tripletex_travel_expense_search: { defer_loading: false },
-            tripletex_travel_expense_get: { defer_loading: false },
-            tripletex_travel_expense_update: { defer_loading: false },
-            tripletex_travel_expense_delete: { defer_loading: false },
-            tripletex_travel_expense_deliver: { defer_loading: false },
-            tripletex_travel_expense_approve: { defer_loading: false },
-            tripletex_travel_expense_cost_create: { defer_loading: false },
-            tripletex_travel_expense_cost_search: { defer_loading: false },
-            tripletex_travel_expense_mileage_allowance_create: { defer_loading: false },
-            tripletex_travel_expense_mileage_allowance_search: { defer_loading: false },
-            tripletex_travel_expense_per_diem_compensation_create: { defer_loading: false },
-            tripletex_travel_expense_per_diem_compensation_search: { defer_loading: false },
-            tripletex_travel_expense_payment_type_search: { defer_loading: false },
-            tripletex_travel_expense_rate_category_search: { defer_loading: false },
-            tripletex_travel_expense_rate_category_group_search: { defer_loading: false },
-            tripletex_travel_expense_cost_category_search: { defer_loading: false },
-            tripletex_travel_expense_rate_search: { defer_loading: false },
-            tripletex_travel_expense_accommodation_allowance_create: { defer_loading: false },
-
-            // -- Ledger / Accounting --
-            tripletex_ledger_voucher_create: { defer_loading: false },
-            tripletex_ledger_voucher_get: { defer_loading: false },
-            tripletex_ledger_voucher_update: { defer_loading: false },
-            tripletex_ledger_voucher_reverse: { defer_loading: false },
-            tripletex_ledger_voucher_delete: { defer_loading: false },
-            tripletex_ledger_voucher_search: { defer_loading: false },
-            tripletex_ledger_voucher_type_search: { defer_loading: false },
-            tripletex_ledger_vat_type_search: { defer_loading: false },
-            tripletex_ledger_vat_type_get: { defer_loading: false },
-            tripletex_ledger_account_search: { defer_loading: false },
-            tripletex_ledger_account_get: { defer_loading: false },
-            tripletex_ledger_account_update: { defer_loading: false },
-            tripletex_ledger_posting_search: { defer_loading: false },
-            tripletex_ledger_payment_type_out_search: { defer_loading: false },
-            tripletex_balance_sheet_search: { defer_loading: false },
-
-            // -- Accounting dimensions --
-            tripletex_accounting_dimension_name_search: { defer_loading: false },
-            tripletex_accounting_dimension_name_create: { defer_loading: false },
-            tripletex_accounting_dimension_value_search_by_path: { defer_loading: false },
-            tripletex_accounting_dimension_value_create: { defer_loading: false },
-
-            // -- Bank / Reconciliation --
-            tripletex_bank_reconciliation_search: { defer_loading: false },
-            tripletex_bank_reconciliation_create: { defer_loading: false },
-            tripletex_bank_reconciliation_last: { defer_loading: false },
-            tripletex_bank_reconciliation_last_closed: { defer_loading: false },
-            tripletex_bank_reconciliation_adjustment: { defer_loading: false },
-            tripletex_bank_reconciliation_update: { defer_loading: false },
-            tripletex_bank_reconciliation_match_search: { defer_loading: false },
-            tripletex_bank_reconciliation_match_suggest: { defer_loading: false },
-            tripletex_bank_statement_search: { defer_loading: false },
-            tripletex_bank_statement_import: { defer_loading: false },
-            tripletex_bank_statement_transaction_search: { defer_loading: false },
-
-            // -- Supplier / Incoming invoices --
-            tripletex_supplier_search: { defer_loading: false },
-            tripletex_supplier_create: { defer_loading: false },
-            tripletex_supplier_get: { defer_loading: false },
-            tripletex_supplier_update: { defer_loading: false },
-            tripletex_supplier_invoice_search: { defer_loading: false },
-            tripletex_supplier_invoice_get: { defer_loading: false },
-            tripletex_supplier_invoice_approve: { defer_loading: false },
-            tripletex_supplier_invoice_approve_put_by_invoice_id: { defer_loading: false },
-            tripletex_supplier_invoice_add_payment: { defer_loading: false },
-            tripletex_supplier_invoice_reject_put_by_invoice_id: { defer_loading: false },
-            // NOTE: tripletex_incoming_invoice_create intentionally NOT preloaded — BETA endpoint
-
-            // -- Assets --
-            tripletex_asset_search: { defer_loading: false },
-            tripletex_asset_create: { defer_loading: false },
-            tripletex_asset_get: { defer_loading: false },
-            tripletex_asset_update: { defer_loading: false },
-            tripletex_asset_delete: { defer_loading: false },
-
-            // -- Salary --
-            tripletex_salary_type_search: { defer_loading: false },
-            tripletex_salary_transaction_create: { defer_loading: false },
-
-            // -- Company & Modules --
-            tripletex_company_get: { defer_loading: false },
-            tripletex_company_update: { defer_loading: false },
-            tripletex_company_salesmodules_search: { defer_loading: false },
-            tripletex_company_salesmodules_create: { defer_loading: false },
-
-            // -- Reference data --
-            tripletex_country_search: { defer_loading: false },
-            tripletex_currency_search: { defer_loading: false },
-          },
-        },
-      ],
-      messages,
-    }) as any;
-
-    // Count and log tool activity
-    for (const block of response.content as any[]) {
-      if (block.type === 'mcp_tool_use') {
-        toolCallCount++;
-        console.log(`[MCP TOOL] ${block.name} ${JSON.stringify(block.input)}`);
-      } else if (block.type === 'mcp_tool_result') {
-        const preview = JSON.stringify(block.content).slice(0, 200);
-        console.log(`[MCP RESULT] ${block.is_error ? 'ERROR ' : ''}${preview}`);
-        if (block.is_error) {
-          errors.push({ tool: block.tool_use_id ?? 'mcp_tool', status: 0 });
-        }
-      } else if (block.type === 'server_tool_use') {
-        console.log(`[TOOL SEARCH] query=${JSON.stringify(block.input)}`);
-      }
-    }
-
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log(`[CLAUDE] stop_reason=${response.stop_reason} mcp_tool_calls=${toolCallCount} elapsed=${elapsed}s`);
-
-    messages.push({ role: 'assistant', content: response.content });
-
-    if (response.stop_reason === 'end_turn') break;
-
-    // Safety: break if no tool activity in this turn
-    const hasToolActivity = (response.content as any[]).some(
-      (b) => b.type === 'mcp_tool_use' || b.type === 'tool_use' || b.type === 'server_tool_use'
-    );
-    if (!hasToolActivity) break;
+  if (execResult.logs.length > 0) {
+    console.log(`[AGENT LOGS] ${execResult.logs.join('\n')}`);
   }
 
-  return { toolCallCount, errors, messages, systemPrompt };
+  if (execResult.success) {
+    messages.push({ role: 'assistant', content: response.content });
+    return buildResult(api, code, execResult.logs, false, messages, systemPrompt);
+  }
+
+  // --- Turn 2: Retry on failure ---
+  console.log(`[AGENT] Execution failed: ${execResult.error?.slice(0, 200)}`);
+
+  // Check timeout before retrying
+  if (Date.now() - startTime > AGENT_TIMEOUT_MS * 0.6) {
+    console.warn(`[AGENT] Not enough time for retry, returning partial result`);
+    messages.push({ role: 'assistant', content: response.content });
+    return buildResult(api, code, execResult.logs, false, messages, systemPrompt);
+  }
+
+  messages.push({ role: 'assistant', content: response.content });
+  messages.push({
+    role: 'user',
+    content: `Code execution failed with error:\n${execResult.error}\n\nAPI calls made before failure:\n${api.getCallLog()}\n\nConsole output:\n${execResult.logs.join('\n')}\n\nFix the code. Output ONLY the corrected code block.`,
+  });
+
+  console.log(`[AGENT] Retrying with error context...`);
+  const retryResponse = await claude.messages.create({
+    model: 'claude-opus-4-6',
+    max_tokens: 8192,
+    system: systemPrompt,
+    messages,
+  });
+
+  const retryText = retryResponse.content.find((b) => b.type === 'text')?.text ?? '';
+  const retryCode = extractCode(retryText);
+  const elapsed3 = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.log(`[AGENT] Retry code generated in ${elapsed3}s (${retryCode.length} chars)`);
+
+  // Fresh API instance for retry
+  const retryApi = new TripletexApi(credentials);
+  console.log(`[AGENT] Executing retry code...`);
+  const retryResult = await executeCode(retryCode, retryApi);
+
+  const elapsed4 = ((Date.now() - startTime) / 1000).toFixed(1);
+  console.log(`[AGENT] Retry done in ${elapsed4}s — success=${retryResult.success} calls=${retryApi.callLog.length}`);
+
+  if (retryResult.logs.length > 0) {
+    console.log(`[AGENT RETRY LOGS] ${retryResult.logs.join('\n')}`);
+  }
+
+  messages.push({ role: 'assistant', content: retryResponse.content });
+  return buildResult(retryApi, retryCode, retryResult.logs, true, messages, systemPrompt);
+}
+
+// ---------------------------------------------------------------------------
+// Build result from API call log
+// ---------------------------------------------------------------------------
+
+function buildResult(
+  api: TripletexApi,
+  code: string,
+  logs: string[],
+  retried: boolean,
+  messages: any[],
+  systemPrompt: any[],
+): AgentResult {
+  const errors = api.callLog
+    .filter((c) => c.status >= 400)
+    .map((c) => ({ tool: `${c.method} ${c.path}`, status: c.status }));
+
+  return {
+    toolCallCount: api.callLog.length,
+    errors,
+    messages,
+    systemPrompt,
+    generatedCode: code,
+    executionLogs: logs,
+    retried,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -304,34 +175,15 @@ export async function verifySandboxResult(
   prompt: string,
   result: AgentResult
 ): Promise<{ verified: boolean; summary: string }> {
-  // Strip MCP tool blocks from messages — the verification call doesn't have MCP configured
-  const cleanMessages = result.messages.map((msg: any) => {
-    if (!Array.isArray(msg.content)) return msg;
-    const cleaned = msg.content
-      .filter((b: any) => ['text', 'mcp_tool_use', 'mcp_tool_result'].includes(b.type))
-      .map((b: any) => {
-        if (b.type === 'mcp_tool_use') {
-          return { type: 'text', text: `[TOOL CALL] ${b.name}(${JSON.stringify(b.input)})` };
-        }
-        if (b.type === 'mcp_tool_result') {
-          const preview = JSON.stringify(b.content).slice(0, 500);
-          return { type: 'text', text: `[TOOL RESULT] ${b.is_error ? 'ERROR ' : ''}${preview}` };
-        }
-        return b;
-      });
-    return { ...msg, content: cleaned.length > 0 ? cleaned : [{ type: 'text', text: '(no text)' }] };
-  });
-
   try {
     const response = await claude.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 512,
       system: 'You are verifying whether an accounting task was completed successfully in Tripletex. Be concise.',
       messages: [
-        ...cleanMessages,
         {
           role: 'user',
-          content: `The original task was: "${prompt}"\n\nBased on the API calls and responses above, was the task completed successfully? Reply with:\nVERIFIED: yes/no\nSUMMARY: one sentence describing what was done (or what failed).`,
+          content: `Task: "${prompt}"\n\nGenerated code:\n\`\`\`typescript\n${result.generatedCode}\n\`\`\`\n\nExecution logs:\n${result.executionLogs?.join('\n') ?? 'none'}\n\nAPI calls: ${result.toolCallCount}, Errors: ${result.errors.length}\nRetried: ${result.retried}\n\nWas the task completed successfully? Reply with:\nVERIFIED: yes/no\nSUMMARY: one sentence.`,
         },
       ],
     });
