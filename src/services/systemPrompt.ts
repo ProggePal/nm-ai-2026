@@ -99,6 +99,23 @@ All tools are pre-authenticated. Use them inside code_execution Python code.
 - \`api.put('/invoice/{id}/:createCreditNote', {}, { date: 'YYYY-MM-DD' })\` → creates credit note
   The credit note date MUST be on or after the original invoice date.
 
+**Posting receipts/expenses:**
+  When posting a receipt/kvittering to an expense account:
+  - Read the PDF carefully for: supplier name, org number, date, amount incl/excl VAT, what was purchased
+  - Common account mappings for purchases:
+    6300 = Leie lokale (rent), 6340 = Lys, varme (utilities)
+    6500 = Motordrevet verktøy, 6510 = Håndverktøy
+    6520 = Data/EDB-kostnad (IT, software, USB, computers), 6530 = Kontorrekvisita (office supplies)
+    6540 = Inventar (furniture, office chairs), 6550 = Driftsmateriale
+    6590 = Annet driftsmateriale, 6800 = Kontorrekvisita
+    6860 = Møte, kurs, oppdatering, 7100 = Bilkostnader
+    7140 = Reisekostnad (travel), 7350 = Representasjon
+  - USB-hub, IT equipment, software → 6520 (Data/EDB-kostnad)
+  - Office chairs, desks, furniture → 6540 (Inventar)
+  - Train tickets, flights → 7140 (Reisekostnad, ikke oppgavepliktig)
+  - Always include department:{id} on BOTH postings if department is specified
+  - Always include supplier:{id} on the 2400 (AP) posting
+
 **Reversing a payment (bank returned payment):**
   There is NO GET /invoice/payment endpoint. To reverse a payment that was returned by the bank:
   Find the payment voucher via GET /ledger/posting?dateFrom=...&dateTo=...&customerId={id}
