@@ -9,7 +9,7 @@ import pytest
 
 from src.constants import NUM_CLASSES
 from src.simulator.params import SimParams
-from src.types import Settlement, WorldState
+from src.types import Settlement, WorldState, Observation
 
 try:
     import island_sim_core
@@ -131,3 +131,172 @@ class TestRustPythonSync:
         valid_codes = {0, 1, 2, 3, 4, 5, 10, 11}
         unique = set(np.unique(result_grid))
         assert unique.issubset(valid_codes), f"Invalid terrain codes: {unique - valid_codes}"
+
+
+class TestBoundsSync:
+    """Rust and Python parameter bounds must match exactly."""
+
+    def test_bounds_match(self):
+        """Rust bounds_lower/bounds_upper match Python SimParams.BOUNDS."""
+        py_lower, py_upper = SimParams.bounds_arrays()
+        rust_lower, rust_upper = island_sim_core.get_param_bounds()
+        rust_lower = np.array(rust_lower)
+        rust_upper = np.array(rust_upper)
+
+        assert len(rust_lower) == len(py_lower), (
+            f"Rust has {len(rust_lower)} params, Python has {len(py_lower)}"
+        )
+        np.testing.assert_array_equal(rust_lower, py_lower, err_msg="Lower bounds mismatch")
+        np.testing.assert_array_equal(rust_upper, py_upper, err_msg="Upper bounds mismatch")
+
+    def test_defaults_match(self):
+        """Rust default_params match Python SimParams.default()."""
+        py_defaults = SimParams.default().to_array()
+        rust_defaults = np.array(island_sim_core.get_default_params())
+
+        assert len(rust_defaults) == len(py_defaults), (
+            f"Rust has {len(rust_defaults)} params, Python has {len(py_defaults)}"
+        )
+        np.testing.assert_array_equal(rust_defaults, py_defaults, err_msg="Default params mismatch")
+
+    def test_ndim_matches(self):
+        """Rust NDIM matches Python ndim."""
+        rust_lower, _ = island_sim_core.get_param_bounds()
+        assert len(rust_lower) == SimParams.ndim()
+
+
+class TestCmaesInference:
+    """Tests for Rust CMA-ES inference."""
+
+    @pytest.fixture
+    def simple_state(self):
+        """A small synthetic state for fast CMA-ES tests."""
+        grid = np.full((10, 10), 11, dtype=np.int32)
+        grid[0, :] = 10  # ocean top row
+        grid[-1, :] = 10  # ocean bottom row
+        grid[:, 0] = 10  # ocean left col
+        grid[:, -1] = 10  # ocean right col
+        grid[4, 4] = 4  # forest
+        grid[5, 5] = 5  # mountain
+        grid[3, 3] = 1  # settlement
+
+        settlements = [
+            Settlement(x=3, y=3, population=2.0, food=1.0, wealth=0.5,
+                      defense=0.5, tech_level=0.0, has_port=False,
+                      has_longship=False, owner_id=0, alive=True),
+        ]
+        return WorldState(grid=grid, settlements=settlements, width=10, height=10)
+
+    def test_cmaes_returns_valid_params(self, simple_state):
+        """CMA-ES returns params within bounds."""
+        # Create a simple observation (full viewport)
+        obs = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+        }]
+
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        best_params, best_loss = island_sim_core.run_cmaes_inference(
+            obs, states,
+            mc_runs=5,
+            max_evals=30,
+            population_size=5,
+            sigma0=0.3,
+            warm_start=np.array([], dtype=np.float64),
+            seed=42,
+        )
+
+        best_params = np.array(best_params)
+        lower, upper = SimParams.bounds_arrays()
+
+        # All params should be within bounds (with small tolerance for float rounding)
+        assert len(best_params) == SimParams.ndim()
+        assert np.all(best_params >= lower - 1e-9), "Params below lower bounds"
+        assert np.all(best_params <= upper + 1e-9), "Params above upper bounds"
+        assert np.isfinite(best_loss), "Loss is not finite"
+        assert best_loss > 0, "NLL loss should be positive"
+
+    def test_cmaes_with_warm_start(self, simple_state):
+        """CMA-ES accepts warm start params."""
+        obs = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+        }]
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        warm_start = SimParams.default().to_array()
+
+        best_params, best_loss = island_sim_core.run_cmaes_inference(
+            obs, states,
+            mc_runs=5,
+            max_evals=20,
+            population_size=5,
+            sigma0=0.1,
+            warm_start=warm_start,
+            seed=42,
+        )
+
+        assert np.isfinite(best_loss)
+        assert len(best_params) == SimParams.ndim()
+
+    def test_nll_matches_python(self, simple_state):
+        """Rust NLL loss should match Python compute_loss for the same params/data.
+
+        We test this by running a 1-eval CMA-ES with the default params as warm start
+        and a very small sigma, which should produce a loss close to the Python NLL.
+        """
+        from src.inference.loss import compute_loss
+
+        params = SimParams.default()
+
+        # Create observation
+        observation = Observation(
+            seed_index=0,
+            viewport_x=0, viewport_y=0,
+            viewport_w=simple_state.width, viewport_h=simple_state.height,
+            grid=simple_state.grid.copy(),
+            settlements=simple_state.settlements,
+        )
+
+        mc_runs = 20
+        py_loss = compute_loss(
+            [observation], [simple_state], params, num_runs=mc_runs, base_seed=42,
+        )
+
+        # Run Rust CMA-ES with tiny sigma and 1 population member to evaluate
+        # essentially just the warm start
+        obs_dict = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+        }]
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        _, rust_loss = island_sim_core.run_cmaes_inference(
+            obs_dict, states,
+            mc_runs=mc_runs,
+            max_evals=5,
+            population_size=4,
+            sigma0=1e-10,
+            warm_start=params.to_array(),
+            seed=42,
+        )
+
+        # With sigma=1e-10, CMA-ES evaluates near the warm-start point.
+        # Both paths use the same Rust MC engine. Small differences arise from
+        # CMA-ES sampling slightly perturbed points and reporting the best found.
+        assert abs(py_loss - rust_loss) / max(abs(py_loss), 1e-6) < 0.15, (
+            f"Python NLL ({py_loss:.4f}) and Rust NLL ({rust_loss:.4f}) differ by more than 15%"
+        )

@@ -8,6 +8,12 @@ from ..simulator.params import SimParams
 from ..types import Observation, WorldState
 from .loss import compute_loss
 
+try:
+    import island_sim_core
+    HAS_RUST = True
+except ImportError:
+    HAS_RUST = False
+
 
 def infer_params(
     observations: list[Observation],
@@ -19,6 +25,8 @@ def infer_params(
     warm_start: SimParams | None = None,
 ) -> SimParams:
     """Infer simulation parameters from observations using CMA-ES.
+
+    Uses Rust CMA-ES backend if available (10-20x faster), falls back to Python.
 
     Args:
         observations: List of viewport observations from the API.
@@ -32,6 +40,75 @@ def infer_params(
     Returns:
         Best-fit SimParams.
     """
+    if HAS_RUST:
+        return _infer_rust(
+            observations, initial_states, num_runs_per_eval,
+            max_evaluations, population_size, sigma0, warm_start,
+        )
+    return _infer_python(
+        observations, initial_states, num_runs_per_eval,
+        max_evaluations, population_size, sigma0, warm_start,
+    )
+
+
+def _infer_rust(
+    observations: list[Observation],
+    initial_states: list[WorldState],
+    num_runs_per_eval: int,
+    max_evaluations: int,
+    population_size: int | None,
+    sigma0: float,
+    warm_start: SimParams | None,
+) -> SimParams:
+    """Run CMA-ES inference via Rust backend."""
+    # Marshal observations to list of dicts
+    obs_dicts = []
+    for obs in observations:
+        obs_dicts.append({
+            "seed_index": obs.seed_index,
+            "viewport_x": obs.viewport_x,
+            "viewport_y": obs.viewport_y,
+            "viewport_w": obs.viewport_w,
+            "viewport_h": obs.viewport_h,
+            "grid": obs.grid.astype(np.int32),
+        })
+
+    # Marshal initial states to list of (grid, settlements) tuples
+    state_tuples = []
+    for state in initial_states:
+        state_tuples.append((
+            state.grid.astype(np.int32),
+            state.settlements,
+        ))
+
+    # Warm start array (empty = use defaults)
+    warm_arr = warm_start.to_array() if warm_start is not None else np.array([], dtype=np.float64)
+
+    best_params_arr, best_loss = island_sim_core.run_cmaes_inference(
+        obs_dicts,
+        state_tuples,
+        num_runs_per_eval,
+        max_evaluations,
+        population_size or 0,  # 0 = auto
+        sigma0,
+        warm_arr,
+        42,  # CMA-ES seed
+    )
+
+    print(f"Rust CMA-ES finished: best loss = {best_loss:.4f}")
+    return SimParams.from_array(np.array(best_params_arr))
+
+
+def _infer_python(
+    observations: list[Observation],
+    initial_states: list[WorldState],
+    num_runs_per_eval: int,
+    max_evaluations: int,
+    population_size: int | None,
+    sigma0: float,
+    warm_start: SimParams | None,
+) -> SimParams:
+    """Run CMA-ES inference via Python cma library (fallback)."""
     import cma
 
     lower, upper = SimParams.bounds_arrays()

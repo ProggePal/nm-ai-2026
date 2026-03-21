@@ -21,7 +21,7 @@ from .api_client import (
     simulate_query,
     submit_prediction,
 )
-from .inference.observer import plan_adaptive_viewports, plan_viewports, select_focus_seeds
+from .inference.observer import plan_adaptive_viewports, plan_viewports
 from .inference.optimizer import infer_params
 from .prediction.hybrid import hybrid_prediction
 from .prediction.monte_carlo import generate_prediction
@@ -224,18 +224,14 @@ def main() -> None:
         observations: list[Observation] = prior_observations
         params = warm_params or SimParams.default()
     else:
-        # Select 2 focus seeds for concentrated observation
-        focus_seeds = select_focus_seeds(initial_states, num_focus=2)
-        print(f"Focus seeds: {focus_seeds} (most settlements)")
-
-        # Step 4: Phase 1 queries — concentrated viewport placement
+        # Step 4: Phase 1 queries — systematic viewport placement
         # With small budgets, skip the split and use everything systematically
         if queries_remaining <= 10:
             systematic_budget = queries_remaining
         else:
             systematic_budget = int(queries_remaining * 0.6)
-        print(f"\nPhase 1: {systematic_budget} systematic queries (concentrated on seeds {focus_seeds})...")
-        systematic_queries = plan_viewports(initial_states, budget=systematic_budget, focus_seeds=focus_seeds)
+        print(f"\nPhase 1: {systematic_budget} systematic queries (spread evenly across seeds)...")
+        systematic_queries = plan_viewports(initial_states, budget=systematic_budget)
 
         observations = []
         for idx, query in enumerate(systematic_queries):
@@ -268,7 +264,7 @@ def main() -> None:
             params = infer_params(
                 observations,
                 initial_states,
-                num_runs_per_eval=50,
+                num_runs_per_eval=100,
                 max_evaluations=400,
                 warm_start=warm_params,
             )
@@ -280,9 +276,9 @@ def main() -> None:
         budget_info = get_budget()
         adaptive_remaining = budget_info["queries_max"] - budget_info["queries_used"]
         if adaptive_remaining > 0:
-            print(f"\nPhase 2: {adaptive_remaining} adaptive queries (concentrated on seeds {focus_seeds})...")
+            print(f"\nPhase 2: {adaptive_remaining} adaptive queries...")
             adaptive_queries = plan_adaptive_viewports(
-                initial_states, observations, adaptive_remaining, focus_seeds=focus_seeds
+                initial_states, observations, adaptive_remaining
             )
             for idx, query in enumerate(adaptive_queries):
                 print(f"  Query {idx + 1}/{len(adaptive_queries)}: seed={query['seed_index']} "
@@ -310,7 +306,7 @@ def main() -> None:
                 params = infer_params(
                     observations,
                     initial_states,
-                    num_runs_per_eval=50,
+                    num_runs_per_eval=100,
                     max_evaluations=600,
                     warm_start=warm_params,
                 )

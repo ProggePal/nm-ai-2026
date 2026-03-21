@@ -83,7 +83,7 @@ for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
     VM_NAME="island-search-${idx}"
     VM_ZONE="${ALL_ZONES[$idx]}"
     for attempt in $(seq 1 12); do
-        if gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" -- "echo ready" 2>/dev/null; then
+        if gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" --command="echo ready" 2>/dev/null; then
             echo "  $VM_NAME ($VM_ZONE): SSH ready"
             break
         fi
@@ -96,8 +96,37 @@ for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
 done
 
 # --- Step 3: Package code ---
+# --- Step 3a: Create per-VM launcher script ---
+# This avoids complex quoting in gcloud ssh --command
+LAUNCH_SCRIPT="$SCRIPT_DIR/_vm_launch.sh"
+cat > "$LAUNCH_SCRIPT" << 'LAUNCHER'
+#!/bin/bash
+set -euo pipefail
+SEED="$1"
+CANDIDATES="$2"
+MC_RUNS="$3"
+TOP="$4"
+
+pkill -f grid_search_rust 2>/dev/null || true
+cd ~
+rm -rf island_sim
+tar xzf island_sim.tar.gz
+source .cargo/env
+export VIRTUAL_ENV=~/env
+export PATH="$VIRTUAL_ENV/bin:$PATH"
+cd island_sim/rust
+maturin develop --release 2>&1 | tail -1
+python -c "import island_sim_core; print('Rust OK')"
+cd ~/island_sim
+nohup python -u scripts/grid_search_rust.py \
+    --candidates "$CANDIDATES" --mc-runs "$MC_RUNS" --top "$TOP" --seed "$SEED" \
+    > search.log 2>&1 &
+echo "PID: $!"
+LAUNCHER
+chmod +x "$LAUNCH_SCRIPT"
+
 echo "=== Packaging code ==="
-TMPTAR=$(mktemp /tmp/island_sim_XXXX.tar.gz)
+TMPTAR=$(mktemp /tmp/island_sim_XXXXXXXXXX.tar.gz)
 tar czf "$TMPTAR" \
     --exclude='.git' \
     --exclude='.env' \
@@ -115,21 +144,35 @@ tar czf "$TMPTAR" \
 # Uses a function with local vars to avoid race conditions in parallel subshells.
 setup_vm() {
     local vm_name="$1" vm_zone="$2" seed="$3"
-    echo "  [$vm_name] Uploading code..."
+    echo "  [$vm_name] Uploading code + launcher..."
     gcloud compute scp "$TMPTAR" "$vm_name":~/island_sim.tar.gz --zone="$vm_zone"
+    gcloud compute scp "$LAUNCH_SCRIPT" "$vm_name":~/vm_launch.sh --zone="$vm_zone"
 
     echo "  [$vm_name] Building and launching (seed=$seed)..."
-    gcloud compute ssh "$vm_name" --zone="$vm_zone" -- \
-        "pkill -f grid_search_rust 2>/dev/null; cd ~ && rm -rf island_sim && tar xzf island_sim.tar.gz && source .cargo/env && export VIRTUAL_ENV=~/env && export PATH=\$VIRTUAL_ENV/bin:\$PATH && cd island_sim/rust && maturin develop --release 2>&1 | tail -1 && python -c 'import island_sim_core; print(\"Rust OK\")' && cd ~/island_sim && nohup python -u scripts/grid_search_rust.py --candidates $CANDIDATES --mc-runs $MC_RUNS --top $TOP --seed $seed > search.log 2>&1 & echo PID: \$!"
+    gcloud compute ssh "$vm_name" --zone="$vm_zone" --command="bash ~/vm_launch.sh $seed $CANDIDATES $MC_RUNS $TOP"
     echo "  [$vm_name] Done!"
 }
 
 echo "=== Setting up and launching on all VMs ==="
+PIDS=()
 for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
     setup_vm "island-search-${idx}" "${ALL_ZONES[$idx]}" "$idx" &
+    PIDS+=($!)
 done
-wait
-rm "$TMPTAR"
+
+# Wait for all and check for failures
+FAILED=0
+for pid in "${PIDS[@]}"; do
+    if ! wait "$pid"; then
+        FAILED=$((FAILED + 1))
+    fi
+done
+rm -f "$TMPTAR" "$LAUNCH_SCRIPT"
+
+if [ "$FAILED" -gt 0 ]; then
+    echo "ERROR: $FAILED VM(s) failed setup. Check output above."
+    exit 1
+fi
 
 # --- Save cluster config for pull script ---
 CONFIG_FILE="$SCRIPT_DIR/../data/cluster_config.json"

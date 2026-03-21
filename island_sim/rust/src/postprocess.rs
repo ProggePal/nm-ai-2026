@@ -64,23 +64,17 @@ pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize
                 continue;
             }
 
-            // Dynamic cell: zero out impossible classes
-            result[base + CLASS_MOUNTAIN] = 0.0;
-
+            // Dynamic cell: apply floor to all classes.
+            // Never assign 0.0 — ground truth may have small nonzero for any class.
             let coastal = is_coastal(&initial_state.grid, x, y, height, width);
-            if !coastal {
-                result[base + CLASS_PORT] = 0.0;
-            }
-
             let is_near = near_settlement[y][x];
 
-            // Apply floor to plausible classes
             for cls in 0..NUM_CLASSES {
-                if cls == CLASS_MOUNTAIN { continue; }
-                if cls == CLASS_PORT && !coastal { continue; }
-
-                // Settlement, Port, Ruin use remote floor when far from settlements
-                let floor = if (cls == CLASS_SETTLEMENT || cls == CLASS_PORT || cls == CLASS_RUIN) && !is_near {
+                let floor = if cls == CLASS_MOUNTAIN {
+                    PROB_FLOOR_REMOTE
+                } else if cls == CLASS_PORT && !coastal {
+                    PROB_FLOOR_REMOTE
+                } else if (cls == CLASS_SETTLEMENT || cls == CLASS_PORT || cls == CLASS_RUIN) && !is_near {
                     PROB_FLOOR_REMOTE
                 } else {
                     PROB_FLOOR
@@ -105,7 +99,14 @@ pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize
 }
 
 fn make_exact_static(dist: &mut [f64], dominant_class: usize) {
+    // Use tiny floor for all classes to avoid infinite KL divergence
+    // if ground truth has any nonzero probability for other classes.
+    let mut sum = 0.0;
     for c in 0..NUM_CLASSES {
-        dist[c] = if c == dominant_class { 1.0 } else { 0.0 };
+        dist[c] = if c == dominant_class { 1.0 } else { PROB_FLOOR_REMOTE };
+        sum += dist[c];
+    }
+    for c in 0..NUM_CLASSES {
+        dist[c] /= sum;
     }
 }

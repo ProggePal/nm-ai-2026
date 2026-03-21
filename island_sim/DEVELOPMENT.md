@@ -15,13 +15,28 @@ If you change how growth, conflict, trade, winter, or environment works:
 | Change | Files to update |
 |--------|----------------|
 | Phase logic | `src/simulator/phases/*.py` AND `rust/src/phases/*.rs` |
-| New/changed param | `src/simulator/params.py` AND `rust/src/params.rs` AND `rust/src/grid_search.rs` (defaults, bounds, to_vec) |
+| New/changed param | `src/simulator/params.py` AND `rust/src/params.rs` (defaults, bounds, to_vec are all here now) |
 | Terrain constants | `src/constants.py` AND `rust/src/types.rs` |
 
 After changing Rust code:
 ```bash
 cd rust && maturin develop --release && cd ..
 ```
+
+### CMA-ES inference (NLL loss)
+
+If you change how the NLL loss is computed:
+
+| File | Purpose |
+|------|---------|
+| `src/inference/loss.py` | Python NLL (used by Python CMA-ES fallback) |
+| `rust/src/cmaes_inference.rs` | Rust NLL (used by primary Rust CMA-ES) |
+
+**Both must match exactly.** The NLL path is different from grid search scoring:
+- **Grid search:** `generate_prediction → postprocess → entropy-weighted KL divergence`
+- **CMA-ES:** `generate_prediction → Laplace smoothing (no postprocess) → NLL`
+
+Run `pytest tests/test_sync.py::TestCmaesInference::test_nll_matches_python` to verify.
 
 ### Post-processing
 
@@ -39,11 +54,12 @@ If you change how predictions are post-processed:
 This is the most error-prone change. Full checklist:
 
 1. **`src/simulator/params.py`** — add field with default, add to BOUNDS dict
-2. **`rust/src/params.rs`** — add field to struct, update `NDIM`, update `from_array` indices (everything after the new param shifts by 1!)
-3. **`rust/src/grid_search.rs`** — update `default_params()`, `bounds_lower()`, `bounds_upper()`, and `to_vec()`
-4. **The phase that uses it** — both Python (`src/simulator/phases/*.py`) and Rust (`rust/src/phases/*.rs`)
-5. **`data/rounds/best_params.json`** — old params have wrong length. Must insert the new param's default value at the correct index
-6. **Rebuild Rust** — `cd rust && maturin develop --release`
+2. **`rust/src/params.rs`** — add field to struct, update `NDIM`, update `from_array` indices (everything after the new param shifts by 1!), update `to_vec()`, `default_params()`, `bounds_lower()`, `bounds_upper()`
+3. **The phase that uses it** — both Python (`src/simulator/phases/*.py`) and Rust (`rust/src/phases/*.rs`)
+4. **`data/rounds/best_params.json`** — old params have wrong length. Must insert the new param's default value at the correct index
+5. **Rebuild Rust** — `cd rust && maturin develop --release`
+
+Note: `grid_search.rs` and `cmaes_inference.rs` import bounds/defaults from `params.rs` — no changes needed there.
 
 ### Deploying to GCP (cluster)
 
@@ -121,7 +137,7 @@ print(f'Params: {SimParams.ndim()} — best_params.json matches')
 ## Common mistakes
 
 - **Forgetting to update Rust `from_array` indices** after adding a param — everything after the new param reads the wrong value silently
-- **Forgetting to update `grid_search.rs` bounds** — the grid search uses hardcoded bounds, not Python's
+- **Forgetting to update `params.rs` bounds/defaults** — grid search and CMA-ES both use these shared functions
 - **Not rebuilding Rust after changes** — the old `.so` stays loaded
 - **Updating GCP code while a search is running** — kills the process
 - **Not migrating `best_params.json`** after adding a param — wrong param count causes crashes or silent misalignment

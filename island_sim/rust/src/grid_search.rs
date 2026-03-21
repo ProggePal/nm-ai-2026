@@ -7,7 +7,7 @@ use rand_chacha::ChaCha8Rng;
 use rand::Rng;
 
 use crate::engine;
-use crate::params::SimParams;
+use crate::params::{SimParams, bounds_lower, bounds_upper, default_params};
 use crate::scoring::score_prediction;
 use crate::types::*;
 use crate::postprocess;
@@ -174,69 +174,3 @@ fn evaluate_single_seed(
     score_prediction(ground_truth, &processed, height, width)
 }
 
-// --- Parameter bounds (must match Python SimParams exactly) ---
-
-fn default_params() -> Vec<f64> {
-    vec![
-        0.4, 0.25, 0.08, 0.2, 0.15, 0.6, 6.0, 2.5, 1.5, 2.0, 3.0, 0.35,  // growth
-        2.0, 5.0, 0.3, 0.5, 0.3, 0.25, 0.3, 0.15,                           // conflict
-        4.0, 0.15, 0.1, 0.1,                                                   // trade
-        0.5, 0.3, 0.4, 0.4, 0.3, 3.0, 0.5,                                   // winter (+survival_bonus)
-        0.1, 4.0, 2.5, 0.2, 0.05,                                              // environment
-        1.5, 0.3,                                                               // collapse triggers
-        0.5,                                                                     // raid probability
-        0.05,                                                                    // wealth production
-    ]
-}
-
-fn bounds_lower() -> Vec<f64> {
-    vec![
-        0.05, 0.02, 0.0, 0.1, 0.01, 0.2, 1.0, 1.0, 0.5, 2.0, 1.0, 0.1,
-        1.0, 2.0, 0.05, 0.1, 0.05, 0.05, 0.05, 0.05,
-        1.0, 0.02, 0.02, 0.01,
-        0.1, 0.01, 0.05, 0.05, 0.0, 1.0, 0.1,
-        0.01, 1.0, 1.0, 0.05, 0.01,
-        1.0, 0.1,                                                               // collapse triggers
-        0.1,                                                                     // raid probability
-        0.01,                                                                    // wealth production
-    ]
-}
-
-fn bounds_upper() -> Vec<f64> {
-    vec![
-        1.5, 1.0, 0.5, 1.5, 0.3, 3.0, 10.0, 8.0, 5.0, 12.0, 6.0, 0.6,
-        5.0, 10.0, 1.0, 1.5, 0.7, 0.6, 0.7, 0.5,
-        8.0, 0.6, 0.5, 0.4,
-        2.0, 0.8, 1.5, 0.9, 1.0, 6.0, 0.8,
-        0.5, 6.0, 8.0, 0.5, 0.3,
-        3.0, 0.8,                                                               // collapse triggers
-        1.0,                                                                     // raid probability
-        0.3,                                                                     // wealth production
-    ]
-}
-
-impl SimParams {
-    fn to_vec(&self) -> Vec<f64> {
-        vec![
-            self.base_food_production, self.forest_food_bonus, self.plains_food_bonus,
-            self.food_consumption_rate, self.pop_growth_rate, self.pop_growth_food_threshold,
-            self.carrying_capacity_per_food, self.port_development_threshold,
-            self.longship_build_threshold, self.expansion_threshold, self.expansion_range,
-            self.expansion_pop_transfer,
-            self.raid_range_base, self.raid_range_longship, self.raid_desperation_threshold,
-            self.raid_strength_factor, self.raid_loot_fraction, self.raid_damage_factor,
-            self.conquest_threshold, self.raid_kill_threshold,
-            self.trade_range, self.trade_food_gain, self.trade_wealth_gain,
-            self.tech_diffusion_rate,
-            self.winter_severity_mean, self.winter_severity_variance,
-            self.collapse_food_threshold, self.collapse_probability,
-            self.survival_bonus,
-            self.dispersal_range, self.dispersal_fraction,
-            self.forest_reclaim_probability, self.ruin_rebuild_range,
-            self.ruin_rebuild_threshold, self.ruin_rebuild_fraction,
-            self.ruin_to_plains_probability,
-            self.harsh_winter_collapse_factor, self.raid_collapse_threshold,
-            self.raid_probability, self.wealth_production_rate,
-        ]
-    }
-}

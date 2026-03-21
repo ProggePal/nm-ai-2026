@@ -72,26 +72,19 @@ def postprocess(
                 result[y, x] = _make_exact_static(CLASS_MOUNTAIN)
                 continue
 
-            # Dynamic cell: apply floor only to plausible classes
-            # Class 5 (mountain) is NEVER possible on non-mountain cells
-            result[y, x, CLASS_MOUNTAIN] = 0.0
-
-            # Class 2 (port) is only possible on coastal cells
-            if not coastal_mask[y, x]:
-                result[y, x, CLASS_PORT] = 0.0
-
-            # Choose floor based on proximity to settlements
+            # Dynamic cell: apply floor to all classes.
+            # Never assign 0.0 — the ground truth may have small nonzero
+            # probabilities for any class, and a zero prediction creates
+            # infinite KL divergence.
             is_near = near_settlement[y, x]
 
-            # Apply floor to remaining classes
             for cls in range(NUM_CLASSES):
+                # Mountain on non-mountain, port on non-coastal: very unlikely
                 if cls == CLASS_MOUNTAIN:
-                    continue  # already zeroed
-                if cls == CLASS_PORT and not coastal_mask[y, x]:
-                    continue  # already zeroed
-
-                # Settlement, Port, Ruin use remote floor when far from settlements
-                if cls in (CLASS_SETTLEMENT, CLASS_PORT, CLASS_RUIN) and not is_near:
+                    floor = PROB_FLOOR_REMOTE
+                elif cls == CLASS_PORT and not coastal_mask[y, x]:
+                    floor = PROB_FLOOR_REMOTE
+                elif cls in (CLASS_SETTLEMENT, CLASS_PORT, CLASS_RUIN) and not is_near:
                     floor = PROB_FLOOR_REMOTE
                 else:
                     floor = PROB_FLOOR
@@ -107,7 +100,12 @@ def postprocess(
 
 
 def _make_exact_static(dominant_class: int) -> np.ndarray:
-    """Create a probability vector with 1.0 for the dominant class, 0.0 elsewhere."""
-    dist = np.zeros(NUM_CLASSES)
+    """Create a probability vector heavily favoring the dominant class.
+
+    Uses a tiny floor for all classes to avoid infinite KL divergence
+    if the ground truth has any nonzero probability for other classes.
+    """
+    dist = np.full(NUM_CLASSES, PROB_FLOOR_REMOTE)
     dist[dominant_class] = 1.0
+    dist /= dist.sum()
     return dist

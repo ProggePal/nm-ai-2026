@@ -8,6 +8,7 @@ mod phases;
 mod scoring;
 mod postprocess;
 mod grid_search;
+mod cmaes_inference;
 
 use numpy::{PyArray3, PyArray2, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3, PyArray1, PyArrayMethods};
 use pyo3::prelude::*;
@@ -213,10 +214,139 @@ fn settlements_to_py<'py>(py: Python<'py>, settlements: &[Settlement]) -> PyResu
     Ok(list)
 }
 
+/// Run CMA-ES parameter inference.
+///
+/// Args:
+///   observations: list of dicts with keys: seed_index, viewport_x, viewport_y, viewport_w, viewport_h, grid (2D array)
+///   initial_states: list of (grid_2d, settlements_list) tuples
+///   mc_runs: MC runs per evaluation
+///   max_evals: maximum number of function evaluations
+///   population_size: CMA-ES population size (0 = auto)
+///   sigma0: initial step size in normalized [0,1] space
+///   warm_start: initial parameter array (or empty array for defaults)
+///   seed: random seed for CMA-ES
+///
+/// Returns: (best_params_array, best_loss)
+#[pyfunction]
+fn run_cmaes_inference<'py>(
+    py: Python<'py>,
+    observations: &Bound<'py, PyList>,
+    initial_states: &Bound<'py, PyList>,
+    mc_runs: usize,
+    max_evals: usize,
+    population_size: usize,
+    sigma0: f64,
+    warm_start: PyReadonlyArray1<'py, f64>,
+    seed: u64,
+) -> PyResult<(Bound<'py, PyArray1<f64>>, f64)> {
+    // Parse initial states
+    let mut states: Vec<types::WorldState> = Vec::new();
+    for state_item in initial_states.iter() {
+        let state_tuple: &Bound<'py, pyo3::types::PyTuple> = state_item.downcast()?;
+        let grid: PyReadonlyArray2<'py, i32> = state_tuple.get_item(0)?.extract()?;
+        let settlements_obj = state_tuple.get_item(1)?;
+        let settlements: &Bound<'py, PyList> = settlements_obj.downcast()?;
+        states.push(parse_world_state(&grid, settlements)?);
+    }
+
+    // Parse observations and group by seed_index
+    let num_seeds = states.len();
+    let mut obs_by_seed: Vec<Vec<cmaes_inference::ObservationData>> = (0..num_seeds).map(|_| Vec::new()).collect();
+
+    for obs_item in observations.iter() {
+        let obs_dict: &Bound<'py, PyDict> = obs_item.downcast()?;
+
+        let seed_index: usize = obs_dict.get_item("seed_index")?.unwrap().extract()?;
+        let viewport_x: usize = obs_dict.get_item("viewport_x")?.unwrap().extract()?;
+        let viewport_y: usize = obs_dict.get_item("viewport_y")?.unwrap().extract()?;
+        let viewport_w: usize = obs_dict.get_item("viewport_w")?.unwrap().extract()?;
+        let viewport_h: usize = obs_dict.get_item("viewport_h")?.unwrap().extract()?;
+        let grid: PyReadonlyArray2<'py, i32> = obs_dict.get_item("grid")?.unwrap().extract()?;
+        let grid_arr = grid.as_array();
+
+        // Convert terrain codes to class indices
+        let mut terrain_classes = Vec::with_capacity(viewport_h * viewport_w);
+        for row in 0..viewport_h {
+            for col in 0..viewport_w {
+                let terrain = grid_arr[[row, col]];
+                terrain_classes.push(types::terrain_to_class(terrain));
+            }
+        }
+
+        if seed_index >= num_seeds {
+            return Err(pyo3::exceptions::PyValueError::new_err(
+                format!("observation seed_index {} >= num initial_states {}", seed_index, num_seeds)
+            ));
+        }
+        obs_by_seed[seed_index].push(cmaes_inference::ObservationData {
+            viewport_x,
+            viewport_y,
+            viewport_w,
+            viewport_h,
+            terrain_classes,
+        });
+    }
+
+    // Build SeedState vec (only seeds that have observations)
+    let mut seed_states: Vec<cmaes_inference::SeedState> = Vec::new();
+    for (idx, obs_list) in obs_by_seed.into_iter().enumerate() {
+        if !obs_list.is_empty() {
+            seed_states.push(cmaes_inference::SeedState {
+                initial_state: states[idx].clone(),
+                observations: obs_list,
+                seed_index: idx,
+            });
+        }
+    }
+
+    // Parse warm start
+    let warm_start_slice = warm_start.as_slice()?;
+    let warm_start_opt = if warm_start_slice.is_empty() {
+        None
+    } else {
+        Some(warm_start_slice)
+    };
+
+    let pop_size = if population_size == 0 { None } else { Some(population_size) };
+
+    // Release GIL and run CMA-ES
+    let (best_params, best_loss) = py.allow_threads(|| {
+        cmaes_inference::run_cmaes_inference(
+            &seed_states,
+            mc_runs,
+            max_evals,
+            pop_size,
+            sigma0,
+            warm_start_opt,
+            seed,
+        )
+    });
+
+    let result_arr = PyArray1::from_vec_bound(py, best_params);
+    Ok((result_arr, best_loss))
+}
+
+/// Return (lower_bounds, upper_bounds) as numpy arrays — for testing bounds sync.
+#[pyfunction]
+fn get_param_bounds<'py>(py: Python<'py>) -> (Bound<'py, PyArray1<f64>>, Bound<'py, PyArray1<f64>>) {
+    let lower = params::bounds_lower();
+    let upper = params::bounds_upper();
+    (PyArray1::from_vec_bound(py, lower), PyArray1::from_vec_bound(py, upper))
+}
+
+/// Return default parameter values as numpy array — for testing.
+#[pyfunction]
+fn get_default_params<'py>(py: Python<'py>) -> Bound<'py, PyArray1<f64>> {
+    PyArray1::from_vec_bound(py, params::default_params())
+}
+
 #[pymodule]
 fn island_sim_core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(simulate, m)?)?;
     m.add_function(wrap_pyfunction!(generate_prediction, m)?)?;
     m.add_function(wrap_pyfunction!(run_grid_search, m)?)?;
+    m.add_function(wrap_pyfunction!(run_cmaes_inference, m)?)?;
+    m.add_function(wrap_pyfunction!(get_param_bounds, m)?)?;
+    m.add_function(wrap_pyfunction!(get_default_params, m)?)?;
     Ok(())
 }

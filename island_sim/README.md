@@ -35,7 +35,7 @@ This will:
 1. Sync completed round history for warm-starting
 2. Load best params from grid search (`data/rounds/best_params.json`)
 3. Query the simulator (50 viewport observations)
-4. Run CMA-ES parameter inference to fine-tune for this round
+4. Run CMA-ES parameter inference to fine-tune for this round (Rust-accelerated)
 5. Generate hybrid predictions (observations + 2000 Monte Carlo sims)
 6. Submit predictions for all 5 seeds
 7. Save observations for potential resubmission
@@ -150,14 +150,14 @@ src/
 ├── scoring.py                # Local scoring (entropy-weighted KL divergence)
 ├── orchestrator.py           # Main pipeline
 ├── simulator/
-│   ├── params.py             # SimParams (36 hidden params with bounds)
+│   ├── params.py             # SimParams (40 hidden params with bounds)
 │   ├── world.py              # Grid utilities
 │   ├── engine.py             # simulate() — Rust or Python backend
 │   └── phases/               # growth, conflict, trade, winter, environment
 ├── inference/
 │   ├── observer.py           # Viewport placement strategy
 │   ├── loss.py               # NLL loss for parameter inference
-│   └── optimizer.py          # CMA-ES parameter search
+│   └── optimizer.py          # CMA-ES parameter search (Rust backend with Python fallback)
 └── prediction/
     ├── monte_carlo.py        # Run N sims → probability tensor (Rust-accelerated)
     ├── observation_model.py  # Aggregate viewport observations
@@ -167,14 +167,15 @@ src/
 rust/                          # Rust simulator backend (PyO3)
 ├── Cargo.toml
 └── src/
-    ├── lib.rs                # PyO3 bindings (simulate, generate_prediction, run_grid_search)
+    ├── lib.rs                # PyO3 bindings (simulate, generate_prediction, run_grid_search, run_cmaes_inference)
     ├── engine.rs             # Main simulation loop
-    ├── params.rs             # SimParams (must match Python exactly)
+    ├── params.rs             # SimParams + shared bounds/defaults (must match Python exactly)
     ├── types.rs              # Settlement, WorldState, terrain codes
     ├── world.rs              # Grid utilities
     ├── scoring.rs            # Entropy-weighted KL divergence
     ├── postprocess.rs        # Static overrides + probability floor
     ├── grid_search.rs        # Parallel grid search with Rayon
+    ├── cmaes_inference.rs    # CMA-ES parameter inference (NLL loss, parallel population eval)
     └── phases/               # growth, conflict, trade, winter, environment
 
 scripts/
