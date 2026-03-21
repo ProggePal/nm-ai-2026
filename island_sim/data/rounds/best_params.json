@@ -83,7 +83,7 @@
     "raid_probability": 0.9908082861932257,
     "wealth_production_rate": 0.10147763534434605
   },
-  "score": 60.210426132720315,
+  "score": 58.89650003810642,
   "param_names": [
     "base_food_production",
     "forest_food_bonus",
@@ -127,6 +127,6 @@
     "wealth_production_rate"
   ],
   "source": "cluster_grid_search",
-  "timestamp": "20260321_192006",
-  "merged_from": "data/grid_search/best_params_vm5.json"
+  "timestamp": "20260321_221609",
+  "merged_from": "/Users/erikankerkilbergskallevold/Develop/git/nm-ai-2026/island_sim/scripts/../data/grid_search/best_params_vm5.json"
 }

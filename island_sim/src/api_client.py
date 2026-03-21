@@ -23,7 +23,7 @@ SUBMIT_INTERVAL = 0.55    # ~1.8 req/sec, safely under 2/sec limit
 
 def _get_session() -> requests.Session:
     """Create an authenticated session."""
-    token = os.environ.get("JWT_TOKEN", "")
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNmFmNDU4NC0xYmNmLTQxZGMtYWU3Yy04NzEyNmVmMmVmMTIiLCJlbWFpbCI6ImVyaWtAYXBwZmFybS5pbyIsImlzX2FkbWluIjpmYWxzZSwiZXhwIjoxNzc0NjI2NjAwfQ.bsUzF162S2DQUbWg_3W8C1ohAj9kI8j1qxrt_ko95cY"
     if not token:
         raise RuntimeError(
             "JWT_TOKEN not set. Set it in .env or as an environment variable."
