@@ -62,6 +62,9 @@ class SimParams:
     harsh_winter_collapse_factor: float = 1.5   # collapse check fires when severity > this * mean
     raid_collapse_threshold: float = 0.3         # accumulated raid damage that triggers collapse
 
+    # --- Raid probability gate ---
+    raid_probability: float = 0.5               # chance a non-desperate settlement attempts a raid
+
     # Bounds: (min, max) for each parameter
     BOUNDS: ClassVar[dict[str, tuple[float, float]]] = {
         # Growth
@@ -108,6 +111,8 @@ class SimParams:
         # Additional collapse triggers
         "harsh_winter_collapse_factor": (1.0, 3.0),
         "raid_collapse_threshold": (0.1, 0.8),
+        # Raid probability gate
+        "raid_probability": (0.1, 1.0),
     }
 
     @classmethod

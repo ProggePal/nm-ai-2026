@@ -46,11 +46,13 @@ pub struct SimParams {
     // Additional collapse triggers (appended to preserve indices)
     pub harsh_winter_collapse_factor: f64,
     pub raid_collapse_threshold: f64,
+    // Raid probability gate
+    pub raid_probability: f64,
 }
 
 impl SimParams {
     /// Number of parameters (must match Python SimParams.ndim()).
-    pub const NDIM: usize = 38;
+    pub const NDIM: usize = 39;
 
     /// Create from a flat array of f64 values. Order must match Python param_names().
     pub fn from_array(arr: &[f64]) -> Self {
@@ -94,6 +96,7 @@ impl SimParams {
             ruin_to_plains_probability: arr[35],
             harsh_winter_collapse_factor: arr[36],
             raid_collapse_threshold: arr[37],
+            raid_probability: arr[38],
         }
     }
 }

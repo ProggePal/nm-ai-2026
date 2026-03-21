@@ -67,8 +67,10 @@ def _try_raid(
     if not targets:
         return
 
-    # Desperate settlements raid more aggressively
+    # Desperate settlements always raid; others roll against raid_probability
     is_desperate = attacker.food < params.raid_desperation_threshold
+    if not is_desperate and rng.random() >= params.raid_probability:
+        return
     desperation_bonus = 1.5 if is_desperate else 1.0
 
     # Pick a target (prefer weakest)

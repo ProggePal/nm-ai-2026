@@ -41,7 +41,7 @@ fn try_raid<R: Rng>(
     state: &mut WorldState,
     attacker_idx: usize,
     params: &SimParams,
-    _rng: &mut R,
+    rng: &mut R,
     cell_map: &mut HashMap<(i32, i32), usize>,
 ) {
     let attacker = &state.settlements[attacker_idx];
@@ -70,6 +70,12 @@ fn try_raid<R: Rng>(
 
     if targets.is_empty() { return; }
 
+    // Desperate settlements always raid; others roll against raid_probability
+    let is_desperate = attacker_food < params.raid_desperation_threshold;
+    if !is_desperate && rng.gen::<f64>() >= params.raid_probability {
+        return;
+    }
+
     // Sort by defense (pick weakest)
     targets.sort_by(|&a, &b| {
         state.settlements[a].defense.partial_cmp(&state.settlements[b].defense).unwrap()
@@ -81,7 +87,6 @@ fn try_raid<R: Rng>(
     let war_key = (attacker_owner.min(target_owner), attacker_owner.max(target_owner));
     state.war_pairs.insert(war_key);
 
-    let is_desperate = attacker_food < params.raid_desperation_threshold;
     let desperation_bonus = if is_desperate { 1.5 } else { 1.0 };
     let attack_strength = state.settlements[attacker_idx].population * params.raid_strength_factor * desperation_bonus;
 
