@@ -112,38 +112,21 @@ tar czf "$TMPTAR" \
 # --- Step 4: Upload, build, and launch search (parallel per VM) ---
 # Each VM does everything in one SSH session: extract, build, start search.
 # No cross-VM dependencies — each VM is fully independent.
+# Uses a function with local vars to avoid race conditions in parallel subshells.
+setup_vm() {
+    local vm_name="$1" vm_zone="$2" seed="$3"
+    echo "  [$vm_name] Uploading code..."
+    gcloud compute scp "$TMPTAR" "$vm_name":~/island_sim.tar.gz --zone="$vm_zone"
+
+    echo "  [$vm_name] Building and launching (seed=$seed)..."
+    gcloud compute ssh "$vm_name" --zone="$vm_zone" -- \
+        "pkill -f grid_search_rust 2>/dev/null; cd ~ && rm -rf island_sim && tar xzf island_sim.tar.gz && source .cargo/env && export VIRTUAL_ENV=~/env && export PATH=\$VIRTUAL_ENV/bin:\$PATH && cd island_sim/rust && maturin develop --release 2>&1 | tail -1 && python -c 'import island_sim_core; print(\"Rust OK\")' && cd ~/island_sim && nohup python -u scripts/grid_search_rust.py --candidates $CANDIDATES --mc-runs $MC_RUNS --top $TOP --seed $seed > search.log 2>&1 & echo PID: \$!"
+    echo "  [$vm_name] Done!"
+}
+
 echo "=== Setting up and launching on all VMs ==="
 for idx in $(seq 0 $(( NUM_VMS - 1 ))); do
-    VM_NAME="island-search-${idx}"
-    VM_ZONE="${ALL_ZONES[$idx]}"
-    SEED="$idx"
-    (
-        echo "  [$VM_NAME] Uploading code..."
-        gcloud compute scp "$TMPTAR" "$VM_NAME":~/island_sim.tar.gz --zone="$VM_ZONE"
-
-        echo "  [$VM_NAME] Building and launching (seed=$SEED)..."
-        gcloud compute ssh "$VM_NAME" --zone="$VM_ZONE" -- bash -s <<REMOTE_ALL
-cd ~
-rm -rf ~/island_sim
-tar xzf island_sim.tar.gz
-source ~/.cargo/env
-export VIRTUAL_ENV=~/env
-export PATH="\$VIRTUAL_ENV/bin:\$PATH"
-cd ~/island_sim/rust
-maturin develop --release 2>&1
-python -c "import island_sim_core; print('Rust backend OK')"
-cd ~/island_sim
-nohup python -u scripts/grid_search_rust.py \
-    --candidates $CANDIDATES \
-    --mc-runs $MC_RUNS \
-    --top $TOP \
-    --seed $SEED \
-    > search.log 2>&1 &
-echo "PID: \$!"
-echo "Search launched on $VM_NAME with seed $SEED"
-REMOTE_ALL
-        echo "  [$VM_NAME] Done!"
-    ) &
+    setup_vm "island-search-${idx}" "${ALL_ZONES[$idx]}" "$idx" &
 done
 wait
 rm "$TMPTAR"

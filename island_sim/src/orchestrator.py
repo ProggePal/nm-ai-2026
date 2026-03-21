@@ -268,7 +268,7 @@ def main() -> None:
             params = infer_params(
                 observations,
                 initial_states,
-                num_runs_per_eval=100,
+                num_runs_per_eval=50,
                 max_evaluations=400,
                 warm_start=warm_params,
             )
@@ -310,7 +310,7 @@ def main() -> None:
                 params = infer_params(
                     observations,
                     initial_states,
-                    num_runs_per_eval=100,
+                    num_runs_per_eval=50,
                     max_evaluations=600,
                     warm_start=warm_params,
                 )
