@@ -14,7 +14,7 @@ from ..world import (
     place_settlement,
 )
 
-MAX_ALIVE_SETTLEMENTS = 150  # Safety cap
+MAX_ALIVE_SETTLEMENTS = 800  # Safety cap (must match rust/src/phases/growth.rs)
 
 
 def run_growth(state: WorldState, params: SimParams, rng: np.random.Generator) -> None:
@@ -111,39 +111,42 @@ def _try_expand(
     params: SimParams,
     rng: np.random.Generator,
 ) -> None:
-    """Found a new settlement if population exceeds expansion threshold."""
-    if settlement.population < params.expansion_threshold:
-        return
+    """Found new settlements if population exceeds expansion threshold.
 
-    # Safety cap
-    alive_count = sum(1 for s in state.settlements if s.alive)
-    if alive_count >= MAX_ALIVE_SETTLEMENTS:
-        return
-
+    A settlement can found multiple children per turn if its population
+    is far enough above the threshold — each expansion costs population,
+    so the settlement keeps expanding until it drops below the threshold.
+    """
     radius = int(params.expansion_range)
-    candidates = find_buildable_cells(state, settlement.x, settlement.y, radius)
-    if not candidates:
-        return
 
-    # Pick a random buildable cell
-    idx = rng.integers(0, len(candidates))
-    nx, ny = candidates[idx]
+    while settlement.population >= params.expansion_threshold:
+        alive_count = sum(1 for s in state.settlements if s.alive)
+        if alive_count >= MAX_ALIVE_SETTLEMENTS:
+            return
 
-    # Transfer population — parent loses more than child gets (cost of expansion)
-    transfer_pop = settlement.population * params.expansion_pop_transfer
-    settlement.population -= transfer_pop
+        candidates = find_buildable_cells(state, settlement.x, settlement.y, radius)
+        if not candidates:
+            return
 
-    # New settlement starts small
-    is_port = is_coastal(state, nx, ny) and settlement.has_port
-    place_settlement(
-        state,
-        nx,
-        ny,
-        owner_id=settlement.owner_id,
-        population=transfer_pop * 0.7,  # Some people lost in transit
-        food=0.3,
-        wealth=0.0,
-        defense=0.2,
-        tech_level=settlement.tech_level * 0.3,
-        has_port=is_port,
-    )
+        # Pick a random buildable cell
+        idx = rng.integers(0, len(candidates))
+        nx, ny = candidates[idx]
+
+        # Transfer population — parent loses more than child gets (cost of expansion)
+        transfer_pop = settlement.population * params.expansion_pop_transfer
+        settlement.population -= transfer_pop
+
+        # New settlement starts small
+        is_port = is_coastal(state, nx, ny) and settlement.has_port
+        place_settlement(
+            state,
+            nx,
+            ny,
+            owner_id=settlement.owner_id,
+            population=transfer_pop * 0.7,  # Some people lost in transit
+            food=0.3,
+            wealth=0.0,
+            defense=0.2,
+            tech_level=settlement.tech_level * 0.3,
+            has_port=is_port,
+        )

@@ -4,7 +4,7 @@ use crate::types::*;
 use crate::world::*;
 
 
-const MAX_ALIVE_SETTLEMENTS: usize = 150;
+const MAX_ALIVE_SETTLEMENTS: usize = 800;
 
 pub fn run_growth<R: Rng>(state: &mut WorldState, params: &SimParams, rng: &mut R) {
     let alive_indices: Vec<usize> = state.settlements.iter()
@@ -87,39 +87,40 @@ fn build_longship(state: &mut WorldState, idx: usize, params: &SimParams) {
 }
 
 fn try_expand<R: Rng>(state: &mut WorldState, idx: usize, params: &SimParams, rng: &mut R) {
-    if state.settlements[idx].population < params.expansion_threshold {
-        return;
-    }
-
-    let alive_count = state.settlements.iter().filter(|s| s.alive).count();
-    if alive_count >= MAX_ALIVE_SETTLEMENTS {
-        return;
-    }
-
-    let sx = state.settlements[idx].x;
-    let sy = state.settlements[idx].y;
     let radius = params.expansion_range as i32;
-    let candidates = find_buildable_cells(state, sx, sy, radius);
-    if candidates.is_empty() { return; }
 
-    let choice = rng.gen_range(0..candidates.len());
-    let (nx, ny) = candidates[choice];
+    // A settlement can found multiple children per turn if population
+    // is far above the threshold — each expansion costs population.
+    while state.settlements[idx].population >= params.expansion_threshold {
+        let alive_count = state.settlements.iter().filter(|s| s.alive).count();
+        if alive_count >= MAX_ALIVE_SETTLEMENTS {
+            return;
+        }
 
-    let transfer_pop = state.settlements[idx].population * params.expansion_pop_transfer;
-    state.settlements[idx].population -= transfer_pop;
+        let sx = state.settlements[idx].x;
+        let sy = state.settlements[idx].y;
+        let candidates = find_buildable_cells(state, sx, sy, radius);
+        if candidates.is_empty() { return; }
 
-    let parent_has_port = state.settlements[idx].has_port;
-    let parent_tech = state.settlements[idx].tech_level;
-    let owner = state.settlements[idx].owner_id;
-    let is_port = is_coastal(state, nx, ny) && parent_has_port;
+        let choice = rng.gen_range(0..candidates.len());
+        let (nx, ny) = candidates[choice];
 
-    place_settlement(
-        state, nx, ny, owner,
-        transfer_pop * 0.7,
-        0.3,   // food
-        0.0,   // wealth
-        0.2,   // defense
-        parent_tech * 0.3,
-        is_port,
-    );
+        let transfer_pop = state.settlements[idx].population * params.expansion_pop_transfer;
+        state.settlements[idx].population -= transfer_pop;
+
+        let parent_has_port = state.settlements[idx].has_port;
+        let parent_tech = state.settlements[idx].tech_level;
+        let owner = state.settlements[idx].owner_id;
+        let is_port = is_coastal(state, nx, ny) && parent_has_port;
+
+        place_settlement(
+            state, nx, ny, owner,
+            transfer_pop * 0.7,
+            0.3,   // food
+            0.0,   // wealth
+            0.2,   // defense
+            parent_tech * 0.3,
+            is_port,
+        );
+    }
 }

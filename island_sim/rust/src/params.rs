@@ -146,7 +146,7 @@ pub fn default_params() -> Vec<f64> {
 /// Lower bounds for each parameter (must match Python SimParams.BOUNDS).
 pub fn bounds_lower() -> Vec<f64> {
     vec![
-        0.05, 0.02, 0.0, 0.1, 0.01, 0.2, 1.0, 1.0, 0.5, 2.0, 1.0, 0.1,
+        0.05, 0.02, 0.0, 0.1, 0.01, 0.2, 1.0, 1.0, 0.5, 0.5, 1.0, 0.05,
         1.0, 2.0, 0.05, 0.1, 0.05, 0.05, 0.05, 0.05,
         1.0, 0.02, 0.02, 0.01,
         0.1, 0.01, 0.05, 0.05, 0.0, 1.0, 0.1,
@@ -160,7 +160,7 @@ pub fn bounds_lower() -> Vec<f64> {
 /// Upper bounds for each parameter (must match Python SimParams.BOUNDS).
 pub fn bounds_upper() -> Vec<f64> {
     vec![
-        1.5, 1.0, 0.5, 1.5, 0.3, 3.0, 10.0, 8.0, 5.0, 12.0, 6.0, 0.6,
+        1.5, 1.0, 0.5, 1.5, 0.5, 3.0, 15.0, 8.0, 5.0, 12.0, 8.0, 0.6,
         5.0, 10.0, 1.0, 1.5, 0.7, 0.6, 0.7, 0.5,
         8.0, 0.6, 0.5, 0.4,
         2.0, 0.8, 1.5, 0.9, 1.0, 6.0, 0.8,
