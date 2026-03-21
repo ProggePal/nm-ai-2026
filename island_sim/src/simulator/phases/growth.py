@@ -24,6 +24,7 @@ def run_growth(state: WorldState, params: SimParams, rng: np.random.Generator) -
 
     for settlement in alive:
         _produce_and_consume_food(settlement, state, params)
+        _produce_wealth(settlement, params)
         _grow_population(settlement, state, params)
         _develop_port(settlement, state, params)
         _build_longship(settlement, params)
@@ -49,6 +50,12 @@ def _produce_and_consume_food(
     consumption = settlement.population * params.food_consumption_rate
     settlement.food += production - consumption
     settlement.food = max(settlement.food, 0.0)
+
+
+def _produce_wealth(settlement: Settlement, params: SimParams) -> None:
+    """Prosperous settlements generate wealth from surplus food."""
+    if settlement.food > params.pop_growth_food_threshold:
+        settlement.wealth += params.wealth_production_rate * settlement.population
 
 
 def _grow_population(

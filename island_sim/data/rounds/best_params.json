@@ -38,7 +38,8 @@
     0.18602545910697124,
     1.5,
     0.3,
-    0.5
+    0.5,
+    0.05
   ],
   "named_params": {
     "base_food_production": 0.8319666203109993,
@@ -79,7 +80,8 @@
     "ruin_to_plains_probability": 0.18602545910697124,
     "harsh_winter_collapse_factor": 1.5,
     "raid_collapse_threshold": 0.3,
-    "raid_probability": 0.5
+    "raid_probability": 0.5,
+    "wealth_production_rate": 0.05
   },
   "score": 56.3026814425915,
   "param_names": [
@@ -121,7 +123,8 @@
     "ruin_to_plains_probability",
     "harsh_winter_collapse_factor",
     "raid_collapse_threshold",
-    "raid_probability"
+    "raid_probability",
+    "wealth_production_rate"
   ],
   "source": "grid_search_rust",
   "timestamp": "20260321_144259"

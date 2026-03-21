@@ -65,6 +65,9 @@ class SimParams:
     # --- Raid probability gate ---
     raid_probability: float = 0.5               # chance a non-desperate settlement attempts a raid
 
+    # --- Wealth production ---
+    wealth_production_rate: float = 0.05        # wealth per unit pop when food surplus exists
+
     # Bounds: (min, max) for each parameter
     BOUNDS: ClassVar[dict[str, tuple[float, float]]] = {
         # Growth
@@ -113,6 +116,8 @@ class SimParams:
         "raid_collapse_threshold": (0.1, 0.8),
         # Raid probability gate
         "raid_probability": (0.1, 1.0),
+        # Wealth production
+        "wealth_production_rate": (0.01, 0.3),
     }
 
     @classmethod

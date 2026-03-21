@@ -15,6 +15,7 @@ pub fn run_growth<R: Rng>(state: &mut WorldState, params: &SimParams, rng: &mut 
 
     for &idx in &alive_indices {
         produce_and_consume_food(state, idx, params);
+        produce_wealth(state, idx, params);
         grow_population(state, idx, params);
         develop_port(state, idx, params);
         build_longship(state, idx, params);
@@ -40,6 +41,13 @@ fn produce_and_consume_food(state: &mut WorldState, idx: usize, params: &SimPara
     let consumption = s.population * params.food_consumption_rate;
     s.food += production - consumption;
     if s.food < 0.0 { s.food = 0.0; }
+}
+
+fn produce_wealth(state: &mut WorldState, idx: usize, params: &SimParams) {
+    let s = &mut state.settlements[idx];
+    if s.food > params.pop_growth_food_threshold {
+        s.wealth += params.wealth_production_rate * s.population;
+    }
 }
 
 fn grow_population(state: &mut WorldState, idx: usize, params: &SimParams) {
