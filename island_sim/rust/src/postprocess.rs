@@ -1,45 +1,72 @@
-/// Post-processing: static cell overrides, probability floor, normalization.
+/// Post-processing: smart probability floor + static overrides.
 /// Matches Python src/prediction/postprocess.py.
 
 use crate::types::*;
 
 const PROB_FLOOR: f64 = 0.01;
-const STATIC_CONFIDENCE: f64 = 0.98;
+const CLASS_EMPTY: usize = 0;
+const CLASS_SETTLEMENT: usize = 1;
+const CLASS_PORT: usize = 2;
+const CLASS_RUIN: usize = 3;
+const CLASS_FOREST: usize = 4;
+const CLASS_MOUNTAIN: usize = 5;
+
+/// Check if cell (x, y) is adjacent to ocean.
+fn is_coastal(grid: &[Vec<i32>], x: usize, y: usize, height: usize, width: usize) -> bool {
+    for dy in -1i32..=1 {
+        for dx in -1i32..=1 {
+            let ny = y as i32 + dy;
+            let nx = x as i32 + dx;
+            if ny >= 0 && ny < height as i32 && nx >= 0 && nx < width as i32 {
+                if grid[ny as usize][nx as usize] == OCEAN {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
 
 /// Apply postprocessing to a flat prediction array (H*W*6).
-/// Returns a new processed array.
 pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize, width: usize) -> Vec<f64> {
     let mut result = prediction.to_vec();
 
-    // Static cell overrides
     for y in 0..height {
         for x in 0..width {
             let terrain = initial_state.grid[y][x];
             let base = (y * width + x) * NUM_CLASSES;
 
             if terrain == OCEAN {
-                make_static_distribution(&mut result[base..base + NUM_CLASSES], 0); // CLASS_EMPTY
-            } else if terrain == MOUNTAIN {
-                make_static_distribution(&mut result[base..base + NUM_CLASSES], 5); // CLASS_MOUNTAIN
+                make_exact_static(&mut result[base..base + NUM_CLASSES], CLASS_EMPTY);
+                continue;
             }
-        }
-    }
+            if terrain == MOUNTAIN {
+                make_exact_static(&mut result[base..base + NUM_CLASSES], CLASS_MOUNTAIN);
+                continue;
+            }
 
-    // Apply probability floor
-    for val in result.iter_mut() {
-        if *val < PROB_FLOOR {
-            *val = PROB_FLOOR;
-        }
-    }
+            // Dynamic cell: zero out impossible classes
+            result[base + CLASS_MOUNTAIN] = 0.0;
 
-    // Renormalize each cell to sum to 1.0
-    for y in 0..height {
-        for x in 0..width {
-            let base = (y * width + x) * NUM_CLASSES;
+            let coastal = is_coastal(&initial_state.grid, x, y, height, width);
+            if !coastal {
+                result[base + CLASS_PORT] = 0.0;
+            }
+
+            // Apply floor to plausible classes
+            for cls in 0..NUM_CLASSES {
+                if cls == CLASS_MOUNTAIN { continue; }
+                if cls == CLASS_PORT && !coastal { continue; }
+                if result[base + cls] < PROB_FLOOR {
+                    result[base + cls] = PROB_FLOOR;
+                }
+            }
+
+            // Normalize
             let sum: f64 = result[base..base + NUM_CLASSES].iter().sum();
             if sum > 1e-10 {
-                for c in 0..NUM_CLASSES {
-                    result[base + c] /= sum;
+                for cls in 0..NUM_CLASSES {
+                    result[base + cls] /= sum;
                 }
             }
         }
@@ -48,9 +75,8 @@ pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize
     result
 }
 
-fn make_static_distribution(dist: &mut [f64], dominant_class: usize) {
-    let other = (1.0 - STATIC_CONFIDENCE) / (NUM_CLASSES - 1) as f64;
+fn make_exact_static(dist: &mut [f64], dominant_class: usize) {
     for c in 0..NUM_CLASSES {
-        dist[c] = if c == dominant_class { STATIC_CONFIDENCE } else { other };
+        dist[c] = if c == dominant_class { 1.0 } else { 0.0 };
     }
 }

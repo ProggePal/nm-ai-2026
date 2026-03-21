@@ -34,6 +34,7 @@ pub struct SimParams {
     pub winter_severity_variance: f64,
     pub collapse_food_threshold: f64,
     pub collapse_probability: f64,
+    pub survival_bonus: f64,
     pub dispersal_range: f64,
     pub dispersal_fraction: f64,
     // Environment
@@ -46,7 +47,7 @@ pub struct SimParams {
 
 impl SimParams {
     /// Number of parameters (must match Python SimParams.ndim()).
-    pub const NDIM: usize = 35;
+    pub const NDIM: usize = 36;
 
     /// Create from a flat array of f64 values. Order must match Python param_names().
     pub fn from_array(arr: &[f64]) -> Self {
@@ -80,13 +81,14 @@ impl SimParams {
             winter_severity_variance: arr[25],
             collapse_food_threshold: arr[26],
             collapse_probability: arr[27],
-            dispersal_range: arr[28],
-            dispersal_fraction: arr[29],
-            forest_reclaim_probability: arr[30],
-            ruin_rebuild_range: arr[31],
-            ruin_rebuild_threshold: arr[32],
-            ruin_rebuild_fraction: arr[33],
-            ruin_to_plains_probability: arr[34],
+            survival_bonus: arr[28],
+            dispersal_range: arr[29],
+            dispersal_fraction: arr[30],
+            forest_reclaim_probability: arr[31],
+            ruin_rebuild_range: arr[32],
+            ruin_rebuild_threshold: arr[33],
+            ruin_rebuild_fraction: arr[34],
+            ruin_to_plains_probability: arr[35],
         }
     }
 }

@@ -54,13 +54,18 @@ def _check_collapse(
         return
 
     # Collapse probability increases the more food-deprived the settlement is
-    # Base probability when food == 0, scales down as food approaches threshold
     food_ratio = settlement.food / max(params.collapse_food_threshold, 0.01)
     adjusted_prob = params.collapse_probability * (1.0 - food_ratio)
 
     # Small settlements are more vulnerable
     if settlement.population < 0.5:
         adjusted_prob *= 1.5
+
+    # Large, established settlements resist collapse (survival bonus)
+    # population of 3+ halves the probability, 6+ quarters it
+    if settlement.population > 1.0:
+        survival_factor = 1.0 / (1.0 + (settlement.population - 1.0) * params.survival_bonus)
+        adjusted_prob *= survival_factor
 
     adjusted_prob = min(adjusted_prob, 0.95)
 

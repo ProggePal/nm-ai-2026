@@ -55,6 +55,10 @@ def empirical_distribution(
 ) -> np.ndarray:
     """Convert observation counts to smoothed probability distributions.
 
+    Note: This uses Jeffreys prior (alpha=0.5) for smoothing raw observation counts.
+    This differs from inference/loss.py which smooths MC prediction probabilities —
+    the two serve different purposes (observation aggregation vs loss computation).
+
     Uses additive (Laplace) smoothing so we never assign zero probability.
 
     Args:

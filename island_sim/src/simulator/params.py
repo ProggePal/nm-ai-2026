@@ -47,6 +47,7 @@ class SimParams:
     winter_severity_variance: float = 0.3
     collapse_food_threshold: float = 0.4
     collapse_probability: float = 0.4
+    survival_bonus: float = 0.3           # large settlements resist collapse (higher = stickier)
     dispersal_range: float = 3.0
     dispersal_fraction: float = 0.5
 
@@ -91,6 +92,7 @@ class SimParams:
         "winter_severity_variance": (0.01, 0.8),
         "collapse_food_threshold": (0.05, 1.5),
         "collapse_probability": (0.05, 0.9),
+        "survival_bonus": (0.0, 1.0),
         "dispersal_range": (1.0, 6.0),
         "dispersal_fraction": (0.1, 0.8),
         # Environment
@@ -124,6 +126,21 @@ class SimParams:
     def default(cls) -> SimParams:
         """Return default parameters."""
         return cls()
+
+    def to_dict(self) -> dict[str, float]:
+        """Convert params to a named dictionary (insertion-safe serialization)."""
+        return {name: getattr(self, name) for name in self.param_names()}
+
+    @classmethod
+    def from_dict(cls, named: dict[str, float]) -> SimParams:
+        """Create SimParams from a named dictionary, clamping to bounds."""
+        kwargs = {}
+        for name in cls.param_names():
+            if name in named:
+                lo, hi = cls.BOUNDS[name]
+                kwargs[name] = float(np.clip(named[name], lo, hi))
+            # Missing params use dataclass defaults
+        return cls(**kwargs)
 
     @classmethod
     def bounds_arrays(cls) -> tuple[np.ndarray, np.ndarray]:

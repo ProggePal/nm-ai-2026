@@ -201,7 +201,7 @@ def main() -> None:
             gt = seed_data["ground_truth"]
             initial_state = round_data["initial_states"][seed_idx]
             raw_pred = generate_prediction(
-                initial_state, params, num_runs=20, base_seed=seed_idx * 100000 + 999
+                initial_state, params, num_runs=NUM_MC_RUNS, base_seed=seed_idx * 100000 + 999
             )
             pred = postprocess(raw_pred, initial_state)
             bias = _per_class_bias(gt, pred, initial_state)

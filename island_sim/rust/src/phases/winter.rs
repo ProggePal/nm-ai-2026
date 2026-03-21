@@ -48,6 +48,11 @@ fn check_collapse<R: Rng>(state: &mut WorldState, idx: usize, params: &SimParams
     if s.population < 0.5 {
         adjusted_prob *= 1.5;
     }
+    // Large established settlements resist collapse
+    if s.population > 1.0 {
+        let survival_factor = 1.0 / (1.0 + (s.population - 1.0) * params.survival_bonus);
+        adjusted_prob *= survival_factor;
+    }
     adjusted_prob = adjusted_prob.min(0.95);
 
     if rng.gen::<f64>() < adjusted_prob {

@@ -31,8 +31,8 @@ def run_trade(state: WorldState, params: SimParams, rng: np.random.Generator) ->
                 continue
 
             pair_key = (
-                min(id(port_a), id(port_b)),
-                max(id(port_a), id(port_b)),
+                min((port_a.x, port_a.y), (port_b.x, port_b.y)),
+                max((port_a.x, port_a.y), (port_b.x, port_b.y)),
             )
             if pair_key in traded:
                 continue

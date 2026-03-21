@@ -180,7 +180,7 @@ fn default_params() -> Vec<f64> {
         0.4, 0.25, 0.08, 0.2, 0.15, 0.6, 6.0, 2.5, 1.5, 2.0, 3.0, 0.35,  // growth
         2.0, 5.0, 0.3, 0.5, 0.3, 0.25, 0.3, 0.15,                           // conflict
         4.0, 0.15, 0.1, 0.1,                                                   // trade
-        0.5, 0.3, 0.4, 0.4, 3.0, 0.5,                                         // winter
+        0.5, 0.3, 0.4, 0.4, 0.3, 3.0, 0.5,                                   // winter (+survival_bonus)
         0.1, 4.0, 2.5, 0.2, 0.05,                                              // environment
     ]
 }
@@ -190,7 +190,7 @@ fn bounds_lower() -> Vec<f64> {
         0.05, 0.02, 0.0, 0.1, 0.01, 0.2, 1.0, 1.0, 0.5, 2.0, 1.0, 0.1,
         1.0, 2.0, 0.05, 0.1, 0.05, 0.05, 0.05, 0.05,
         1.0, 0.02, 0.02, 0.01,
-        0.1, 0.01, 0.05, 0.05, 1.0, 0.1,
+        0.1, 0.01, 0.05, 0.05, 0.0, 1.0, 0.1,
         0.01, 1.0, 1.0, 0.05, 0.01,
     ]
 }
@@ -200,7 +200,7 @@ fn bounds_upper() -> Vec<f64> {
         1.5, 1.0, 0.5, 1.5, 0.3, 3.0, 10.0, 8.0, 5.0, 12.0, 6.0, 0.6,
         5.0, 10.0, 1.0, 1.5, 0.7, 0.6, 0.7, 0.5,
         8.0, 0.6, 0.5, 0.4,
-        2.0, 0.8, 1.5, 0.9, 6.0, 0.8,
+        2.0, 0.8, 1.5, 0.9, 1.0, 6.0, 0.8,
         0.5, 6.0, 8.0, 0.5, 0.3,
     ]
 }
@@ -220,6 +220,7 @@ impl SimParams {
             self.tech_diffusion_rate,
             self.winter_severity_mean, self.winter_severity_variance,
             self.collapse_food_threshold, self.collapse_probability,
+            self.survival_bonus,
             self.dispersal_range, self.dispersal_fraction,
             self.forest_reclaim_probability, self.ruin_rebuild_range,
             self.ruin_rebuild_threshold, self.ruin_rebuild_fraction,

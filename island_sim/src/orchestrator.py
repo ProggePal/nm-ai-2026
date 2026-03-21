@@ -99,8 +99,14 @@ def load_history_params() -> SimParams | None:
 
     try:
         data = json.loads(params_path.read_text())
-        arr = np.array(data["params"])
-        params = SimParams.from_array(arr)
+        # Support both named dict format (new) and array format (legacy)
+        if "named_params" in data:
+            params = SimParams.from_dict(data["named_params"])
+        elif "params" in data:
+            arr = np.array(data["params"])
+            params = SimParams.from_array(arr)
+        else:
+            return None
         print(f"  Loaded warm-start params (score={data.get('score', '?')})")
         return params
     except Exception:
@@ -161,6 +167,7 @@ def save_params(params: SimParams, round_id: str, score: float | None = None) ->
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     data = {
         "params": params.to_array().tolist(),
+        "named_params": params.to_dict(),
         "score": score,
         "param_names": SimParams.param_names(),
         "round_id": round_id,

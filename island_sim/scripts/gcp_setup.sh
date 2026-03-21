@@ -23,7 +23,14 @@ gcloud compute instances create "$VM_NAME" \
 
 echo ""
 echo "=== Step 2: Wait for VM to be ready ==="
-sleep 15
+echo "Waiting for SSH to become available..."
+for i in $(seq 1 12); do
+    if gcloud compute ssh "$VM_NAME" --zone="$ZONE" -- "echo ready" 2>/dev/null; then
+        break
+    fi
+    echo "  Attempt $i/12 — retrying in 10s..."
+    sleep 10
+done
 
 echo ""
 echo "=== Step 3: Install Python, Rust, and dependencies ==="
@@ -82,7 +89,7 @@ echo "1. SSH into the VM:"
 echo "   gcloud compute ssh $VM_NAME --zone=$ZONE"
 echo ""
 echo "2. Run the grid search (nohup so it survives SSH disconnect):"
-echo "   cd ~/island_sim && nohup ~/env/bin/python -u scripts/grid_search.py --workers 220 --candidates 50000 --mc-runs 50 > search.log 2>&1 &"
+echo "   cd ~/island_sim && nohup ~/env/bin/python -u scripts/grid_search_rust.py --candidates 100000 --mc-runs 50 --top 20 > search.log 2>&1 &"
 echo ""
 echo "3. Check progress:"
 echo "   tail -f ~/island_sim/search.log"

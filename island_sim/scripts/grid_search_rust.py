@@ -118,8 +118,10 @@ def main():
     # Save best params
     best = results[0]
     best_params_file = DATA_DIR / "best_params.json"
+    best_sim = SimParams.from_array(np.array(best["params"]))
     best_params_file.write_text(json.dumps({
         "params": list(best["params"]),
+        "named_params": best_sim.to_dict(),
         "score": best["mean_score"],
         "param_names": SimParams.param_names(),
         "source": "grid_search_rust",
@@ -128,7 +130,6 @@ def main():
     print(f"Best params saved to {best_params_file}")
     print(f"Best mean score: {best['mean_score']:.1f}")
 
-    best_sim = SimParams.from_array(np.array(best["params"]))
     print(f"\nBest params:")
     for name in SimParams.param_names():
         print(f"  {name}: {getattr(best_sim, name):.4f}")
