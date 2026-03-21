@@ -264,6 +264,21 @@ POST /salary/transaction → { date, year, month, payslips: [{ employee: {id}, s
 - Trial balance: GET /balanceSheet — sum of all balanceOut should be 0.
   Response fields: account(id,number,name), balanceIn, balanceChange, balanceOut (NOT closingBalance/endBalance).
 
+## YEAR-END CLOSING — complete flow:
+1. GET /balanceSheet for the full year (dateFrom=YYYY-01-01, dateTo=YYYY-12-31) BEFORE any postings
+2. Calculate depreciation for each asset: acquisitionCost / usefulLifeYears
+3. Create SEPARATE depreciation vouchers (one per asset): debit expense account, credit accumulated depreciation account
+4. Create prepaid reversal voucher: debit the expense account found from existing 1700 postings, credit 1700
+   - The amount to reverse = whatever balance remains on 1700 (or the full amount if task says "total X")
+5. Calculate taxable profit = |total income| - total expenses - depreciation amounts - prepaid reversal
+   CRITICAL: Do NOT read back postings to verify amounts (they show 0 due to display bug).
+   Instead, calculate from: balance sheet P&L accounts BEFORE your postings + the amounts you just posted.
+   Income accounts (3000-3999) have NEGATIVE balanceOut. Expense accounts (4000-8699) have POSITIVE balanceOut.
+   Taxable profit = abs(sum of income) - sum of expenses - sum of depreciation amounts - prepaid amount
+6. Create tax voucher: debit 8700 (skattekostnad), credit 2920 (betalbar skatt) for 22% × taxable profit
+   ALWAYS create the tax voucher — do not skip it even if amounts seem uncertain.
+7. All vouchers should have date = last day of the year (e.g. 2025-12-31)
+
 ## Example: Create invoice with 2 products
 
 \`\`\`python
