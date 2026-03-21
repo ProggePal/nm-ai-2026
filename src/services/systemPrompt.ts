@@ -221,7 +221,11 @@ Common OUTGOING VAT types (for invoices/sales):
   \`api.put('/employee/entitlement/:grantEntitlementsByTemplate', {}, { employeeId, template: 'ALL_PRIVILEGES' })\`
 
 **Project activity** — link activity to project (2 steps):
-  1. First create the activity: \`await tripletex_post("/activity", {"name": "Activity name", "activityType": "PROJECT_GENERAL_ACTIVITY"})\`
+  1. Search existing activities first, create only if not found:
+     \`existing = await tripletex_get("/activity", {"name": activityName, "fields": "id,name"})\`
+     If found, use existing id. If not found:
+     \`activity = await tripletex_post("/activity", {"name": activityName, "activityType": "PROJECT_GENERAL_ACTIVITY"})\`
+     Creating a duplicate name causes 422 "Navnet er i bruk"!
   2. Then link it to the project: \`await tripletex_post("/project/projectActivity", {"project": {"id": projectId}, "activity": {"id": activityId}})\`
   PATH IS /project/projectActivity (NOT /project/{id}/projectActivity!)
   The body needs activity:{id} referencing an existing activity — NOT a "name" field.
