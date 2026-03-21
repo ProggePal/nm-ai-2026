@@ -3,7 +3,11 @@
 
 use crate::types::*;
 
-const PROB_FLOOR: f64 = 0.01;
+// Two-tier probability floor: near settlements vs remote
+const PROB_FLOOR: f64 = 0.005;
+const PROB_FLOOR_REMOTE: f64 = 0.001;
+const SETTLEMENT_PROXIMITY: i32 = 6;
+
 const CLASS_EMPTY: usize = 0;
 const CLASS_SETTLEMENT: usize = 1;
 const CLASS_PORT: usize = 2;
@@ -31,6 +35,21 @@ fn is_coastal(grid: &[Vec<i32>], x: usize, y: usize, height: usize, width: usize
 pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize, width: usize) -> Vec<f64> {
     let mut result = prediction.to_vec();
 
+    // Precompute near-settlement mask
+    let mut near_settlement = vec![vec![false; width]; height];
+    for s in &initial_state.settlements {
+        if !s.alive { continue; }
+        for dy in -SETTLEMENT_PROXIMITY..=SETTLEMENT_PROXIMITY {
+            for dx in -SETTLEMENT_PROXIMITY..=SETTLEMENT_PROXIMITY {
+                let ny = s.y + dy;
+                let nx = s.x + dx;
+                if ny >= 0 && ny < height as i32 && nx >= 0 && nx < width as i32 {
+                    near_settlement[ny as usize][nx as usize] = true;
+                }
+            }
+        }
+    }
+
     for y in 0..height {
         for x in 0..width {
             let terrain = initial_state.grid[y][x];
@@ -53,12 +72,22 @@ pub fn postprocess(prediction: &[f64], initial_state: &WorldState, height: usize
                 result[base + CLASS_PORT] = 0.0;
             }
 
+            let is_near = near_settlement[y][x];
+
             // Apply floor to plausible classes
             for cls in 0..NUM_CLASSES {
                 if cls == CLASS_MOUNTAIN { continue; }
                 if cls == CLASS_PORT && !coastal { continue; }
-                if result[base + cls] < PROB_FLOOR {
-                    result[base + cls] = PROB_FLOOR;
+
+                // Settlement, Port, Ruin use remote floor when far from settlements
+                let floor = if (cls == CLASS_SETTLEMENT || cls == CLASS_PORT || cls == CLASS_RUIN) && !is_near {
+                    PROB_FLOOR_REMOTE
+                } else {
+                    PROB_FLOOR
+                };
+
+                if result[base + cls] < floor {
+                    result[base + cls] = floor;
                 }
             }
 

@@ -8,15 +8,18 @@ from ..constants import (
     CLASS_EMPTY,
     CLASS_MOUNTAIN,
     CLASS_PORT,
-    FOREST,
+    CLASS_RUIN,
+    CLASS_SETTLEMENT,
     MOUNTAIN,
     NUM_CLASSES,
     OCEAN,
 )
 from ..types import WorldState
 
-# Probability floor to prevent catastrophic KL divergence
-PROB_FLOOR = 0.01
+# Two-tier probability floor: near settlements vs remote
+PROB_FLOOR = 0.005          # standard floor for plausible classes near settlements
+PROB_FLOOR_REMOTE = 0.001   # minimal floor for unlikely classes far from settlements
+SETTLEMENT_PROXIMITY = 6    # Chebyshev distance threshold for "near a settlement"
 
 
 def postprocess(
@@ -27,7 +30,8 @@ def postprocess(
 
     Key insight: only apply probability floor to classes that are actually
     possible for each cell. Mountains never appear on non-mountain cells,
-    ports only appear on coastal cells, etc.
+    ports only appear on coastal cells. Cells far from settlements almost
+    never become Settlement/Port/Ruin, so they get a smaller floor.
     """
     result = prediction.copy()
     grid = initial_state.grid
@@ -44,6 +48,18 @@ def postprocess(
                     if 0 <= ny < initial_state.height and 0 <= nx < initial_state.width:
                         if grid[ny, nx] == OCEAN:
                             coastal_mask[y, x] = True
+
+    # Precompute distance to nearest initial settlement (Chebyshev)
+    near_settlement = np.zeros((initial_state.height, initial_state.width), dtype=bool)
+    for settlement in initial_state.settlements:
+        if not settlement.alive:
+            continue
+        sx, sy = settlement.x, settlement.y
+        for dy in range(-SETTLEMENT_PROXIMITY, SETTLEMENT_PROXIMITY + 1):
+            for dx in range(-SETTLEMENT_PROXIMITY, SETTLEMENT_PROXIMITY + 1):
+                ny, nx = sy + dy, sx + dx
+                if 0 <= ny < initial_state.height and 0 <= nx < initial_state.width:
+                    near_settlement[ny, nx] = True
 
     for y in range(initial_state.height):
         for x in range(initial_state.width):
@@ -64,14 +80,23 @@ def postprocess(
             if not coastal_mask[y, x]:
                 result[y, x, CLASS_PORT] = 0.0
 
+            # Choose floor based on proximity to settlements
+            is_near = near_settlement[y, x]
+
             # Apply floor to remaining classes
             for cls in range(NUM_CLASSES):
-                if result[y, x, cls] > 0.0 or cls in (CLASS_EMPTY, 1, 3, 4):  # empty, settlement, ruin, forest always possible
-                    if cls == CLASS_MOUNTAIN:
-                        continue  # already zeroed
-                    if cls == CLASS_PORT and not coastal_mask[y, x]:
-                        continue  # already zeroed
-                    result[y, x, cls] = max(result[y, x, cls], PROB_FLOOR)
+                if cls == CLASS_MOUNTAIN:
+                    continue  # already zeroed
+                if cls == CLASS_PORT and not coastal_mask[y, x]:
+                    continue  # already zeroed
+
+                # Settlement, Port, Ruin use remote floor when far from settlements
+                if cls in (CLASS_SETTLEMENT, CLASS_PORT, CLASS_RUIN) and not is_near:
+                    floor = PROB_FLOOR_REMOTE
+                else:
+                    floor = PROB_FLOOR
+
+                result[y, x, cls] = max(result[y, x, cls], floor)
 
             # Renormalize
             row_sum = result[y, x].sum()
