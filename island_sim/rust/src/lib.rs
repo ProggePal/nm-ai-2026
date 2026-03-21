@@ -77,6 +77,7 @@ fn run_grid_search<'py>(
     num_candidates: usize,
     mc_runs: usize,
     top_n: usize,
+    seed: u64,
 ) -> PyResult<Bound<'py, PyList>> {
     // Parse all round data from Python
     let mut rust_rounds: Vec<Vec<grid_search::SeedData>> = Vec::new();
@@ -119,7 +120,7 @@ fn run_grid_search<'py>(
 
     // Release GIL during computation
     let results = py.allow_threads(|| {
-        grid_search::run_grid_search(&rust_rounds, num_candidates, mc_runs, top_n)
+        grid_search::run_grid_search(&rust_rounds, num_candidates, mc_runs, top_n, seed)
     });
 
     // Convert results back to Python

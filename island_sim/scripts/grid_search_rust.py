@@ -72,17 +72,18 @@ def main():
     parser.add_argument("--candidates", type=int, default=50000)
     parser.add_argument("--mc-runs", type=int, default=50)
     parser.add_argument("--top", type=int, default=20)
+    parser.add_argument("--seed", type=int, default=42, help="RNG seed for candidate generation")
     args = parser.parse_args()
 
     print("Loading ground truth data...")
     rounds = load_all_rounds()
     total_seeds = sum(len(r) for r in rounds)
     print(f"Loaded {len(rounds)} rounds, {total_seeds} seeds")
-    print(f"Running {args.candidates} candidates × {total_seeds} seeds × {args.mc_runs} MC runs")
+    print(f"Running {args.candidates} candidates × {total_seeds} seeds × {args.mc_runs} MC runs (seed={args.seed})")
     print(f"= {args.candidates * total_seeds * args.mc_runs:,} total simulations\n")
 
     t0 = time.time()
-    results = island_sim_core.run_grid_search(rounds, args.candidates, args.mc_runs, args.top)
+    results = island_sim_core.run_grid_search(rounds, args.candidates, args.mc_runs, args.top, args.seed)
     elapsed = time.time() - t0
 
     print(f"\nCompleted in {elapsed:.0f}s ({elapsed/60:.1f} min)")
@@ -104,7 +105,7 @@ def main():
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
 
-    results_file = RESULTS_DIR / f"search_{timestamp}.json"
+    results_file = RESULTS_DIR / f"search_{timestamp}_seed{args.seed}.json"
     serializable = []
     for r in results:
         serializable.append({

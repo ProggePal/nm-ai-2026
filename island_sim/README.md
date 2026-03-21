@@ -52,12 +52,14 @@ python scripts/fetch_history.py
 
 ```bash
 python scripts/grid_search_rust.py --candidates 5000 --mc-runs 50 --top 10
+python scripts/grid_search_rust.py --candidates 5000 --mc-runs 50 --top 10 --seed 7  # Different search region
 ```
 
-**GCP (224 cores, Rust-powered):**
+**GCP cluster (5 × c4d-highcpu-384 = 1,920 Zen 5 vCPUs):**
 
 ```bash
-python scripts/grid_search_rust.py --candidates 50000 --mc-runs 50 --top 20
+bash scripts/gcp_cluster.sh                         # 5 VMs, 50k candidates each
+bash scripts/gcp_cluster.sh --vms 3 --candidates 100000  # Custom
 ```
 
 Best params are saved to `data/rounds/best_params.json` and automatically loaded by the orchestrator.
@@ -69,73 +71,69 @@ python scripts/calibrate.py            # Sim-only
 python scripts/calibrate.py --hybrid   # Hybrid (observation + sim)
 ```
 
-## GCP VM (224 cores)
+### Visualize predictions vs ground truth
+
+```bash
+python scripts/visualize.py                       # Latest scored round
+python scripts/visualize.py --round 14            # Specific round
+python scripts/visualize.py --round 14 --seed 0   # Specific seed
+python scripts/visualize.py --no-show             # Save only, no popup
+```
+
+Output: `data/visualizations/` — overview, per-class errors, probability bars.
+
+## GCP Cluster (5 × 384 vCPUs)
 
 - Project: `ai-nm26osl-1886`
+- Machine: `c4d-highcpu-384` (AMD EPYC 9B45 Turin, Zen 5, 4.1 GHz)
+- Each VM explores a different region of parameter space via `--seed`
+
+### Launch cluster
+
+```bash
+bash scripts/gcp_cluster.sh
+```
+
+Creates 5 VMs, installs Python + Rust, uploads code, builds, and starts grid search on each.
+
+### Monitor progress
+
+```bash
+# Quick status check (reads zones from data/cluster_config.json)
+CONFIG=data/cluster_config.json
+for i in $(seq 0 4); do
+    zone=$(python3 -c "import json; print(json.load(open('$CONFIG'))[$i]['zone'])")
+    echo "=== VM $i ($zone) ==="
+    gcloud compute ssh island-search-$i --zone=$zone -- 'tail -3 ~/island_sim/search.log; uptime'
+done
+```
+
+### Pull results (merges all VMs, keeps global best)
+
+```bash
+bash scripts/gcp_cluster_pull.sh
+```
+
+### Delete cluster
+
+```bash
+CONFIG=data/cluster_config.json
+for i in $(seq 0 4); do
+    zone=$(python3 -c "import json; print(json.load(open('$CONFIG'))[$i]['zone'])")
+    gcloud compute instances delete island-search-$i --zone=$zone -q
+done
+```
+
+## GCP Single VM (legacy)
+
+For smaller runs, the single-VM setup still works:
+
 - VM: `island-sim-search` in `europe-north1-a`
 - Machine: `n2d-highcpu-224` (224 vCPUs)
 
-### First-time setup
-
 ```bash
-bash scripts/gcp_setup.sh
-```
-
-Creates the VM, installs Python + Rust + dependencies, uploads code, and builds the Rust extension.
-
-### Updating code on GCP
-
-```bash
-# Upload Rust source + scripts
-gcloud compute scp --recurse rust/src/ island-sim-search:~/island_sim/rust/src/ --zone=europe-north1-a --project=ai-nm26osl-1886
-gcloud compute scp rust/Cargo.toml island-sim-search:~/island_sim/rust/Cargo.toml --zone=europe-north1-a --project=ai-nm26osl-1886
-gcloud compute scp scripts/grid_search_rust.py island-sim-search:~/island_sim/scripts/grid_search_rust.py --zone=europe-north1-a --project=ai-nm26osl-1886
-gcloud compute scp src/prediction/postprocess.py island-sim-search:~/island_sim/src/prediction/postprocess.py --zone=europe-north1-a --project=ai-nm26osl-1886
-
-# SSH in and rebuild
-gcloud compute ssh island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886
-source ~/.cargo/env
-export VIRTUAL_ENV=~/env
-export PATH="$VIRTUAL_ENV/bin:$PATH"
-cd ~/island_sim/rust && maturin develop --release
-```
-
-### Uploading new round data
-
-```bash
-gcloud compute ssh island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886 -- "mkdir -p ~/island_sim/data/rounds/round_NNN"
-gcloud compute scp data/rounds/round_NNN/* island-sim-search:~/island_sim/data/rounds/round_NNN/ --zone=europe-north1-a --project=ai-nm26osl-1886
-```
-
-### Running grid search on GCP
-
-```bash
-gcloud compute ssh island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886
-source ~/.cargo/env
-export VIRTUAL_ENV=~/env
-export PATH="$VIRTUAL_ENV/bin:$PATH"
-cd ~/island_sim
-nohup python -u scripts/grid_search_rust.py --candidates 50000 --mc-runs 50 --top 20 > search.log 2>&1 &
-tail -f search.log
-```
-
-### Pull results
-
-```bash
-bash scripts/gcp_pull_results.sh
-```
-
-### VM management
-
-```bash
-# Stop (saves money when idle)
-gcloud compute instances stop island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886
-
-# Start
-gcloud compute instances start island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886
-
-# Delete
-gcloud compute instances delete island-sim-search --zone=europe-north1-a --project=ai-nm26osl-1886
+bash scripts/gcp_setup.sh        # Create VM
+bash scripts/gcp_pull_results.sh  # Pull results
 ```
 
 ## Automated Agent Loop
@@ -182,8 +180,12 @@ rust/                          # Rust simulator backend (PyO3)
 scripts/
 ├── fetch_history.py          # Download completed round data
 ├── calibrate.py              # Score simulator against ground truth
+├── visualize.py              # Visualize predictions vs ground truth
 ├── grid_search.py            # Python multiprocessing grid search (legacy)
-├── grid_search_rust.py       # Rust-powered grid search (preferred)
-├── gcp_setup.sh              # Create and configure GCP VM
-└── gcp_pull_results.sh       # Pull grid search results from GCP
+├── grid_search_rust.py       # Rust-powered grid search (preferred, --seed for parallel runs)
+├── smart_search.py           # CMA-ES powered parameter search
+├── gcp_setup.sh              # Create single GCP VM (legacy)
+├── gcp_pull_results.sh       # Pull results from single VM (legacy)
+├── gcp_cluster.sh            # Launch cluster of c4d-highcpu-384 VMs
+└── gcp_cluster_pull.sh       # Pull + merge results from all cluster VMs
 ```

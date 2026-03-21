@@ -41,6 +41,7 @@ pub fn run_grid_search(
     num_candidates: usize,
     mc_runs: usize,
     top_n: usize,
+    seed: u64,
 ) -> Vec<CandidateResult> {
     let lower = bounds_lower();
     let upper = bounds_upper();
@@ -53,7 +54,7 @@ pub fn run_grid_search(
     candidates.push(SimParams::from_array(&default_params()).to_vec());
 
     // Latin Hypercube Sampling for the rest
-    let mut rng = ChaCha8Rng::seed_from_u64(42);
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
     let lhs_count = num_candidates - 1;
 
     // Build LHS matrix

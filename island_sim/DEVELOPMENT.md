@@ -45,9 +45,14 @@ This is the most error-prone change. Full checklist:
 5. **`data/rounds/best_params.json`** — old params have wrong length. Must insert the new param's default value at the correct index
 6. **Rebuild Rust** — `cd rust && maturin develop --release`
 
-### Deploying to GCP
+### Deploying to GCP (cluster)
 
-After any Rust or Python changes:
+The cluster setup (`scripts/gcp_cluster.sh`) handles code upload and Rust build automatically.
+For the legacy single-VM setup, see README.md.
+
+**Do NOT rebuild while a grid search is running** — it will crash the search.
+
+### Deploying to GCP (single VM, legacy)
 
 ```bash
 # Upload changed files
@@ -63,8 +68,6 @@ export VIRTUAL_ENV=~/env
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 cd ~/island_sim/rust && maturin develop --release
 ```
-
-**Do NOT rebuild while a grid search is running** — it will crash the search.
 
 ### Uploading new round data to GCP
 
