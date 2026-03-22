@@ -1,0 +1,39 @@
+# Weights and heavy files
+*.pt
+*.pth
+*.zip
+*.tar.gz
+
+# Datasets and images
+dataset/
+products/
+products_augmented/
+test_data/images/*
+!test_data/images/.gitkeep
+yolo_train/
+final_clean_submission/
+submission/
+submission_final/
+submission_safe/
+submission_100/
+test_app/
+test_app_100/
+test_output/predictions*.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+
+# Local JSON files that might be massive
+feature_bank.json
+docker_output.txt
+docker_100_output.txt
+tmp.json
+test_status.json

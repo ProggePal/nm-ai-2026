@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>NM i AI - Side-by-Side Validation</title>
+    <style>
+        body { background-color: #0d1117; color: #c9d1d9; font-family: monospace; text-align: center; margin: 0; padding: 0; overflow-x: hidden; }
+        .header { position: sticky; top: 0; left: 0; right: 0; background: #010409; text-align: center; color: #58a6ff; font-size: 20px; letter-spacing: 2px; font-weight: bold; z-index: 1000; text-transform: uppercase; padding: 10px; border-bottom: 2px solid #30363d; display: flex; justify-content: space-around; }
+        .split-container { display: flex; width: 100vw; height: calc(100vh - 50px); }
+        .pane { flex: 1; border-right: 2px solid #30363d; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .pane:last-child { border-right: none; }
+        
+        .pane-title { position: absolute; top: 10px; left: 10px; z-index: 100; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 4px; }
+        .safe-title { color: #d29922; }
+        .full-title { color: #3fb950; }
+        
+        .image-wrapper { position: relative; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.7); border: 1px solid #30363d; max-width: 95%; max-height: 90%; }
+        img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .bbox { position: absolute; border: 2px solid; pointer-events: none; background-color: rgba(255,255,255,0.05); }
+        .bbox.safe { border-color: #d29922; background-color: rgba(210, 153, 34, 0.1); }
+        .bbox.full { border-color: #3fb950; background-color: rgba(63, 185, 80, 0.1); }
+        
+        .label { position: absolute; font-size: 10px; font-weight: bold; padding: 2px 4px; top: -16px; left: -2px; white-space: nowrap; color: #000; }
+        .label.safe { background-color: #d29922; }
+        .label.full { background-color: #3fb950; color: #fff; text-shadow: 0 0 2px #000; }
+        
+        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: #58a6ff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>Slide <span id="counter">0/0</span></div>
+    </div>
+    
+    <div id="loading">Genererer 100% Feature Bank resultater... (vennligst vent)</div>
+    
+    <div class="split-container" id="main-view" style="display: none;">
+        <!-- Left: Safe Mode -->
+        <div class="pane">
+            <div class="pane-title safe-title">SAFE MODE (70% - Detection Only)</div>
+            <div id="pane-safe" class="image-wrapper"></div>
+        </div>
+        <!-- Right: Full Pipeline -->
+        <div class="pane">
+            <div class="pane-title full-title">FULL PIPELINE (100% - ResNet50 Classification)</div>
+            <div id="pane-full" class="image-wrapper"></div>
+        </div>
+    </div>
+
+    <script>
+        let safeData = [];
+        let fullData = [];
+        let commonImages = [];
+        let currentIndex = 0;
+
+        function renderImage(paneId, dataArray, imgId, type) {
+            const wrapper = document.getElementById(paneId);
+            wrapper.innerHTML = ''; // Clear
+            
+            const paddedId = String(imgId).padStart(5, '0');
+            const img = document.createElement('img');
+            img.src = `test_data/images/img_${paddedId}.jpg`;
+            
+            img.onload = () => {
+                const nW = img.naturalWidth;
+                const nH = img.naturalHeight;
+                
+                const myBoxes = dataArray.filter(p => p.image_id === imgId);
+                
+                myBoxes.forEach(p => {
+                    const [x, y, w, h] = p.bbox;
+                    const b = document.createElement('div');
+                    b.className = `bbox ${type}`;
+                    b.style.left = ((x / nW) * 100) + '%';
+                    b.style.top = ((y / nH) * 100) + '%';
+                    b.style.width = ((w / nW) * 100) + '%';
+                    b.style.height = ((h / nH) * 100) + '%';
+                    
+                    const lbl = document.createElement('div');
+                    lbl.className = `label ${type}`;
+                    
+                    if (type === 'safe') {
+                        lbl.innerText = `[Cat: 0] Score: ${(p.score*100).toFixed(0)}%`;
+                    } else {
+                        const sim = p.similarity ? (p.similarity*100).toFixed(1) : 0;
+                        lbl.innerText = `ID: ${p.category_id} | Sim: ${sim}%`;
+                    }
+                    
+                    b.appendChild(lbl);
+                    wrapper.appendChild(b);
+                });
+            };
+            
+            wrapper.appendChild(img);
+        }
+
+        function showCurrent() {
+            if (commonImages.length === 0) return;
+            const imgId = commonImages[currentIndex];
+            
+            renderImage('pane-safe', safeData, imgId, 'safe');
+            renderImage('pane-full', fullData, imgId, 'full');
+            
+            document.getElementById('counter').innerText = `${currentIndex + 1}/${commonImages.length}`;
+            currentIndex = (currentIndex + 1) % commonImages.length;
+        }
+
+        async function poll() {
+            try {
+                const resFull = await fetch('test_output/predictions_100.json?cb=' + Date.now());
+                if (!resFull.ok) {
+                    setTimeout(poll, 2000);
+                    return;
+                }
+                const resSafe = await fetch('test_output/predictions.json?cb=' + Date.now());
+                
+                safeData = await resSafe.json();
+                fullData = await resFull.json();
+                
+                const safeIds = [...new Set(safeData.map(d => d.image_id))];
+                const fullIds = [...new Set(fullData.map(d => d.image_id))];
+                
+                commonImages = safeIds.filter(id => fullIds.includes(id) && id !== 0);
+                
+                if (commonImages.length > 0) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('main-view').style.display = 'flex';
+                    
+                    showCurrent();
+                    setInterval(showCurrent, 5000);
+                } else {
+                    setTimeout(poll, 2000);
+                }
+            } catch (e) {
+                setTimeout(poll, 2000);
+            }
+        }
+        
+        poll();
+    </script>
+</body>
+</html>

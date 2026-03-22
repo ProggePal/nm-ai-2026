@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Oppgaveforklaring - NorgesGruppen Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0e1a; color: #fff; font-family: 'Inter', sans-serif; padding: 40px; margin: 0; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { border-bottom: 2px solid #f7d000; padding-bottom: 20px; margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #f7d000; }
+        h2 { font-size: 1.5rem; margin-top: 40px; margin-bottom: 15px; color: #7aa2f7; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .card { background: #111827; border: 1px solid #1f2a45; border-radius: 12px; padding: 25px; }
+        .code-block { background: #000; padding: 15px; border-radius: 8px; font-family: monospace; color: #a3e635; font-size: 0.9rem; overflow-x: auto; margin-top: 10px; }
+        .alert { background: rgba(247, 208, 0, 0.1); border-left: 4px solid #f7d000; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+        img { max-width: 100%; border-radius: 8px; border: 1px solid #1f2a45; display: block; margin: 15px 0; }
+        ul { padding-left: 20px; margin-top: 10px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>NorgesGruppen - Oppgaveforklaring</h1>
+        <p style="color: #94a3b8; font-size: 1.1rem;">En detaljert gjennomgang av hva arrangøren faktisk tester oss på, og hva systemet vårt gjør.</p>
+    </div>
+
+    <div class="alert">
+        <strong>Kort oppsummert:</strong> Når vi har levert koden vår, kommer arrangøren til å mate koden med hundrevis av helt nye bilder av butikkhyller (som vi aldri har sett før). De forventer at programmet vårt spytter ut en liste med nøyaktig <strong>hvor (x, y, bredde, høyde)</strong> alle varene står, og <strong>hvilken vare (EAN / Kategori ID)</strong> det er.
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2 style="margin-top: 0;">1. Hva dommeren gjør</h2>
+            <p>
+                NM-arrangørene har en mappe kalt <code>/data/images/</code> på sin server (en sandkasse med en Nvidia L4 GPU). Der har de lagt skjulte bilder av butikkhyller fra f.eks. KIWI eller MENY. De kjører så vårt <code>run.py</code> skript.
+            </p>
+            <p>
+                De forventer at koden vår ser på disse bildene, og skriver en JSON-fil (<code>predictions.json</code>) som inneholder lister med bokser (bounding boxes) for hvert eneste produkt den ser i hylla.
+            </p>
+        </div>
+        
+        <div class="card">
+            <h2 style="margin-top: 0;">2. Slik ser et "Hyllebilde" ut</h2>
+            <p>Dette er et eksempel fra treningssettet vi fikk utdelt (som YOLO-modellen vår nettopp trente på).</p>
+            <!-- Laster et reelt bilde fra lokalt via file:// -->
+            <div style="background: #000; height: 200px; border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid #1f2a45; overflow: hidden; position: relative;">
+                <img src="file:///Users/blekkulf/workspace/norgesgruppen-data/dataset/train/images/img_00001.jpg" style="max-height: 100%; width: auto; border: none; margin: 0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <div style="display: none; color: #4a5580;">(Bilde 'img_00001.jpg' lastet ikke via filsystem)</div>
+            </div>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 10px;">Arrangøren laster inn slike store bilder fulle av tettpakkede varer, hyllekant-etiketter, gjenskinn og rot.</p>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 30px;">
+        <h2 style="margin-top: 0;">3. Oppgavens poengfordeling (Hva kreves for 100%)</h2>
+        <p>Å klare 100% i denne oppgaven er ekstremt vanskelig, derfor er poengsummen delt opp slik at man kan sikre seg høye summer selv om man ikke får til alt:</p>
+        
+        <ul>
+            <li><strong>70% av poengene (Detection):</strong> Klarer modellen vår å finne ut <em>hvor</em> det står en vare? Altså, klarer den å tegne en grønn firkant nøyaktig rundt f.eks. ketsjupflaska? Hvis YOLO tegner en boks og IoU (område-overlapp) med fasiten er over 0.5, får vi poenget! Her blåser vi i <em>hvilken</em> vare det er, poenget gis bare for å se at det "er noe" der. (Dette har vi i boks med YOLO11x-treningen vår, som gav oss 98% mAP!)</li>
+            <li><strong>30% av poengene (Classification):</strong> Klarer koden vår å sette riktig <code>category_id</code> på den grønne boksen? (Er det id=43 eller id=312?). Siden butikkhyllene inneholder varer som "Farris Oppvask" og "Farris Sitron" som ser nesten helt like ut, er dette veldig vanskelig.</li>
+        </ul>
+        
+        <p>Reglene sier spesifikt: <em>"If you set category_id: 0 for all predictions, you can score up to 0.70 (70%) from the detection component alone."</em></p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2 style="margin-top: 0;">4. Hva vårt system gjør (Two-Stage)</h2>
+            <p>For å ta 100% av poengene, kjører koden vår to operasjoner for <em>hvert</em> bilde arrangøren mater oss med:</p>
+            <ol style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>YOLO11x:</strong> Analyserer bildet på 1280px og returnerer hundrevis av bounding-bokser.</li>
+                <li><strong>Python / DINOv2:</strong> Et lite script (inne i `run.py`) klipper ut innholdet inni den grønne YOLO-boksen, kjører det gjennom en ResNet/ViT modell for å lage en vektor (fingeravtrykk), og søker i <code>feature_bank.json</code> etter EAN-koden til produktet som ligner mest.</li>
+            </ol>
+            <p style="margin-top: 15px;">Dermed får vi både 70% poengene for de nøyaktige YOLO-boksene, og 30% poengene for å gjette riktig produkt basert på vektor-sammenligningen med referansebildene fra Kassal.app og zip-en deres.</p>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-top: 0;">5. Slik ser outputen vår ut</h2>
+            <p>Når arrangørens server kjører koden vår, bygger vi en fil (<code>predictions.json</code>) som ser nøyaktig slik ut:</p>
+            <div class="code-block">
+[
+  {
+    "image_id": 42,
+    "category_id": 312,
+    "bbox": [105.4, 230.1, 45.0, 90.2],
+    "score": 0.95
+  },
+  {
+    "image_id": 42,
+    "category_id": 14,
+    "bbox": [160.0, 230.1, 44.5, 88.0],
+    "score": 0.88
+  }
+]
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 10px; color: #94a3b8;">Hvor `image_id` matcher bildet (f.eks `img_00042.jpg`), `bbox` er [x, y, bredde, høyde] i piksler, `score` er hvor sikker YOLO er, og `category_id` er ID-en vi gjettet via K-nearest neighbor / DINOv2.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Åpner et bilde automatisk for a illustrere hvis file-protocol feiler (noe det oftest gjør pga CORS i nettleseren)
+    // Siden dette apne lokalt, vil nettleseren noen ganger tillate det
+</script>
+</body>
+</html>

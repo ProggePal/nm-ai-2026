@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>PGA Tour - Valspar Championship</title>
+    <style>
+        body { background-color: #0b1c0e; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #d4af37; text-transform: uppercase; letter-spacing: 2px; font-size: 28px; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        h2 { color: #8fbc8f; font-weight: 300; margin-top: 0; font-size: 16px; margin-bottom: 20px; }
+        
+        .dashboard { display: flex; width: 95vw; height: 75vh; gap: 20px; }
+        
+        /* Leaderboard styling */
+        .leaderboard { flex: 0 0 30%; background: #162919; border: 2px solid #1e3b22; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; display: flex; flex-direction: column; }
+        .lb-header { background: #0b1c0e; padding: 15px; color: #d4af37; font-weight: bold; text-align: center; border-bottom: 2px solid #1e3b22; letter-spacing: 1px; }
+        .lb-row { display: flex; padding: 12px 15px; border-bottom: 1px solid #1e3b22; align-items: center; }
+        .lb-row:nth-child(even) { background: rgba(255,255,255,0.02); }
+        .lb-pos { width: 30px; font-weight: bold; color: #8fbc8f; }
+        .lb-name { flex: 1; font-weight: bold; letter-spacing: 0.5px; }
+        .lb-score { width: 40px; text-align: right; font-weight: bold; font-family: monospace; font-size: 16px; }
+        .lb-thru { width: 40px; text-align: right; color: #8fbc8f; font-size: 14px; }
+        
+        .hovland-row { background: rgba(212, 175, 55, 0.15) !important; border-left: 4px solid #d4af37; }
+        .hovland-row .lb-name { color: #d4af37; }
+        
+        .score-under { color: #e74c3c; } /* Red for under par */
+        .score-even { color: #fff; }
+        
+        /* Golf Course styling - Copperhead Course */
+        #golf-course { flex: 1; background-color: #1a4222; border-radius: 12px; border: 2px solid #1e3b22; position: relative; box-shadow: inset 0 0 50px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
+        .green { position: absolute; width: 140px; height: 110px; background-color: #2e8b57; border-radius: 50%; top: 12%; left: 50%; transform: translateX(-50%); box-shadow: inset 0 0 20px rgba(0,0,0,0.3); }
+        .hole { position: absolute; width: 12px; height: 12px; background-color: #000; border-radius: 50%; top: 50%; left: 60%; transform: translate(-50%, -50%); }
+        .flag { position: absolute; width: 2px; height: 40px; background-color: #fff; top: 18%; left: 60%; transform: translateX(-50%); }
+        .flag-cloth { position: absolute; width: 20px; height: 15px; background-color: #d2222d; top: 18%; left: 60%; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+        .bunker { position: absolute; background-color: #f4d03f; border-radius: 50%; opacity: 0.8; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        .tee { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); width: 80px; height: 30px; background-color: #1e5631; border-radius: 4px; }
+        
+        /* Trees for Copperhead course vibe (Snake Pit) */
+        .tree { position: absolute; width: 40px; height: 40px; background-color: #0f2913; border-radius: 50%; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); opacity: 0.9; }
+        
+        #stats { position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; border-left: 4px solid #d4af37; text-align: left; font-family: monospace; font-size: 16px; z-index: 10; }
+        .course-title { position: absolute; top: 20px; left: 20px; font-weight: bold; color: #d4af37; text-transform: uppercase; font-size: 14px; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; z-index: 10; }
+    </style>
+</head>
+<body>
+    <h1>PGA TOUR LIVE</h1>
+    <h2>Valspar Championship - Innisbrook (Copperhead Course)</h2>
+    
+    <div class="dashboard">
+        <!-- Leaderboard -->
+        <div class="leaderboard">
+            <div class="lb-header">LIVE LEADERBOARD (ROUND 2)</div>
+            
+            <div class="lb-row">
+                <div class="lb-pos">1</div>
+                <div class="lb-name">K. Bradley</div>
+                <div class="lb-score score-under">-8</div>
+                <div class="lb-thru">16</div>
+            </div>
+            <div class="lb-row">
+                <div class="lb-pos">2</div>
+                <div class="lb-name">S. Burns</div>
+                <div class="lb-score score-under">-7</div>
+                <div class="lb-thru">F</div>
+            </div>
+            
+            <!-- Hovland -->
+            <div class="lb-row hovland-row">
+                <div class="lb-pos">T3</div>
+                <div class="lb-name">V. Hovland</div>
+                <div class="lb-score score-under" id="hovland-score">-6</div>
+                <div class="lb-thru">16</div>
+            </div>
+            
+            <div class="lb-row">
+                <div class="lb-pos">T3</div>
+                <div class="lb-name">J. Thomas</div>
+                <div class="lb-score score-under">-6</div>
+                <div class="lb-thru">15</div>
+            </div>
+            <div class="lb-row">
+                <div class="lb-pos">5</div>
+                <div class="lb-name">X. Schauffele</div>
+                <div class="lb-score score-under">-5</div>
+                <div class="lb-thru">17</div>
+            </div>
+            <div class="lb-row">
+                <div class="lb-pos">T6</div>
+                <div class="lb-name">J. Spieth</div>
+                <div class="lb-score score-under">-4</div>
+                <div class="lb-thru">F</div>
+            </div>
+            <div class="lb-row">
+                <div class="lb-pos">T6</div>
+                <div class="lb-name">M. Homa</div>
+                <div class="lb-score score-under">-4</div>
+                <div class="lb-thru">16</div>
+            </div>
+            <div class="lb-row">
+                <div class="lb-pos">8</div>
+                <div class="lb-name">C. Morikawa</div>
+                <div class="lb-score score-under">-3</div>
+                <div class="lb-thru">14</div>
+            </div>
+        </div>
+        
+        <!-- Shot Tracker -->
+        <div id="golf-course">
+            <div class="course-title">Hole 16 - Par 4 - 475 Yds (The Snake Pit)</div>
+            <div class="tee"></div>
+            
+            <!-- Trees making it tight (Snake Pit style) -->
+            <div class="tree" style="left: 20%; top: 30%;"></div>
+            <div class="tree" style="left: 25%; top: 40%;"></div>
+            <div class="tree" style="left: 15%; top: 50%;"></div>
+            <div class="tree" style="left: 22%; top: 70%;"></div>
+            <div class="tree" style="right: 20%; top: 25%;"></div>
+            <div class="tree" style="right: 25%; top: 45%;"></div>
+            <div class="tree" style="right: 18%; top: 60%;"></div>
+            <div class="tree" style="right: 28%; top: 80%;"></div>
+            
+            <div class="bunker" style="width: 50px; height: 70px; top: 30%; left: 35%; transform: rotate(10deg);"></div>
+            <div class="bunker" style="width: 60px; height: 40px; top: 10%; left: 65%; transform: rotate(-20deg);"></div>
+            <div class="bunker" style="width: 40px; height: 50px; top: 15%; left: 35%; transform: rotate(15deg);"></div>
+            
+            <div class="green" style="left: 50%;">
+                <div class="hole"></div>
+                <div class="flag"></div>
+                <div class="flag-cloth"></div>
+            </div>
+            
+            <canvas id="tracker" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></canvas>
+            
+            <div id="stats">
+                <div style="color: #d4af37; font-weight: bold; margin-bottom: 5px;">VIKTOR HOVLAND</div>
+                <div><strong>Shot 1:</strong> <span id="s1">-</span></div>
+                <div><strong>Shot 2:</strong> <span id="s2">-</span></div>
+                <div><strong>Shot 3:</strong> <span id="s3">-</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('tracker');
+        const ctx = canvas.getContext('2d');
+        
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Coordinates
+        let teeX = canvas.width / 2;
+        let teeY = canvas.height * 0.95;
+        let holeX = canvas.width * 0.5 + 15; // Adjusted for flag pos
+        let holeY = canvas.height * 0.12 + 40;
+
+        let shots = [
+            { id: 's1', name: "Tee Shot (Driver)", dist: "298 yds", endX: canvas.width * 0.48, endY: canvas.height * 0.55, color: '#ffffff' },
+            { id: 's2', name: "Approach (8 Iron)", dist: "167 yds", endX: holeX + 10, endY: holeY - 15, color: '#f39c12' },
+            { id: 's3', name: "Putt (Birdie)", dist: "18 ft", endX: holeX, endY: holeY, color: '#e74c3c' }
+        ];
+
+        let currentShot = 0;
+
+        function drawShot(startX, startY, endX, endY, color, callback) {
+            let progress = 0;
+            const steps = 60;
+            const isPutt = currentShot === 2;
+            
+            function animate() {
+                progress++;
+                const t = progress / steps;
+                
+                const currentX = startX + (endX - startX) * t;
+                let currentY = startY + (endY - startY) * t;
+                
+                if (!isPutt) {
+                    const arcHeight = Math.sin(t * Math.PI) * 100;
+                    currentY -= arcHeight;
+                }
+                
+                ctx.beginPath();
+                ctx.arc(currentX, currentY, 3, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                if (progress < steps) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(endX, endY, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.strokeStyle = '#000';
+                    ctx.stroke();
+                    ctx.fill();
+                    
+                    if (callback) setTimeout(callback, 1000);
+                }
+            }
+            animate();
+        }
+
+        function playSequence() {
+            if (currentShot >= shots.length) {
+                // Update score to -7 after Birdie drops!
+                setTimeout(() => {
+                    document.getElementById('hovland-score').innerText = "-7";
+                    document.getElementById('hovland-score').style.transform = "scale(1.2)";
+                    document.getElementById('hovland-score').style.transition = "transform 0.3s";
+                    
+                    setTimeout(() => {
+                        document.getElementById('hovland-score').style.transform = "scale(1)";
+                    }, 300);
+                }, 500);
+
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    currentShot = 0;
+                    document.getElementById('hovland-score').innerText = "-6"; // reset for loop
+                    document.getElementById('s1').innerText = '-';
+                    document.getElementById('s2').innerText = '-';
+                    document.getElementById('s3').innerText = '-';
+                    playSequence();
+                }, 5000);
+                return;
+            }
+
+            const shot = shots[currentShot];
+            let startX = currentShot === 0 ? teeX : shots[currentShot - 1].endX;
+            let startY = currentShot === 0 ? teeY : shots[currentShot - 1].endY;
+            
+            document.getElementById(shot.id).innerText = `${shot.name} - ${shot.dist}`;
+            document.getElementById(shot.id).style.color = shot.color;
+            
+            drawShot(startX, startY, shot.endX, shot.endY, shot.color, () => {
+                currentShot++;
+                playSequence();
+            });
+        }
+
+        setTimeout(playSequence, 1000);
+    </script>
+</body>
+</html>

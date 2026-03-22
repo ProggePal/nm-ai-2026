@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NM i AI 2026 - Sandbox Stress Test</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 40px;
+            width: 80%;
+            max-width: 900px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #58a6ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 28px;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .status-badge {
+            font-size: 16px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background-color: #238636;
+            color: white;
+            font-weight: bold;
+        }
+        .status-badge.RUNNING { background-color: #d29922; }
+        .status-badge.FAILED { background-color: #da3633; }
+        .status-badge.SUCCESS { background-color: #238636; }
+        
+        .terminal {
+            background-color: #010409;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            height: 350px;
+            overflow-y: auto;
+            color: #3fb950;
+        }
+        .line {
+            margin: 4px 0;
+        }
+        .line::before {
+            content: "> ";
+            color: #8b949e;
+        }
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>
+        <span>SANDBOX SIMULATION RIG</span>
+        <span id="badge" class="status-badge RUNNING">INITIATING</span>
+    </h1>
+    <p style="color: #8b949e; margin-bottom: 20px;">
+        Environment: Docker Container | OS: Ubuntu 22.04 | CPU: 4 vCPU | RAM: 8 GB | Network: OFFLINE
+    </p>
+    
+    <div class="terminal" id="terminal">
+        <!-- Log lines will be appended here -->
+    </div>
+</div>
+
+<script>
+    async function fetchStatus() {
+        try {
+            // Legg til en random cache-buster
+            const response = await fetch('test_status.json?' + new Date().getTime());
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Oppdater badge
+                const badge = document.getElementById('badge');
+                badge.className = 'status-badge ' + data.status;
+                badge.innerText = data.status;
+                
+                // Oppdater terminal
+                const term = document.getElementById('terminal');
+                term.innerHTML = '';
+                data.log.forEach(line => {
+                    const div = document.createElement('div');
+                    div.className = 'line';
+                    // Farging basert på innhold
+                    if(line.includes('FEIL') || line.includes('❌') || line.includes('ERROR')) {
+                        div.style.color = '#ff7b72';
+                    } else if(line.includes('Vellykket') || line.includes('✅') || line.includes('SUCCESS')) {
+                        div.style.color = '#3fb950';
+                    } else {
+                        div.style.color = '#c9d1d9';
+                    }
+                    div.innerText = line;
+                    term.appendChild(div);
+                });
+                
+                // Legg til markør hvis ikke ferdig
+                if (data.status === 'RUNNING' || data.status === 'INITIATING') {
+                    const cursor = document.createElement('div');
+                    cursor.innerHTML = '<span class="blink">_</span>';
+                    cursor.style.color = '#8b949e';
+                    term.appendChild(cursor);
+                }
+                
+                term.scrollTop = term.scrollHeight;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    
+    // Sjekk hvert sekund
+    setInterval(fetchStatus, 1000);
+    fetchStatus();
+</script>
+
+</body>
+</html>

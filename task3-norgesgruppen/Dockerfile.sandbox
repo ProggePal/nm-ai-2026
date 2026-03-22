@@ -1,0 +1,35 @@
+# Base image med CUDA 12.4.1 (Ubuntu 22.04)
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
+
+# Sette ikke-interaktiv apt for å unngå prompt under install
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    python3.11 \
+    python3.11-venv \
+    python3-pip \
+    libgl1 \
+    libglib2.0-0 \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+# Bruk offisiell PyTorch wheel for CUDA 12.4
+RUN pip3 install --no-cache-dir \
+    torch==2.6.0+cu124 \
+    torchvision==0.21.0+cu124 \
+    --index-url https://download.pytorch.org/whl/cu124
+
+# Avhengigheter for scriptene våre.
+RUN pip3 install --no-cache-dir \
+    ultralytics==8.3.0 \
+    Pillow==10.2.0 \
+    numpy==1.26.4 \
+    scipy==1.12.0
+
+# Vi fjerner alt av unødvendige libraries (scikit-learn, pycocotools, cv2) som fort blir blokkert av arrangøren
+# for å reflektere den helt strippede versjonen vi vil kjøre.
+
+WORKDIR /app
