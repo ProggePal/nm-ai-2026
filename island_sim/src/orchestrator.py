@@ -207,6 +207,38 @@ def save_params(params: SimParams, round_id: str, score: float | None = None) ->
     }
     (DATA_DIR / f"params_round_{round_id[:8]}.json").write_text(json.dumps(data, indent=2))
 
+    # Also save as the latest CMA-ES result for warm-starting future rounds
+    (DATA_DIR / "latest_cmaes_params.json").write_text(json.dumps(data, indent=2))
+
+
+def load_best_warm_start() -> SimParams | None:
+    """Load the best available warm-start params.
+
+    Priority: latest CMA-ES result > grid search best > None.
+    The latest CMA-ES result persists across rounds intentionally — nearby rounds
+    have similar hidden params, so round N's refined params are a better starting
+    point for round N+1 than the global grid search optimum.
+    """
+    # Try latest CMA-ES result first
+    cmaes_path = DATA_DIR / "latest_cmaes_params.json"
+    if cmaes_path.exists():
+        try:
+            data = json.loads(cmaes_path.read_text())
+            if "named_params" in data:
+                params = SimParams.from_dict(data["named_params"])
+            elif "params" in data:
+                params = SimParams.from_array(np.array(data["params"]))
+            else:
+                params = None
+            if params is not None:
+                print(f"  Warm-start from latest CMA-ES (round={data.get('round_id', '?')[:8]})")
+                return params
+        except Exception:
+            pass
+
+    # Fall back to grid search best
+    return load_history_params()
+
 
 # ---------------------------------------------------------------------------
 # Main pipeline
@@ -216,7 +248,7 @@ def main() -> None:
     """Full pipeline: sync history → discover → observe → infer → predict → submit."""
     # Step 0: Sync history for warm-starting
     sync_history()
-    warm_params = load_history_params()
+    warm_params = load_best_warm_start()
 
     # Step 1: Discover active round
     print("\nDiscovering active round...")
@@ -312,6 +344,7 @@ def main() -> None:
             new_observations = observations[len(prior_observations):]
 
             # Step 7: Re-infer with all observations (only if enough)
+            # Warm-start from Phase 1 result (not grid search) to build on prior work
             if len(observations) >= MIN_OBS_FOR_INFERENCE:
                 print(f"\nRe-inferring parameters with {len(observations)} total observations...")
                 params = infer_params(
@@ -319,7 +352,7 @@ def main() -> None:
                     initial_states,
                     num_runs_per_eval=MC_RUNS_PER_EVAL_PHASE2,
                     max_evaluations=MAX_EVALS_PHASE2,
-                    warm_start=warm_params,
+                    warm_start=params,
                 )
 
     # Save all new observations from this run
@@ -364,5 +397,111 @@ def main() -> None:
     print("\nDone!")
 
 
+def resubmit(max_attempts: int = 3, eval_budget_per_attempt: int = 800) -> None:
+    """Resubmission loop: re-infer from accumulated observations and resubmit.
+
+    Each attempt:
+    1. Loads all saved observations for the active round
+    2. Warm-starts CMA-ES from the last inferred params
+    3. Runs CMA-ES with more evaluations to refine
+    4. Generates new predictions and resubmits
+
+    Args:
+        max_attempts: Maximum number of resubmission attempts.
+        eval_budget_per_attempt: CMA-ES evaluations per resubmission attempt.
+    """
+    print("\n=== Resubmission Loop ===")
+
+    # Discover active round
+    active_round = get_active_round()
+    if active_round is None:
+        print("No active round. Nothing to resubmit.")
+        return
+
+    round_id = active_round["id"]
+    width = active_round["map_width"]
+    height = active_round["map_height"]
+    print(f"Active round: {active_round['round_number']} ({width}x{height})")
+
+    # Load initial states
+    detail = get_round_detail(round_id)
+    initial_states = [
+        WorldState.from_api(state, width, height)
+        for state in detail["initial_states"]
+    ]
+
+    # Load accumulated observations
+    observations = load_observations(round_id)
+    if not observations:
+        print("No saved observations for this round. Run main() first.")
+        return
+    print(f"Loaded {len(observations)} accumulated observations")
+
+    for attempt in range(max_attempts):
+        print(f"\n--- Resubmission attempt {attempt + 1}/{max_attempts} ---")
+
+        # Check round is still active
+        active_round = get_active_round()
+        if active_round is None or active_round["id"] != round_id:
+            print("Round is no longer active. Stopping.")
+            break
+
+        # Warm-start from latest CMA-ES result for this round
+        warm_params = load_best_warm_start()
+        if warm_params is None:
+            warm_params = SimParams.default()
+
+        # Re-infer with accumulated observations and more budget
+        print(f"Re-inferring with {len(observations)} observations, {eval_budget_per_attempt} evals...")
+        params = infer_params(
+            observations,
+            initial_states,
+            num_runs_per_eval=MC_RUNS_PER_EVAL_PHASE2,
+            max_evaluations=eval_budget_per_attempt,
+            warm_start=warm_params,
+        )
+        save_params(params, round_id)
+
+        # Generate and submit predictions
+        print("Generating predictions...")
+        for seed_idx in range(NUM_SEEDS):
+            prediction = hybrid_prediction(
+                initial_states[seed_idx],
+                seed_idx,
+                observations,
+                params,
+                num_mc_runs=MC_RUNS_PREDICTION,
+                mc_base_seed=seed_idx * 100000,
+            )
+
+            assert prediction.shape == (height, width, 6)
+            assert np.allclose(prediction.sum(axis=-1), 1.0, atol=0.01)
+
+            print(f"  Submitting seed {seed_idx}...")
+            try:
+                result = submit_prediction(round_id, seed_idx, prediction.tolist())
+                print(f"  Seed {seed_idx}: {result.get('status', 'unknown')}")
+            except Exception as exc:
+                print(f"  Seed {seed_idx} submission failed: {exc}")
+
+        print(f"Attempt {attempt + 1} complete.")
+
+    print("\n=== Resubmission loop finished ===")
+
+
 if __name__ == "__main__":
-    main()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Island Sim Orchestrator")
+    parser.add_argument("--resubmit", action="store_true",
+                        help="Run resubmission loop instead of full pipeline")
+    parser.add_argument("--max-attempts", type=int, default=3,
+                        help="Max resubmission attempts (default: 3)")
+    parser.add_argument("--eval-budget", type=int, default=800,
+                        help="CMA-ES evaluations per resubmission attempt (default: 800)")
+    args = parser.parse_args()
+
+    if args.resubmit:
+        resubmit(max_attempts=args.max_attempts, eval_budget_per_attempt=args.eval_budget)
+    else:
+        main()
