@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 import sys
 
-API_KEY = "bnFk2ZKJJQ2qaY05fX0vYlI6RC4BmUxm4M94tLK5"
+API_KEY = os.environ.get("KASSALAPP_API_KEY", "")
 
 def search_and_download(ean_or_name, category_id, save_dir):
     headers = {
