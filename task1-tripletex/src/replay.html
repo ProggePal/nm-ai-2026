@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Replay</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#30363d;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#484f58}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;height:100vh;display:flex;overflow:hidden}
+
+/* Sidebar */
+.sidebar{width:340px;background:#161b22;border-right:1px solid #30363d;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:12px 16px;border-bottom:1px solid #30363d;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.sidebar-header .dot{width:8px;height:8px;border-radius:50%;background:#3fb950;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sidebar-search{padding:8px 12px;border-bottom:1px solid #30363d}
+.sidebar-search input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:6px 10px;color:#e6edf3;font-size:12px;outline:none}
+.sidebar-search input:focus{border-color:#58a6ff}
+.run-list{flex:1;overflow-y:auto}
+.run-item{padding:10px 14px;border-bottom:1px solid #21262d;cursor:pointer;transition:background .15s}
+.run-item:hover{background:#1c2128}
+.run-item.active{background:#1a3a5c;border-left:3px solid #58a6ff}
+.run-item .ri-time{font-size:11px;color:#8b949e;font-family:monospace}
+.run-item .ri-prompt{font-size:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#c9d1d9}
+.run-item .ri-meta{display:flex;gap:6px;margin-top:4px}
+.ri-badge{font-size:10px;padding:1px 6px;border-radius:8px;font-weight:500}
+.ri-badge.calls{background:#1f2937;color:#93c5fd}
+.ri-badge.errors{background:#3fb95022;color:#3fb950}
+.ri-badge.errors.has-errors{background:#f8514922;color:#f85149}
+.ri-badge.time{background:#1f2937;color:#d1d5db;font-family:monospace}
+.ri-badge.score{background:#d2922222;color:#d29222;font-weight:700}
+
+/* Main area */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Topbar */
+.topbar{background:#161b22;border-bottom:1px solid #30363d;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.topbar h2{font-size:14px;font-weight:600}
+.tag{background:#1f2937;border:1px solid #30363d;padding:2px 10px;border-radius:4px;font-size:11px;color:#8b949e}
+.tag.purple{color:#d2a8ff}.tag.blue{color:#58a6ff}.tag.mono{font-family:monospace;color:#93c5fd}
+
+/* Stepper controls */
+.stepper{background:#161b22;border-bottom:1px solid #30363d;padding:8px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.stepper button{background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:background .15s}
+.stepper button:hover{background:#30363d}
+.stepper button:disabled{opacity:.3;cursor:default}
+.stepper button.primary{background:#1a3a5c;border-color:#264b73;color:#58a6ff}
+.stepper button.primary:hover{background:#264b73}
+.step-info{font-size:12px;color:#8b949e;font-family:monospace}
+.step-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:#30363d;border-radius:2px;outline:none}
+.step-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#58a6ff;cursor:pointer}
+
+/* Chat */
+.chat{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:90%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;opacity:0;animation:fadeIn .2s ease forwards}
+.msg.visible{opacity:1;animation:none}
+.msg.hidden{display:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{align-self:flex-end;background:#1a3a5c;border:1px solid #264b73;border-bottom-right-radius:4px}
+.msg-user .lb{color:#58a6ff;font-weight:600;font-size:11px;margin-bottom:4px}
+.msg-ai{align-self:flex-start;background:#1c1c2e;border:1px solid #2d2d44;border-bottom-left-radius:4px}
+.msg-ai .lb{color:#d2a8ff;font-weight:600;font-size:11px;margin-bottom:4px}
+.msg-tool{align-self:flex-start;background:#0d2137;border:1px solid #1a3a5c;border-left:3px solid #58a6ff;border-radius:6px;font-family:monospace;font-size:12px;max-width:95%}
+.msg-tool .lb{color:#58a6ff;font-weight:700;font-size:11px;margin-bottom:2px}
+.msg-ok{align-self:flex-start;background:#0d1a0d;border:1px solid #1a3a1a;border-left:3px solid #3fb950;border-radius:6px;font-family:monospace;font-size:11px;max-width:95%;color:#8b949e}
+.msg-ok .lb{color:#3fb950;font-weight:700;font-size:11px;margin-bottom:2px}
+.msg-err{align-self:flex-start;background:#1a0d0d;border:1px solid #3a1a1a;border-left:3px solid #f85149;border-radius:6px;font-family:monospace;font-size:11px;max-width:95%;color:#f85149}
+.msg-err .lb{color:#f85149;font-weight:700;font-size:11px;margin-bottom:2px}
+.msg-code{align-self:flex-start;background:#0d1117;border:1px solid #30363d;border-left:3px solid #d2a8ff;border-radius:6px;font-family:monospace;font-size:11px;max-width:95%;color:#c9d1d9}
+.msg-code .lb{color:#d2a8ff;font-weight:700;font-size:11px;margin-bottom:2px}
+.msg-stdout{align-self:flex-start;background:#0d1a0d;border:1px solid #1a3a1a;border-left:3px solid #3fb950;border-radius:6px;font-family:monospace;font-size:11px;max-width:95%;color:#8b949e}
+.msg-stdout .lb{color:#3fb950;font-weight:700;font-size:11px;margin-bottom:2px}
+.ct{white-space:pre-wrap;word-break:break-word}
+.trunc{max-height:150px;overflow:hidden;position:relative;cursor:pointer}
+.trunc::after{content:'▼ click to expand';position:absolute;bottom:0;left:0;right:0;height:28px;background:linear-gradient(transparent,rgba(13,17,23,.95));text-align:center;font-size:10px;color:#58a6ff;line-height:28px}
+.trunc.expanded{max-height:none}
+.trunc.expanded::after{display:none}
+.info{align-self:center;color:#8b949e;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-header"><div class="dot"></div> Agent Replay</div>
+  <div class="sidebar-search"><input type="text" id="search" placeholder="Filter runs..." oninput="filterRuns()"></div>
+  <div class="run-list" id="runList"></div>
+  <div style="padding:10px 12px;border-top:1px solid #30363d">
+    <button onclick="document.getElementById('scoreInput').style.display=document.getElementById('scoreInput').style.display==='none'?'block':'none'" style="width:100%;background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:6px;border-radius:6px;cursor:pointer;font-size:11px">Upload Scores</button>
+    <div id="scoreInput" style="display:none;margin-top:8px">
+      <textarea id="scoreJson" placeholder="Paste score JSON array here..." style="width:100%;height:80px;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;font-family:monospace;font-size:10px;padding:6px;resize:vertical"></textarea>
+      <button onclick="uploadScores()" style="width:100%;margin-top:4px;background:#1a3a5c;border:1px solid #264b73;color:#58a6ff;padding:5px;border-radius:6px;cursor:pointer;font-size:11px">Upload & Match</button>
+      <div id="scoreResult" style="font-size:10px;color:#8b949e;margin-top:4px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h2 id="topTitle">Select a run</h2>
+    <span class="tag purple" id="tModel">-</span>
+    <span class="tag blue" id="tCalls">-</span>
+    <span class="tag mono" id="tTime">-</span>
+  </div>
+  <div class="stepper" id="stepper" style="display:none">
+    <button onclick="stepFirst()" title="First">⏮</button>
+    <button onclick="stepPrev()" title="Previous (←)">◀</button>
+    <button class="primary" onclick="stepNext()" title="Next (→)">▶ Next</button>
+    <button onclick="stepLast()" title="Last">⏭</button>
+    <button onclick="toggleAutoPlay()" id="btnAuto">⏩ Auto</button>
+    <button onclick="toggleCollapse()" id="btnCollapse" title="Show only first and last message">⊟ Collapse</button>
+    <input type="range" class="step-slider" id="slider" min="0" max="0" value="0" oninput="stepTo(+this.value)">
+    <span class="step-info" id="stepInfo">0 / 0</span>
+  </div>
+  <div class="chat" id="chat"><div class="info">← Select a run from the sidebar</div></div>
+</div>
+
+<script>
+let allRuns = [];
+let currentFile = null;
+let events = [];
+let currentStep = -1;
+let autoPlaying = false;
+let autoTimer = null;
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+function formatTime(filename) {
+  const m = filename.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})/);
+  return m ? m[4]+':'+m[5]+':'+m[6] : '';
+}
+function formatDate(filename) {
+  const m = filename.match(/(\d{4})-(\d{2})-(\d{2})/);
+  return m ? m[1]+'-'+m[2]+'-'+m[3] : '';
+}
+
+async function loadRuns() {
+  try {
+    const res = await fetch('/api/runs?_='+Date.now());
+    allRuns = await res.json();
+    allRuns.sort((a,b) => b.filename.localeCompare(a.filename));
+    renderRunList();
+  } catch(e) { console.error(e) }
+}
+
+function filterRuns() {
+  renderRunList();
+}
+
+function renderRunList() {
+  const filter = (document.getElementById('search').value || '').toLowerCase();
+  const el = document.getElementById('runList');
+  el.innerHTML = allRuns.filter(r =>
+    !filter || r.prompt.toLowerCase().includes(filter) || r.filename.includes(filter)
+  ).map(r => {
+    const time = formatTime(r.filename);
+    const date = formatDate(r.filename);
+    const errCls = r.errorCount > 0 ? 'has-errors' : '';
+    const active = r.filename === currentFile ? 'active' : '';
+    return `<div class="run-item ${active}" onclick="selectRun('${r.filename}')">
+      <div class="ri-time">${date} ${time} <span style="color:#484f58;font-size:9px;margin-left:4px">${r.filename.replace('result-','').replace('.json','').slice(0,19)}</span></div>
+      <div class="ri-prompt">${esc(r.prompt.slice(0,80))}</div>
+      <div class="ri-meta">
+        <span class="ri-badge calls">${r.toolCallCount} calls</span>
+        <span class="ri-badge errors ${errCls}">${r.errorCount} err</span>
+        <span class="ri-badge time">${(r.elapsedMs/1000).toFixed(1)}s</span>
+        ${r.score ? `<span class="ri-badge score">${r.score.score_raw}/${r.score.score_max}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function selectRun(filename) {
+  if (autoPlaying) toggleAutoPlay();
+  currentFile = filename;
+  renderRunList();
+  document.getElementById('chat').innerHTML = '<div class="info">Loading...</div>';
+
+  try {
+    const res = await fetch('/api/runs/'+filename+'?_='+Date.now());
+    const data = await res.json();
+    parseEvents(data);
+
+    const runId = filename.replace('result-','').replace('.json','');
+    document.getElementById('topTitle').textContent = runId + ' — ' + esc(data.prompt?.slice(0,60) || 'Run');
+    document.getElementById('tModel').textContent = data.model || 'opus';
+    document.getElementById('tCalls').textContent = (data.toolCallCount||0) + ' calls';
+    document.getElementById('tTime').textContent = ((data.elapsedMs||0)/1000).toFixed(1) + 's';
+
+    document.getElementById('stepper').style.display = 'flex';
+    document.getElementById('slider').max = events.length - 1;
+    document.getElementById('slider').value = 0;
+
+    currentStep = -1;
+    renderChat();
+    updateStepInfo();
+  } catch(e) {
+    document.getElementById('chat').innerHTML = '<div class="info">Error: '+esc(e.message)+'</div>';
+  }
+}
+
+function parseEvents(data) {
+  events = [];
+  const msgs = data.messages || [];
+  for (const msg of msgs) {
+    if (!Array.isArray(msg.content)) continue;
+    for (const b of msg.content) {
+      // User message
+      if (msg.role === 'user' && b.type === 'text') {
+        events.push({t:'user', c:b.text});
+      }
+      // Claude text
+      else if (b.type === 'text' && b.text && msg.role === 'assistant') {
+        events.push({t:'ai', c:b.text});
+      }
+      // Code execution (Python code)
+      else if (b.type === 'server_tool_use' && b.name === 'code_execution') {
+        const code = b.input?.code || '';
+        if (code) events.push({t:'code', c:code});
+      }
+      // Tool call (from code execution or direct)
+      else if (b.type === 'tool_use') {
+        const caller = b.caller?.type || 'direct';
+        events.push({t:'tool', n:b.name, caller, c:JSON.stringify(b.input||{})});
+      }
+      // Tool result
+      else if (b.type === 'tool_result') {
+        const content = typeof b.content === 'string' ? b.content : JSON.stringify(b.content||'');
+        events.push({t: content.includes('error') || content.includes('Error') ? 'err' : 'ok', c:content.slice(0,500)});
+      }
+      // Code execution result
+      else if (b.type === 'code_execution_tool_result') {
+        const r = b.content || {};
+        if (r.stdout) events.push({t:'stdout', c:r.stdout});
+        if (r.stderr) events.push({t:'err', c:r.stderr});
+      }
+      // MCP tool use (old format)
+      else if (b.type === 'mcp_tool_use') {
+        events.push({t:'tool', n:b.name, caller:'mcp', c:JSON.stringify(b.input||{})});
+      }
+      // MCP tool result (old format)
+      else if (b.type === 'mcp_tool_result') {
+        const content = typeof b.content === 'string' ? b.content : JSON.stringify(b.content||'');
+        events.push({t: b.is_error ? 'err' : 'ok', c:content.slice(0,500)});
+      }
+      // Search
+      else if (b.type === 'server_tool_use' && b.name !== 'code_execution') {
+        events.push({t:'tool', n:b.name||'search', caller:'server', c:JSON.stringify(b.input||{})});
+      }
+    }
+  }
+  // Verification
+  if (data.verification) {
+    events.push({t:'verify', ok:data.verification.verified, s:data.verification.summary||''});
+  }
+}
+
+function renderChat() {
+  const chat = document.getElementById('chat');
+  if (events.length === 0) { chat.innerHTML = '<div class="info">No events</div>'; return; }
+
+  chat.innerHTML = events.map((e, i) => {
+    const vis = i <= currentStep ? 'visible' : 'hidden';
+    // In collapsed mode, only show first event (task), last stdout/result, and errors
+    if (collapsed && i > 0 && i < events.length - 1) {
+      if (e.t !== 'err' && e.t !== 'stdout' && e.t !== 'verify') return '';
+      // Only show the last stdout
+      if (e.t === 'stdout') {
+        const laterStdout = events.slice(i+1).findIndex(x => x.t === 'stdout');
+        if (laterStdout >= 0) return '';
+      }
+    }
+    return renderEvent(e, vis);
+  }).join('');
+
+  if (collapsed && currentStep >= events.length - 1) {
+    const midCount = events.length - 2;
+    chat.insertAdjacentHTML('afterbegin',
+      events[0] ? renderEvent(events[0], 'visible') : '');
+    // Already rendered, just add a divider
+    const firstMsg = chat.querySelector('.msg');
+    if (firstMsg && firstMsg.nextSibling) {
+      firstMsg.insertAdjacentHTML('afterend',
+        `<div class="info" style="padding:8px">⋯ ${midCount} steps collapsed ⋯</div>`);
+    }
+  }
+
+  // Scroll to current step
+  if (currentStep >= 0) {
+    const msgs = chat.querySelectorAll('.msg');
+    if (msgs[currentStep]) msgs[currentStep].scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function renderEvent(e, vis) {
+  if (e.t === 'user') return `<div class="msg msg-user ${vis}"><div class="lb">TASK</div><div class="ct">${esc(e.c)}</div></div>`;
+  if (e.t === 'ai') return `<div class="msg msg-ai ${vis}"><div class="lb">CLAUDE</div><div class="ct">${esc(e.c.slice(0,600))}</div></div>`;
+  if (e.t === 'code') return `<div class="msg msg-code ${vis}"><div class="lb">PYTHON CODE</div><div class="ct trunc" onclick="this.classList.toggle('expanded')">${esc(e.c)}</div></div>`;
+  if (e.t === 'tool') return `<div class="msg msg-tool ${vis}"><div class="lb">TOOL ${esc(e.n)} <span style="color:#8b949e;font-weight:400">(${e.caller||'direct'})</span></div><div class="ct trunc" onclick="this.classList.toggle('expanded')">${esc(e.c)}</div></div>`;
+  if (e.t === 'ok') return `<div class="msg msg-ok ${vis}"><div class="lb">RESULT</div><div class="ct trunc" onclick="this.classList.toggle('expanded')">${esc(e.c)}</div></div>`;
+  if (e.t === 'err') return `<div class="msg msg-err ${vis}"><div class="lb">ERROR</div><div class="ct">${esc(e.c.slice(0,400))}</div></div>`;
+  if (e.t === 'stdout') return `<div class="msg msg-stdout ${vis}"><div class="lb">OUTPUT</div><div class="ct trunc" onclick="this.classList.toggle('expanded')">${esc(e.c)}</div></div>`;
+  if (e.t === 'verify') {
+    const cls = e.ok ? 'msg-ok' : 'msg-err';
+    return `<div class="msg ${cls} ${vis}" style="align-self:center;text-align:center;padding:16px"><div class="lb">${e.ok?'VERIFIED':'FAILED'}</div><div class="ct">${esc(e.s)}</div></div>`;
+  }
+  return '';
+}
+
+function updateStepInfo() {
+  document.getElementById('stepInfo').textContent = `${currentStep + 1} / ${events.length}`;
+  document.getElementById('slider').value = currentStep;
+}
+
+function stepNext() {
+  if (currentStep < events.length - 1) {
+    currentStep++;
+    renderChat();
+    updateStepInfo();
+  }
+}
+function stepPrev() {
+  if (currentStep >= 0) {
+    currentStep--;
+    renderChat();
+    updateStepInfo();
+  }
+}
+function stepFirst() {
+  currentStep = -1;
+  renderChat();
+  updateStepInfo();
+}
+function stepLast() {
+  currentStep = events.length - 1;
+  renderChat();
+  updateStepInfo();
+}
+function stepTo(n) {
+  currentStep = n;
+  renderChat();
+  updateStepInfo();
+}
+
+function toggleAutoPlay() {
+  autoPlaying = !autoPlaying;
+  const btn = document.getElementById('btnAuto');
+  if (autoPlaying) {
+    btn.textContent = '⏸ Stop';
+    btn.classList.add('primary');
+    autoStep();
+  } else {
+    btn.textContent = '⏩ Auto';
+    btn.classList.remove('primary');
+    if (autoTimer) clearTimeout(autoTimer);
+  }
+}
+
+function autoStep() {
+  if (!autoPlaying) return;
+  if (currentStep < events.length - 1) {
+    stepNext();
+    const e = events[currentStep];
+    let delay = 800;
+    if (e?.t === 'user') delay = 2000;
+    else if (e?.t === 'code') delay = 1500;
+    else if (e?.t === 'tool') delay = 600;
+    else if (e?.t === 'ok') delay = 400;
+    else if (e?.t === 'err') delay = 1500;
+    else if (e?.t === 'ai') delay = 1200;
+    autoTimer = setTimeout(autoStep, delay);
+  } else {
+    toggleAutoPlay();
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); stepNext(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); stepPrev(); }
+  else if (e.key === 'Home') { e.preventDefault(); stepFirst(); }
+  else if (e.key === 'End') { e.preventDefault(); stepLast(); }
+  else if (e.key === 'a') { toggleAutoPlay(); }
+});
+
+let collapsed = false;
+function toggleCollapse() {
+  collapsed = !collapsed;
+  document.getElementById('btnCollapse').textContent = collapsed ? '⊞ Expand' : '⊟ Collapse';
+  renderChat();
+}
+
+async function uploadScores() {
+  const el = document.getElementById('scoreJson');
+  const resultEl = document.getElementById('scoreResult');
+  try {
+    let data = JSON.parse(el.value);
+    if (!Array.isArray(data)) data = [data];
+    resultEl.textContent = 'Uploading ' + data.length + ' scores...';
+    const results = [];
+    for (const score of data) {
+      const res = await fetch('/api/score', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(score)
+      });
+      results.push(await res.json());
+    }
+    const matched = results.filter(r => r.ok).length;
+    resultEl.innerHTML = `<span style="color:#3fb950">${matched}/${data.length} matched</span>`;
+    loadRuns(); // Refresh list
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:#f85149">Error: ${e.message}</span>`;
+  }
+}
+
+// Init
+loadRuns();
+setInterval(loadRuns, 15000);
+</script>
+</body>
+</html>

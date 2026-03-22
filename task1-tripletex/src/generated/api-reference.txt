@@ -1,0 +1,634 @@
+### Employee
+  firstName: string
+  lastName: string
+  employeeNumber: string
+  dateOfBirth: string
+  email: string
+  phoneNumberMobileCountry: Country
+  phoneNumberMobile: string
+  phoneNumberHome: string
+  phoneNumberWork: string
+  nationalIdentityNumber: string
+  dnumber: string
+  internationalId: InternationalId
+  bankAccountNumber: string
+  iban: string — IBAN field
+  bic: string — Bic (swift) field
+  creditorBankCountryId: integer — Country of creditor bank field
+  usesAbroadPayment: boolean — UsesAbroadPayment field
+  userType: STANDARD|EXTENDED|NO_ACCESS — Define the employee's user type
+  allowInformationRegistration: boolean
+  isContact: boolean — Determines if the employee is a contact (external) in the company
+  isProxy: boolean — True if this Employee object represents an accounting or auditor office
+  comments: string
+  address: Address
+  department: Department
+  employments: [Employment]
+  holidayAllowanceEarned: HolidayAllowanceEarned
+  employeeCategory: EmployeeCategory
+
+### Customer
+  name: string
+  organizationNumber: string
+  globalLocationNumber: integer
+  supplierNumber: integer
+  customerNumber: integer
+  isSupplier: boolean — Defines if the customer is also a supplier
+  isCustomer: boolean
+  isInactive: boolean
+  accountManager: Employee
+  department: Department
+  email: string
+  invoiceEmail: string
+  overdueNoticeEmail: string
+  bankAccounts: [string]
+  phoneNumber: string
+  phoneNumberMobile: string
+  description: string
+  language: NO|EN
+  isPrivateIndividual: boolean
+  singleCustomerInvoice: boolean — Enables various orders on one customer invoice
+  invoiceSendMethod: EMAIL|EHF|EFAKTURA|AVTALEGIRO|VIPPS|PAPER|... — Define the invoicing method for the customer
+  emailAttachmentType: LINK|ATTACHMENT — Define the invoice attachment type for emailing to the customer
+  postalAddress: Address
+  physicalAddress: Address
+  deliveryAddress: DeliveryAddress
+  category1: CustomerCategory
+  category2: CustomerCategory
+  category3: CustomerCategory
+  invoicesDueIn: integer — Number of days/months in which invoices created from this customer is due
+  invoicesDueInType: DAYS|MONTHS|RECURRING_DAY_OF_MONTH — Set the time unit of invoicesDueIn
+  currency: Currency
+  bankAccountPresentation: [CompanyBankAccountPresentation]
+  ledgerAccount: Account
+  isFactoring: boolean
+  invoiceSendSMSNotification: boolean — Is sms-notification on/off
+  invoiceSMSNotificationNumber: string — Send SMS-notification to this number
+  isAutomaticSoftReminderEnabled: boolean — Has automatic soft reminders enabled for this customer
+  isAutomaticReminderEnabled: boolean — Has automatic reminders enabled for this customer
+  isAutomaticNoticeOfDebtCollectionEnabled: boolean — Has automatic notice of debt collection enabled for this customer
+  discountPercentage: number — Default discount percentage for this customer
+  website: string
+
+### Product
+  name: string
+  number: string
+  description: string
+  orderLineDescription: string
+  ean: string
+  elNumber: string
+  nrfNumber: string
+  costExcludingVatCurrency: number — Price purchase (cost) excluding VAT in the product's currency
+  expenses: number
+  expensesInPercent: number
+  costPrice: number — Cost price of purchase
+  profit: number
+  profitInPercent: number
+  priceExcludingVatCurrency: number — Price of purchase excluding VAT in the product's currency
+  priceIncludingVatCurrency: number — Price of purchase including VAT in the product's currency
+  isInactive: boolean
+  discountGroup: DiscountGroup
+  productUnit: ProductUnit
+  isStockItem: boolean
+  stockOfGoods: number — Available only on demand
+  availableStock: number — Available only on demand
+  incomingStock: number — Available only on demand
+  outgoingStock: number — Available only on demand
+  vatType: VatType
+  currency: Currency
+  department: Department
+  account: Account
+  discountPrice: number
+  supplier: Supplier
+  resaleProduct: Product
+  weight: number
+  weightUnit: kg|g|hg
+  volume: number
+  volumeUnit: cm3|dm3|m3
+  hsnCode: string
+  image: Document
+  markupListPercentage: number
+  markupNetPercentage: number
+  mainSupplierProduct: SupplierProduct
+  isRoundPriceIncVat: boolean — [BETA] Indicates whether the price incl
+  priceInTargetCurrency: number — Purchase Price converted in specific currency
+  purchasePriceCurrency: number — Purchase Price in product currency
+  minStockLevel: number — Minimum available stock level for the product
+
+### Department
+  name: string
+  departmentNumber: string
+  departmentManager: Employee
+  isInactive: boolean
+  businessActivityTypeId: integer — The business activity type for this department
+
+### Order
+  customer: Customer
+  contact: Contact
+  attn: Contact
+  receiverEmail: string
+  overdueNoticeEmail: string
+  number: string
+  reference: string
+  ourContact: Contact
+  ourContactEmployee: Employee
+  department: Department
+  orderDate: string
+  project: Project
+  invoiceComment: string — Comment to be displayed in the invoice based on this order
+  internalComment: string — Internal comment to be displayed in order
+  currency: Currency
+  invoicesDueIn: integer — Number of days/months in which invoices created from this order is due
+  status: NOT_CHOSEN|NEW|CONFIRMATION_SENT|READY_FOR_PICKING|PICKED|PACKED|... — Logistics only
+  invoicesDueInType: DAYS|MONTHS|RECURRING_DAY_OF_MONTH — Set the time unit of invoicesDueIn
+  isShowOpenPostsOnInvoices: boolean — Show account statement - open posts on invoices created from this order
+  isClosed: boolean — Denotes if this order is closed
+  deliveryDate: string
+  deliveryAddress: DeliveryAddress
+  deliveryComment: string
+  isPrioritizeAmountsIncludingVat: boolean
+  orderLineSorting: ID|PRODUCT|PRODUCT_DESCENDING|CUSTOM
+  orderGroups: [OrderGroup] — Order line groups
+  orderLines: [OrderLine] — Order lines tied to the order
+  isSubscription: boolean
+  subscriptionDuration: integer — Number of months/years the subscription shall run
+  subscriptionDurationType: MONTHS|YEAR — The time unit of subscriptionDuration
+  subscriptionPeriodsOnInvoice: integer — Number of periods on each invoice
+  subscriptionPeriodsOnInvoiceType: MONTHS — The time unit of subscriptionPeriodsOnInvoice
+  subscriptionInvoicingTimeInAdvanceOrArrears: ADVANCE|ARREARS — Invoicing in advance/in arrears
+  subscriptionInvoicingTime: integer — Number of days/months invoicing in advance/in arrears
+  subscriptionInvoicingTimeType: DAYS|MONTHS — The time unit of subscriptionInvoicingTime
+  isSubscriptionAutoInvoicing: boolean — Automatic invoicing
+  preliminaryInvoice: Invoice
+  attachment: [Document] — [BETA] Attachments belonging to this order
+  invoiceOnAccountVatHigh: boolean — Is the on account(a konto) amounts including vat
+  totalInvoicedOnAccountAmountAbsoluteCurrency: number — Amount paid on account(a konto)
+  invoiceSendSMSNotification: boolean — Is sms-notification on/off
+  invoiceSMSNotificationNumber: string — The phone number of the receiver of sms notifications
+  markUpOrderLines: number — Set mark-up (%) for order lines
+  discountPercentage: number — Default discount percentage for order lines
+  travelReports: [TravelExpense] — Travel reports connected to the order
+  accountingDimensionValues: [AccountingDimensionValue] — Free dimensions for the project connected to the order
+
+### OrderLine
+  product: Product
+  inventory: Inventory
+  inventoryLocation: InventoryLocation
+  description: string
+  count: number
+  unitCostCurrency: number — Unit price purchase (cost) excluding VAT in the order's currency
+  unitPriceExcludingVatCurrency: number — Unit price of purchase excluding VAT in the order's currency
+  currency: Currency
+  markup: number — Markup given as a percentage (%)
+  discount: number — Discount given as a percentage (%)
+  vatType: VatType
+  amountExcludingVatCurrency: number — Total amount on order line excluding VAT in the order's currency
+  amountIncludingVatCurrency: number — Total amount on order line including VAT in the order's currency
+  vendor: Company
+  order: Order
+  unitPriceIncludingVatCurrency: number — Unit price of purchase including VAT in the order's currency
+  isSubscription: boolean
+  subscriptionPeriodStart: string
+  subscriptionPeriodEnd: string
+  orderGroup: OrderGroup
+  sortIndex: integer — Defines the presentation order of the lines
+  isPicked: boolean
+  pickedDate: string
+  orderedQuantity: number — Only used for Logistics customers who activated the Backorder functionality
+  isCharged: boolean — Flag indicating whether the order line is charged or not
+
+### Project
+  name: string
+  number: string — If NULL, a number is generated automatically
+  description: string
+  projectManager: Employee
+  department: Department
+  mainProject: Project
+  startDate: string
+  endDate: string
+  customer: Customer
+  isClosed: boolean
+  isReadyForInvoicing: boolean
+  isInternal: boolean
+  isOffer: boolean — If is Project Offer set to true, if is Project set to false
+  isFixedPrice: boolean — Project is fixed price if set to true, hourly rate if set to false
+  projectCategory: ProjectCategory
+  deliveryAddress: Address
+  boligmappaAddress: Address
+  displayNameFormat: NAME_STANDARD|NAME_INCL_CUSTOMER_NAME|NAME_INCL_PARENT_NAME|NAME_INCL_PARENT_NUMBER|NAME_INCL_PARENT_NAME_AND_NUMBER — Defines project name presentation in overviews
+  reference: string
+  externalAccountsNumber: string
+  discountPercentage: number — Project discount percentage
+  vatType: VatType
+  fixedprice: number — Fixed price amount, in the project's currency
+  orderLines: [ProjectOrderLine] — Order lines tied to the order
+  currency: Currency
+  markUpOrderLines: number — Set mark-up (%) for order lines
+  markUpFeesEarned: number — Set mark-up (%) for fees earned
+  isPriceCeiling: boolean — Set to true if an hourly rate project has a price ceiling
+  priceCeilingAmount: number — Price ceiling amount, in the project's currency
+  projectHourlyRates: [ProjectHourlyRate] — Project Rate Types tied to the project
+  forParticipantsOnly: boolean
+  participants: [ProjectParticipant] — Link to individual project participants
+  contact: Contact
+  attention: Contact
+  invoiceComment: string — Comment for project invoices
+  invoicingPlan: [Invoice] — Invoicing plans tied to the project
+  preliminaryInvoice: Invoice
+  generalProjectActivitiesPerProjectOnly: boolean
+  projectActivities: [ProjectActivity] — Project Activities
+  invoiceDueDate: integer — invoice due date
+  invoiceDueDateType: DAYS|MONTHS|RECURRING_DAY_OF_MONTH — Set the time unit of invoiceDueDate
+  invoiceReceiverEmail: string — Set the project's invoice receiver email
+  overdueNoticeEmail: string — Set the project's overdue notice email
+  useProductNetPrice: boolean
+  ignoreCompanyProductDiscountAgreement: boolean
+  totalInvoicedOnAccountAmountAbsoluteCurrency: number — Amount paid on account(a konto)
+  invoiceOnAccountVatHigh: boolean — The on account(a konto) amounts including VAT
+  invoiceReserveTotalAmountCurrency: number — Total invoice reserve
+  accountingDimensionValues: [AccountingDimensionValue] — [BETA - Requires pilot feature] Free dimensions for the project
+
+### Invoice — Read-only — invoices are created via PUT /order/{id}/:invoice
+  invoiceNumber: integer — If value is set to 0, the invoice number will be generated
+  invoiceDate: string
+  customer: Customer
+  creditedInvoice: integer — The id of the original invoice if this is a credit note
+  isCredited: boolean
+  invoiceDueDate: string
+  kid: string — KID - Kundeidentifikasjonsnummer
+  invoiceComment: string — Comment text for the invoice
+  comment: string — Comment text for the specific invoice
+  orders: [Order] — Related orders
+  orderLines: [OrderLine] — Orderlines connected to the invoice
+  travelReports: [TravelExpense] — Travel reports connected to the invoice
+  projectInvoiceDetails: [ProjectInvoiceDetails]
+  voucher: Voucher
+  deliveryDate: string — The delivery date
+  amountCurrency: number — In the specified currency
+  amountExcludingVat: number — Amount excluding VAT (NOK)
+  amountExcludingVatCurrency: number — Amount excluding VAT in the specified currency
+  amountRoundoff: number — Amount of round off to nearest integer
+  amountRoundoffCurrency: number — Amount of round off to nearest integer in the specified currency
+  amountOutstanding: number
+  amountCurrencyOutstanding: number
+  amountOutstandingTotal: number
+  amountCurrencyOutstandingTotal: number
+  sumRemits: number — The sum of all open remittances of the invoice
+  currency: Currency
+  isCreditNote: boolean
+  isCharged: boolean
+  isApproved: boolean
+  postings: [Posting]
+  reminders: [Reminder] — Invoice debt collection and reminders
+  invoiceRemarks: string — Deprecated Invoice remarks - please use the 'invoiceRemark' instead
+  invoiceRemark: InvoiceRemark
+  paymentTypeId: integer — [BETA] Optional
+  paidAmount: number — [BETA] Optional
+  isPeriodizationPossible: boolean
+  documentId: integer
+  ehfSendStatus: DO_NOT_SEND|SEND|SENT|SEND_FAILURE_RECIPIENT_NOT_FOUND — [Deprecated] EHF (Peppol) send status
+
+### Posting — Used inside Voucher.postings array
+  voucher: Voucher
+  date: string
+  description: string
+  account: Account
+  amortizationAccount: Account
+  amortizationStartDate: string — Amortization start date
+  amortizationEndDate: string
+  customer: Customer
+  supplier: Supplier
+  employee: Employee
+  project: Project
+  product: Product
+  department: Department
+  vatType: VatType
+  amountCurrency: number
+  amountGross: number
+  amountGrossCurrency: number
+  currency: Currency
+  closeGroup: CloseGroup
+  invoiceNumber: string
+  termOfPayment: string
+  row: integer
+  externalRef: string — External reference for identifying payment basis of the posting, e
+  systemGenerated: boolean
+  taxTransactionType: string
+  taxTransactionTypeId: integer
+  matched: boolean
+  quantityAmount1: number — The quantity amount associated with the posting
+  quantityType1: ProductUnit
+  quantityAmount2: number — The quantity amount associated with the posting
+  quantityType2: ProductUnit
+  isVatReadonly: boolean — Is vat code readonly?
+  isAmountVatClosed: boolean — Is amount of this posting (for VAT purposes) changeable
+  postingRuleId: integer — The payment type id associated with the posting
+  freeAccountingDimension1: AccountingDimensionValue
+  freeAccountingDimension2: AccountingDimensionValue
+  freeAccountingDimension3: AccountingDimensionValue
+  asset: Asset
+
+### Voucher
+  date: string
+  number: integer — System generated number that cannot be changed
+  tempNumber: integer — Temporary voucher number
+  year: integer — System generated number that cannot be changed
+  description: string
+  voucherType: VoucherType
+  reverseVoucher: Voucher
+  postings: [Posting]
+  document: Document
+  attachment: Document
+  externalVoucherNumber: string — External voucher number
+  ediDocument: Document
+  supplierVoucherType: TYPE_SUPPLIER_INVOICE_SIMPLE|TYPE_SUPPLIER_INVOICE_DETAILED — Supplier voucher type - simple and detailed
+  wasAutoMatched: boolean — Voucher was auto matched
+  vendorInvoiceNumber: string — Vendor invoice number
+
+### TravelExpense
+  attestationSteps: [AttestationStep]
+  attestation: Attestation
+  project: Project
+  employee: Employee
+  approvedBy: Employee
+  completedBy: Employee
+  rejectedBy: Employee
+  department: Department
+  freeDimension1: AccountingDimensionValue
+  freeDimension2: AccountingDimensionValue
+  freeDimension3: AccountingDimensionValue
+  payslip: Payslip
+  vatType: VatType
+  paymentCurrency: Currency
+  travelDetails: TravelDetails
+  voucher: Voucher
+  attachment: Document
+  isCompleted: boolean
+  isApproved: boolean
+  rejectedComment: string
+  isChargeable: boolean
+  isFixedInvoicedAmount: boolean
+  isMarkupInvoicedPercent: boolean
+  isIncludeAttachedReceiptsWhenReinvoicing: boolean
+  completedDate: string
+  approvedDate: string
+  date: string
+  travelAdvance: number
+  fixedInvoicedAmount: number
+  markupInvoicedPercent: number
+  number: integer
+  invoice: Invoice
+  title: string
+  displayNameWithoutNumber: string
+  perDiemCompensations: [PerDiemCompensation] — Link to individual per diem compensations
+  mileageAllowances: [MileageAllowance] — Link to individual mileage allowances
+  accommodationAllowances: [AccommodationAllowance] — Link to individual accommodation allowances
+  costs: [Cost] — Link to individual costs
+
+### Cost — TravelExpense cost line
+  travelExpense: TravelExpense
+  vatType: VatType
+  currency: Currency
+  costCategory: TravelCostCategory
+  paymentType: TravelPaymentType
+  category: string
+  comments: string
+  rate: number
+  amountCurrencyIncVat: number
+  amountNOKInclVAT: number
+  amountNOKInclVATLow: number
+  amountNOKInclVATMedium: number
+  amountNOKInclVATHigh: number
+  isPaidByEmployee: boolean
+  isChargeable: boolean
+  date: string
+  participants: [CostParticipant] — Link to individual expense participant
+  predictions: object
+
+### MileageAllowance
+  travelExpense: TravelExpense
+  rateType: TravelExpenseRate
+  rateCategory: TravelExpenseRateCategory
+  date: string
+  departureLocation: string
+  destination: string
+  km: number
+  rate: number
+  isCompanyCar: boolean
+  vehicleType: integer — The corresponded number for the vehicleType
+  passengers: [Passenger] — Link to individual passengers
+  passengerSupplement: MileageAllowance
+  trailerSupplement: MileageAllowance
+  tollCost: Cost
+  drivingStops: [DrivingStop] — Link to individual mileage stops
+
+### PerDiemCompensation
+  travelExpense: TravelExpense
+  rateType: TravelExpenseRate
+  rateCategory: TravelExpenseRateCategory
+  countryCode: string
+  travelExpenseZoneId: integer — Optional travel expense zone id
+  overnightAccommodation: NONE|HOTEL|BOARDING_HOUSE_WITHOUT_COOKING|BOARDING_HOUSE_WITH_COOKING — Set what sort of accommodation was had overnight
+  location: string
+  address: string
+  count: integer
+  rate: number
+  isDeductionForBreakfast: boolean
+  isDeductionForLunch: boolean
+  isDeductionForDinner: boolean
+
+### TimesheetEntry
+  project: Project
+  activity: Activity
+  date: string
+  hours: number
+  chargeableHours: number
+  employee: Employee
+  timeClocks: [TimeClock] — Link to stop watches on this hour
+  comment: string
+  locked: boolean — Indicates if the hour can be changed
+  chargeable: boolean
+  invoice: Invoice
+  hourlyRate: number
+  hourlyCost: number
+  hourlyCostPercentage: number
+  projectChargeableHours: number — Number of chargeable hours on an activity connected to a project
+
+### SalaryTransaction
+  date: string — Voucher date
+  year: integer
+  month: integer
+  isHistorical: boolean
+  paySlipsAvailableDate: string — The date payslips are made available to the employee
+  payslips: [Payslip] — Link to individual payslip objects
+
+### Payslip — Inside SalaryTransaction.payslips
+  transaction: SalaryTransaction
+  employee: Employee
+  date: string — Voucher date
+  year: integer
+  month: integer
+  specifications: [SalarySpecification] — Link to salary specifications
+  vacationAllowanceAmount: number
+  grossAmount: number
+  number: integer
+  department: Department
+
+### SalarySpecification — Inside Payslip.specifications
+  rate: number
+  count: number
+  project: Project
+  department: Department
+  salaryType: SalaryType
+  payslip: Payslip
+  employee: Employee
+  description: string
+  year: integer
+  month: integer
+  specificationSupplement: SalarySpecificationSupplement
+
+### SalaryType — Reference — look up with GET /salary/type
+  number: string
+  name: string
+  description: string
+  showInTimesheet: boolean
+  isSickPayable: boolean
+  isVacationPayable: boolean
+  isTaxable: boolean
+  payStatementCodeCode: string
+  ameldingWageCode: string
+  accountNumberDebit: Account
+  accountNumberCredit: Account
+  isPayrollTaxable: boolean
+
+### SupplierInvoice — Read-only — use /incomingInvoice to create
+  invoiceNumber: string — Invoice number
+  invoiceDate: string
+  supplier: Supplier
+  invoiceDueDate: string
+  kidOrReceiverReference: string — KID or message
+  voucher: Voucher
+  amountCurrency: number — In the specified currency
+  amountExcludingVat: number — Amount excluding VAT (NOK)
+  amountExcludingVatCurrency: number — Amount excluding VAT in the specified currency
+  currency: Currency
+  isCreditNote: boolean
+  orderLines: [OrderLine]
+  payments: [Posting]
+  originalInvoiceDocumentId: integer
+  approvalListElements: [VoucherApprovalListElement]
+  outstandingAmount: number — The amount outstanding on the invoice, in the invoice currency
+
+### IncomingInvoiceHeaderWrite — For POST /incomingInvoice
+  vendorId: integer — The Incoming invoice draft vendor
+  vendorIsAutomated: boolean — Indicates if the vendor is automated
+  invoiceDate: string — The date the invoice was issued
+  invoiceDateIsAutomated: boolean — Indicates if the invoice date is automated
+  dueDate: string — The date the invoice is due
+  dueDateIsAutomated: boolean — Indicates if the due date is automated
+  currencyId: integer — Currency used in the invoice
+  currencyIsAutomated: boolean — Indicates if the currency is automated
+  invoiceAmount: number — Amount including VAT
+  invoiceAmountIsAutomated: boolean — Indicates if the invoice amount is automated
+  description: string — Description of the invoice
+  invoiceNumber: string — If value is set to 0, the invoice number will be generated
+  invoiceNumberIsAutomated: boolean — Indicates if the invoice number is automated
+  voucherTypeId: integer — Voucher type of the invoice
+  purchaseOrderId: integer — The purchase order that the invoice belongs to
+  includeAttachmentsOnReInvoiceOrderLines: boolean — Include receipts when re-invoicing
+
+### IncomingOrderLineWrite — Order lines inside incoming invoice
+  clientUUId: string — Client UUID
+  row: integer — Row number of the order line
+  description: string — Description of the order line
+  accountId: integer — ID of the account
+  accountIsAutomated: boolean — Indicates if the account is automated
+  count: number — Count of the order line
+  unitPrice: number — Unit price of the order line
+  amountInclVat: number — Amount including VAT
+  amountEditOrder: string — Amount edit order
+  amountIsAutomated: boolean — Indicates if the amount is automated
+  vatTypeId: integer — ID of the VAT type
+  vatTypeIsAutomated: boolean — Indicates if the VAT type is automated
+  departmentId: integer — ID of the department
+  departmentIsAutomated: boolean — Indicates if the department is automated
+  projectId: integer — ID of the project
+  projectIsAutomated: boolean — Indicates if the project is automated
+  employeeId: integer — ID of the employee
+  productId: integer — ID of the product
+  assetId: integer — ID of the asset
+  customerId: integer — ID of the customer
+  vendorId: integer — ID of the vendor
+  taxTransactionTypeId: integer — ID of tax transaction
+  quantityAmount1: number — Quantity amount 1
+  productUnitId1: integer — ID of the product unit 1
+  quantityAmount2: number — Quantity amount 2
+  productUnitId2: integer — ID of the product unit 2
+  reInvoiceOnProject: boolean — Re-invoice on project flag
+  reInvoiceProjectId: integer — Re-invoice project ID
+  reInvoiceSubContractId: integer — Re-invoice subcontract ID
+  reInvoiceMarkup: number — Re-invoice markup
+  reInvoiceDiscount: number — Re-invoice discount
+  reInvoiceUnitPrice: number — Re-invoice unit price in the project currency
+  reInvoiceVatTypeId: integer — Re-invoice VAT type ID
+  budgetOrderLineId: integer — ID of orderline used as budget item
+  periodizationAccountId: integer — Periodization Account ID
+  periodizationStartMonth: integer — Periodization Start Month
+  periodizationStartYear: integer — Periodization Start Year
+  periodizationPeriodsCount: integer — Number of Periodization Periods
+  freeDimension1Id: integer — Free dimension 1 value id
+  freeDimension2Id: integer — Free dimension 2 value id
+  freeDimension3Id: integer — Free dimension 3 value id
+  originalOrderLineIds: [integer]
+
+### AccountingDimensionName
+  dimensionName: string — The name of the dimension
+  description: string — The description of the dimension
+  dimensionIndex: integer — The index of the dimension
+  active: boolean — Indicates if the dimension is active
+
+### AccountingDimensionValue
+  dimensionIndex: integer — The index of the dimension this value belongs to
+  active: boolean — Indicates if the value is active
+  number: string — The number of the value, which can consist of letters and numbers
+  showInVoucherRegistration: boolean — Indicates if the value should be shown in voucher registration
+  position: integer — The position of the value in the list of values for the dimension
+
+### Account — Ledger account — GET /ledger/account
+  number: integer
+  numberPretty: string — number pretty
+  name: string
+  description: string
+  legalVatTypes: [VatType] — List of legal vat types for this account
+  ledgerType: GENERAL|CUSTOMER|VENDOR|EMPLOYEE|ASSET — Supported ledger types, default is GENERAL
+  balanceGroup: string — The balance group for this account
+  vatType: VatType
+  vatLocked: boolean — True if all entries on this account must have the vat type given by vatType
+  currency: Currency
+  isCloseable: boolean
+  isApplicableForSupplierInvoice: boolean — True if this account is applicable for supplier invoice registration
+  requireReconciliation: boolean — True if this account must be reconciled before the accounting period closure
+  isInactive: boolean — Inactive accounts will not show up in UI lists
+  isBankAccount: boolean
+  isInvoiceAccount: boolean
+  bankAccountNumber: string
+  bankAccountCountry: Country
+  bankName: string
+  bankAccountIBAN: string
+  bankAccountSWIFT: string
+  saftCode: string — SAF-T 1
+  groupingCode: string — SAF-T 1
+  requiresDepartment: boolean — Posting against this account requires department
+  requiresProject: boolean — Posting against this account requires project
+  invoicingDepartment: Department
+  isPostingsExist: boolean
+  quantityType1: ProductUnit
+  quantityType2: ProductUnit
+  department: Department
+
+### VatType — GET /ledger/vatType
+  name: string
+  number: string
+  percentage: number
+  deductionPercentage: number — Percentage of the VAT amount that is deducted
+  parentType: VatType
