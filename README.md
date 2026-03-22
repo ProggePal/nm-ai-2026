@@ -1,6 +1,6 @@
-# NM i AI 2026 — ProggePal
+# NM i AI 2026 — Appfarm IO
 
-Team **ProggePal**'s submission for [NM i AI 2026](https://app.ainm.no) — Norway's national AI championship, March 19–22, 2026.
+Team **Appfarm IO**'s submission for [NM i AI 2026](https://app.ainm.no) — Norway's national AI championship, March 19–22, 2026.
 
 We competed across all three tasks: an AI accounting agent, a grocery logistics game bot, and a retail object detection pipeline.
 
