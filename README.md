@@ -1,21 +1,23 @@
 # NM i AI 2026 — ProggePal
 
-Team submission for [NM i AI 2026](https://app.ainm.no) — Norway's national AI championship.
+Team **ProggePal**'s submission for [NM i AI 2026](https://app.ainm.no) — Norway's national AI championship, March 19–22, 2026.
 
-## Team
+We competed across all three tasks: an AI accounting agent, a grocery logistics game bot, and a retail object detection pipeline.
 
-**ProggePal**
+**Team:** [@hansjto](https://github.com/hansjto) · [@ErikAnkerKilbergSkallevold](https://github.com/ErikAnkerKilbergSkallevold) · [@ProggePal](https://github.com/ProggePal)
 
-## Tasks
+---
 
-### Task 1 — Tripletex (AI Accounting Agent)
+## Task 1 — Tripletex: AI Accounting Agent
+
 **Folder:** [`task1-tripletex/`](./task1-tripletex/)
 
-An LLM-powered agent (Claude Opus 4.6) that automates accounting tasks in Tripletex via natural language. Exposes a `/solve` HTTP endpoint that receives task prompts and executes Tripletex API calls autonomously using tool use and multi-step reasoning.
+An autonomous LLM agent that solves accounting tasks in [Tripletex](https://www.tripletex.no/) via natural language. Receives a task prompt at `/solve`, reasons over it using Claude Opus 4.6 with tool use, and executes the necessary Tripletex API calls to complete the task.
 
-**Stack:** TypeScript, Bun, Hono
+Features multi-step planning, compound tool execution, sandbox verification, and a replay dashboard for debugging agent traces.
 
-**Run:**
+**Stack:** TypeScript, Bun, Hono, Claude Opus 4.6
+
 ```bash
 cd task1-tripletex
 bun install
@@ -24,30 +26,38 @@ bun run start
 
 ---
 
-### Task 2 — Astar Island (Prediction / Game Agent)
+## Task 2 — Astar Island: Grocery Logistics Agent
+
 **Folder:** [`task2-astar/`](./task2-astar/)
 
-An AI agent for the Astar Island grocery logistics simulation. Controls bots to pick and deliver grocery orders across multiple difficulty levels (Easy → Nightmare).
+An AI agent that controls warehouse robots in the Astar Island grocery simulation. The agent picks and delivers grocery orders across five difficulty levels (Easy → Nightmare), optimizing for throughput and delivery speed.
 
-**Stack:** Python / TypeScript
+**Stack:** Python, TypeScript
 
 See [`task2-astar/README.md`](./task2-astar/README.md) for run instructions.
 
 ---
 
-### Task 3 — NorgesGruppen Data (Object Detection)
+## Task 3 — NorgesGruppen: Retail Product Detection
+
 **Folder:** [`task3-norgesgruppen/`](./task3-norgesgruppen/)
 
-Two-stage ML pipeline for retail product detection and classification:
-1. **YOLOv11x** for bounding-box detection (70% of points)
-2. **ResNet50** with cosine-similarity matching for product classification (30% of points)
+A two-stage computer vision pipeline for retail shelf analysis:
+1. **YOLOv11x** — detects product bounding boxes (70% of score)
+2. **ResNet50 + cosine similarity** — classifies detected products against a reference catalog (30% of score)
 
-**Stack:** Python, PyTorch, Ultralytics
+Built to run within the competition sandbox (8 GB RAM, no OpenCV).
 
-See [`task3-norgesgruppen/README.md`](./task3-norgesgruppen/README.md) for run instructions.
+**Stack:** Python, PyTorch, Ultralytics YOLOv11
+
+```bash
+cd task3-norgesgruppen
+pip install -r requirements.txt
+python run.py
+```
 
 ---
 
 ## License
 
-MIT — see [LICENSE](./LICENSE)
+[MIT](./LICENSE)
