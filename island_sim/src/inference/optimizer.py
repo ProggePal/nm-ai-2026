@@ -23,6 +23,7 @@ def infer_params(
     population_size: int | None = None,
     sigma0: float = 0.3,
     warm_start: SimParams | None = None,
+    stat_weight: float = 0.5,
 ) -> SimParams:
     """Infer simulation parameters from observations using CMA-ES.
 
@@ -36,6 +37,7 @@ def infer_params(
         population_size: CMA-ES population size (None = auto).
         sigma0: Initial step size (in normalized [0,1] space).
         warm_start: Starting params (e.g. from grid search). Falls back to default if None.
+        stat_weight: Weight for settlement stat matching loss (0.0 = terrain-only).
 
     Returns:
         Best-fit SimParams.
@@ -43,7 +45,7 @@ def infer_params(
     if HAS_RUST:
         return _infer_rust(
             observations, initial_states, num_runs_per_eval,
-            max_evaluations, population_size, sigma0, warm_start,
+            max_evaluations, population_size, sigma0, warm_start, stat_weight,
         )
     return _infer_python(
         observations, initial_states, num_runs_per_eval,
@@ -59,19 +61,34 @@ def _infer_rust(
     population_size: int | None,
     sigma0: float,
     warm_start: SimParams | None,
+    stat_weight: float = 0.5,
 ) -> SimParams:
     """Run CMA-ES inference via Rust backend."""
     # Marshal observations to list of dicts
     obs_dicts = []
     for obs in observations:
-        obs_dicts.append({
+        obs_dict = {
             "seed_index": obs.seed_index,
             "viewport_x": obs.viewport_x,
             "viewport_y": obs.viewport_y,
             "viewport_w": obs.viewport_w,
             "viewport_h": obs.viewport_h,
             "grid": obs.grid.astype(np.int32),
-        })
+        }
+        # Include settlement stats if available
+        if obs.settlements:
+            obs_dict["settlements"] = [
+                {
+                    "population": s.population,
+                    "food": s.food,
+                    "wealth": s.wealth,
+                    "has_port": s.has_port,
+                    "alive": s.alive,
+                    "owner_id": s.owner_id,
+                }
+                for s in obs.settlements
+            ]
+        obs_dicts.append(obs_dict)
 
     # Marshal initial states to list of (grid, settlements) tuples
     state_tuples = []
@@ -93,6 +110,7 @@ def _infer_rust(
         sigma0,
         warm_arr,
         42,  # CMA-ES seed
+        stat_weight,
     )
 
     print(f"Rust CMA-ES finished: best loss = {best_loss:.4f}")

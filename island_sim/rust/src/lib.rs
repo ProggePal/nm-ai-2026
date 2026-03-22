@@ -217,7 +217,8 @@ fn settlements_to_py<'py>(py: Python<'py>, settlements: &[Settlement]) -> PyResu
 /// Run CMA-ES parameter inference.
 ///
 /// Args:
-///   observations: list of dicts with keys: seed_index, viewport_x, viewport_y, viewport_w, viewport_h, grid (2D array)
+///   observations: list of dicts with keys: seed_index, viewport_x, viewport_y, viewport_w, viewport_h, grid (2D array),
+///                 and optionally "settlements" (list of dicts with population, food, wealth, has_port, alive, owner_id)
 ///   initial_states: list of (grid_2d, settlements_list) tuples
 ///   mc_runs: MC runs per evaluation
 ///   max_evals: maximum number of function evaluations
@@ -225,6 +226,7 @@ fn settlements_to_py<'py>(py: Python<'py>, settlements: &[Settlement]) -> PyResu
 ///   sigma0: initial step size in normalized [0,1] space
 ///   warm_start: initial parameter array (or empty array for defaults)
 ///   seed: random seed for CMA-ES
+///   stat_weight: weight for settlement stat loss term (0.0 = terrain-only)
 ///
 /// Returns: (best_params_array, best_loss)
 #[pyfunction]
@@ -238,6 +240,7 @@ fn run_cmaes_inference<'py>(
     sigma0: f64,
     warm_start: PyReadonlyArray1<'py, f64>,
     seed: u64,
+    stat_weight: f64,
 ) -> PyResult<(Bound<'py, PyArray1<f64>>, f64)> {
     // Parse initial states
     let mut states: Vec<types::WorldState> = Vec::new();
@@ -273,6 +276,9 @@ fn run_cmaes_inference<'py>(
             }
         }
 
+        // Parse optional settlement stats
+        let observed_stats = parse_settlement_stats(obs_dict)?;
+
         if seed_index >= num_seeds {
             return Err(pyo3::exceptions::PyValueError::new_err(
                 format!("observation seed_index {} >= num initial_states {}", seed_index, num_seeds)
@@ -284,6 +290,7 @@ fn run_cmaes_inference<'py>(
             viewport_w,
             viewport_h,
             terrain_classes,
+            observed_stats,
         });
     }
 
@@ -319,11 +326,69 @@ fn run_cmaes_inference<'py>(
             sigma0,
             warm_start_opt,
             seed,
+            stat_weight,
         )
     });
 
     let result_arr = PyArray1::from_vec_bound(py, best_params);
     Ok((result_arr, best_loss))
+}
+
+/// Parse optional "settlements" key from an observation dict into ViewportSettlementStats.
+/// Returns None if the key is missing.
+fn parse_settlement_stats(obs_dict: &Bound<'_, PyDict>) -> PyResult<Option<cmaes_inference::ViewportSettlementStats>> {
+    let settlements_opt = obs_dict.get_item("settlements")?;
+    let settlements_obj = match settlements_opt {
+        Some(obj) => obj,
+        None => return Ok(None),
+    };
+
+    let settlements_list: &Bound<'_, PyList> = settlements_obj.downcast()?;
+
+    let mut num_settlements = 0.0_f64;
+    let mut num_ports = 0.0_f64;
+    let mut total_population = 0.0_f64;
+    let mut total_food = 0.0_f64;
+    let mut total_wealth = 0.0_f64;
+    let mut owner_ids = std::collections::HashSet::new();
+
+    for item in settlements_list.iter() {
+        let sdict: &Bound<'_, PyDict> = item.downcast()?;
+
+        let alive: bool = sdict.get_item("alive")?.map_or(Ok(true), |v| v.extract())?;
+        if !alive {
+            continue;
+        }
+
+        num_settlements += 1.0;
+
+        let population: f64 = sdict.get_item("population")?.map_or(Ok(1.0), |v| v.extract())?;
+        let food: f64 = sdict.get_item("food")?.map_or(Ok(1.0), |v| v.extract())?;
+        let wealth: f64 = sdict.get_item("wealth")?.map_or(Ok(0.0), |v| v.extract())?;
+        let has_port: bool = sdict.get_item("has_port")?.map_or(Ok(false), |v| v.extract())?;
+        let owner_id: i32 = sdict.get_item("owner_id")?.map_or(Ok(0), |v| v.extract())?;
+
+        total_population += population;
+        total_food += food;
+        total_wealth += wealth;
+        if has_port {
+            num_ports += 1.0;
+        }
+        owner_ids.insert(owner_id);
+    }
+
+    let mean_population = if num_settlements > 0.0 { total_population / num_settlements } else { 0.0 };
+    let mean_food = if num_settlements > 0.0 { total_food / num_settlements } else { 0.0 };
+    let mean_wealth = if num_settlements > 0.0 { total_wealth / num_settlements } else { 0.0 };
+
+    Ok(Some(cmaes_inference::ViewportSettlementStats {
+        num_settlements,
+        num_ports,
+        mean_population,
+        mean_food,
+        mean_wealth,
+        num_owners: owner_ids.len() as f64,
+    }))
 }
 
 /// Return (lower_bounds, upper_bounds) as numpy arrays — for testing bounds sync.

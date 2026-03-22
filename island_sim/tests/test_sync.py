@@ -209,6 +209,7 @@ class TestCmaesInference:
             sigma0=0.3,
             warm_start=np.array([], dtype=np.float64),
             seed=42,
+            stat_weight=0.0,
         )
 
         best_params = np.array(best_params)
@@ -243,6 +244,7 @@ class TestCmaesInference:
             sigma0=0.1,
             warm_start=warm_start,
             seed=42,
+            stat_weight=0.0,
         )
 
         assert np.isfinite(best_loss)
@@ -292,6 +294,7 @@ class TestCmaesInference:
             sigma0=1e-10,
             warm_start=params.to_array(),
             seed=42,
+            stat_weight=0.0,
         )
 
         # With sigma=1e-10, CMA-ES evaluates near the warm-start point.
@@ -300,6 +303,116 @@ class TestCmaesInference:
         assert abs(py_loss - rust_loss) / max(abs(py_loss), 1e-6) < 0.15, (
             f"Python NLL ({py_loss:.4f}) and Rust NLL ({rust_loss:.4f}) differ by more than 15%"
         )
+
+    def test_no_settlements_stat_loss_zero(self, simple_state):
+        """Observations without settlements key produce stat_loss = 0 (backward compat)."""
+        # Two runs: one without settlements (stat_weight=1.0), one with stat_weight=0.0
+        # Both should give the same loss since there are no settlement stats to match.
+        obs = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+        }]
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        _, loss_no_stats = island_sim_core.run_cmaes_inference(
+            obs, states,
+            mc_runs=5, max_evals=5, population_size=4, sigma0=1e-10,
+            warm_start=SimParams.default().to_array(), seed=42,
+            stat_weight=1.0,
+        )
+
+        _, loss_baseline = island_sim_core.run_cmaes_inference(
+            obs, states,
+            mc_runs=5, max_evals=5, population_size=4, sigma0=1e-10,
+            warm_start=SimParams.default().to_array(), seed=42,
+            stat_weight=0.0,
+        )
+
+        # Without settlements key, stat_weight shouldn't matter
+        assert abs(loss_no_stats - loss_baseline) / max(abs(loss_baseline), 1e-6) < 0.01, (
+            f"Loss with stat_weight=1.0 ({loss_no_stats:.6f}) differs from "
+            f"stat_weight=0.0 ({loss_baseline:.6f}) despite no settlement stats"
+        )
+
+    def test_stat_weight_zero_matches_terrain_only(self, simple_state):
+        """With stat_weight=0, loss should match terrain-only NLL even with settlements present."""
+        settlement_dicts = [
+            {"population": 2.0, "food": 1.0, "wealth": 0.5,
+             "has_port": False, "alive": True, "owner_id": 0},
+        ]
+        obs_with_stats = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+            "settlements": settlement_dicts,
+        }]
+        obs_without_stats = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+        }]
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        _, loss_with = island_sim_core.run_cmaes_inference(
+            obs_with_stats, states,
+            mc_runs=5, max_evals=5, population_size=4, sigma0=1e-10,
+            warm_start=SimParams.default().to_array(), seed=42,
+            stat_weight=0.0,
+        )
+
+        _, loss_without = island_sim_core.run_cmaes_inference(
+            obs_without_stats, states,
+            mc_runs=5, max_evals=5, population_size=4, sigma0=1e-10,
+            warm_start=SimParams.default().to_array(), seed=42,
+            stat_weight=0.0,
+        )
+
+        assert abs(loss_with - loss_without) / max(abs(loss_without), 1e-6) < 0.01, (
+            f"stat_weight=0 loss with settlements ({loss_with:.6f}) differs from "
+            f"without ({loss_without:.6f})"
+        )
+
+    def test_cmaes_with_stats_returns_valid_params(self, simple_state):
+        """CMA-ES with settlement stats returns valid params within bounds."""
+        settlement_dicts = [
+            {"population": 2.0, "food": 1.0, "wealth": 0.5,
+             "has_port": False, "alive": True, "owner_id": 0},
+        ]
+        obs = [{
+            "seed_index": 0,
+            "viewport_x": 0,
+            "viewport_y": 0,
+            "viewport_w": simple_state.width,
+            "viewport_h": simple_state.height,
+            "grid": simple_state.grid.astype(np.int32),
+            "settlements": settlement_dicts,
+        }]
+        states = [(simple_state.grid.astype(np.int32), simple_state.settlements)]
+
+        best_params, best_loss = island_sim_core.run_cmaes_inference(
+            obs, states,
+            mc_runs=5, max_evals=30, population_size=5, sigma0=0.3,
+            warm_start=np.array([], dtype=np.float64), seed=42,
+            stat_weight=0.5,
+        )
+
+        best_params = np.array(best_params)
+        lower, upper = SimParams.bounds_arrays()
+        assert len(best_params) == SimParams.ndim()
+        assert np.all(best_params >= lower - 1e-9), "Params below lower bounds"
+        assert np.all(best_params <= upper + 1e-9), "Params above upper bounds"
+        assert np.isfinite(best_loss), "Loss is not finite"
+        assert best_loss > 0, "Combined loss should be positive"
 
 
 class TestPostprocess:
