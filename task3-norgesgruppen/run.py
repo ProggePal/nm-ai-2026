@@ -26,14 +26,12 @@ def letterbox(img, new_shape=1280):
 
 def postprocess(output, conf_thres=0.25, iou_thres=0.45):
     """Process raw ONNX output [1, 5, N] into boxes, scores."""
-    # output shape: [1, 5, N] -> [N, 5] = [cx, cy, w, h, conf]
     raw = output[0]
     assert raw.ndim == 3 and raw.shape[1] == 5, (
         f"Expected ONNX output shape [1, 5, N], got {raw.shape}"
     )
     pred = raw.squeeze(0).T
 
-    # Filter by confidence
     scores = pred[:, 4]
     mask = scores > conf_thres
     pred = pred[mask]
@@ -42,20 +40,65 @@ def postprocess(output, conf_thres=0.25, iou_thres=0.45):
     if len(pred) == 0:
         return np.empty((0, 4)), np.empty((0,))
 
-    # Convert cx,cy,w,h to x1,y1,x2,y2 for NMS
     boxes = np.zeros_like(pred[:, :4])
-    boxes[:, 0] = pred[:, 0] - pred[:, 2] / 2  # x1
-    boxes[:, 1] = pred[:, 1] - pred[:, 3] / 2  # y1
-    boxes[:, 2] = pred[:, 0] + pred[:, 2] / 2  # x2
-    boxes[:, 3] = pred[:, 1] + pred[:, 3] / 2  # y2
+    boxes[:, 0] = pred[:, 0] - pred[:, 2] / 2
+    boxes[:, 1] = pred[:, 1] - pred[:, 3] / 2
+    boxes[:, 2] = pred[:, 0] + pred[:, 2] / 2
+    boxes[:, 3] = pred[:, 1] + pred[:, 3] / 2
 
-    # NMS using torchvision
     boxes_t = torch.from_numpy(boxes).float()
     scores_t = torch.from_numpy(scores).float()
     keep = nms(boxes_t, scores_t, iou_thres)
     keep = keep.numpy()
 
     return boxes[keep], scores[keep]
+
+
+def load_detector():
+    """Load ONNX model if available, otherwise fall back to ultralytics .pt."""
+    providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+    if Path("best.onnx").exists():
+        session = ort.InferenceSession("best.onnx", providers=providers)
+        return ("onnx", session)
+    if Path("best.pt").exists():
+        from ultralytics import YOLO
+        model = YOLO("best.pt")
+        return ("yolo", model)
+    raise FileNotFoundError("No model file found: expected best.onnx or best.pt")
+
+
+def detect_onnx(session, pil_img):
+    lb_img, ratio, pad_x, pad_y = letterbox(pil_img, 1280)
+    arr = np.array(lb_img).astype(np.float32) / 255.0
+    arr = np.transpose(arr, (2, 0, 1))[np.newaxis, ...]
+    input_name = session.get_inputs()[0].name
+    outputs = session.run(None, {input_name: arr})
+    boxes, scores = postprocess(outputs, conf_thres=0.25, iou_thres=0.45)
+    orig_w, orig_h = pil_img.size
+    results = []
+    for i in range(len(boxes)):
+        x1, y1, x2, y2 = boxes[i]
+        x1 = max(0, min((x1 - pad_x) / ratio, orig_w))
+        y1 = max(0, min((y1 - pad_y) / ratio, orig_h))
+        x2 = max(0, min((x2 - pad_x) / ratio, orig_w))
+        y2 = max(0, min((y2 - pad_y) / ratio, orig_h))
+        results.append((x1, y1, x2, y2, float(scores[i])))
+    return results
+
+
+def detect_yolo(model, img_path, orig_w, orig_h):
+    results = model(str(img_path), verbose=False)[0]
+    detections = []
+    if results.boxes is not None:
+        for box in results.boxes:
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            conf = float(box.conf[0])
+            x1 = max(0, min(x1, orig_w))
+            y1 = max(0, min(y1, orig_h))
+            x2 = max(0, min(x2, orig_w))
+            y2 = max(0, min(y2, orig_h))
+            detections.append((x1, y1, x2, y2, conf))
+    return detections
 
 
 def run():
@@ -74,10 +117,7 @@ def run():
         if not input_dir.exists():
             input_dir = Path("data/images")
 
-        # Load ONNX detection model
-        providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
-        session = ort.InferenceSession("best.onnx", providers=providers)
-        input_name = session.get_inputs()[0].name
+        detector_type, detector = load_detector()
 
         # Load feature bank for classification
         feature_bank = {}
@@ -124,37 +164,16 @@ def run():
             pil_img = Image.open(str(img_path)).convert("RGB")
             orig_w, orig_h = pil_img.size
 
-            # Preprocess for ONNX: letterbox + normalize
-            lb_img, ratio, pad_x, pad_y = letterbox(pil_img, 1280)
-            arr = np.array(lb_img).astype(np.float32) / 255.0
-            arr = np.transpose(arr, (2, 0, 1))[np.newaxis, ...]  # [1,3,1280,1280]
+            if detector_type == "onnx":
+                detections = detect_onnx(detector, pil_img)
+            else:
+                detections = detect_yolo(detector, img_path, orig_w, orig_h)
 
-            # Run detection
-            outputs = session.run(None, {input_name: arr})
-            boxes, scores = postprocess(outputs, conf_thres=0.25, iou_thres=0.45)
-
-            for i in range(len(boxes)):
-                x1, y1, x2, y2 = boxes[i]
-
-                # Undo letterbox: remove padding, then unscale
-                x1 = (x1 - pad_x) / ratio
-                y1 = (y1 - pad_y) / ratio
-                x2 = (x2 - pad_x) / ratio
-                y2 = (y2 - pad_y) / ratio
-
-                # Clamp to image bounds
-                x1 = max(0, min(x1, orig_w))
-                y1 = max(0, min(y1, orig_h))
-                x2 = max(0, min(x2, orig_w))
-                y2 = max(0, min(y2, orig_h))
-
+            for x1, y1, x2, y2, conf in detections:
                 w = x2 - x1
                 h = y2 - y1
-                conf = float(scores[i])
-
                 category_id = 0
 
-                # Classification via ResNet50 + feature bank
                 try:
                     crop = pil_img.crop((int(x1), int(y1), int(x2), int(y2)))
                     if crop.size[0] > 10 and crop.size[1] > 10:
@@ -171,8 +190,7 @@ def run():
                         if len(keys) > 0:
                             sims = np.dot(embeddings, feat)
                             best_idx = np.argmax(sims)
-                            best_sim = sims[best_idx]
-                            if best_sim > 0.4:
+                            if sims[best_idx] > 0.4:
                                 category_id = int(categories[best_idx])
                 except Exception:
                     pass
