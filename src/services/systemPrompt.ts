@@ -241,8 +241,10 @@ Common OUTGOING VAT types (for invoices/sales):
   For supplier invoices: BOTH rows use the GROSS amount: expense row = +gross with vatType, AP row = -gross.
   WITHOUT vatType: use BOTH amount AND amountGross: {"amount": 5000, "amountCurrency": 5000, "amountGross": 5000, "amountGrossCurrency": 5000}
   WITH vatType (25%): use amountGross for GROSS amount: {"amountGross": 6250, "amountGrossCurrency": 6250, "vatType": {"id": 1}}
-  Always include ALL four amount fields to be safe: amount, amountCurrency, amountGross, amountGrossCurrency.
-  The sum of ALL amountGross values MUST equal 0 — otherwise you get 422 "Summen er ikke lik 0".
+  CRITICAL: ALWAYS set ALL FOUR amount fields on EVERY posting:
+  "amount": X, "amountCurrency": X, "amountGross": X, "amountGrossCurrency": X
+  Missing any of these causes the competition to score 0. This is non-negotiable.
+  The sum of ALL amountGross values MUST equal 0 — otherwise you get 422.
 - The API response shows amount=0 — this is a DISPLAY ISSUE, amounts ARE saved. Do NOT recreate.
 - CRITICAL: Postings to account 1500 (kundefordringer) REQUIRE customer: {id} on the posting.
   Postings to account 2400 (leverandørgjeld) REQUIRE supplier: {id} on the posting.
