@@ -10,7 +10,7 @@ We competed across all three tasks: an AI accounting agent, a grocery logistics 
 
 ## Task 1 — Tripletex: AI Accounting Agent
 
-**Folder:** [`task1-tripletex/`](./task1-tripletex/)
+**Repo:** [ProggePal/nm-ai-2026-task1-tripletex](https://github.com/ProggePal/nm-ai-2026-task1-tripletex) · **Folder:** [`task1-tripletex/`](./task1-tripletex/)
 
 An autonomous LLM agent that solves accounting tasks in [Tripletex](https://www.tripletex.no/) via natural language. Receives a task prompt at `/solve`, reasons over it using Claude Opus 4.6 with tool use, and executes the necessary Tripletex API calls to complete the task.
 
@@ -28,7 +28,7 @@ bun run start
 
 ## Task 2 — Astar Island: Grocery Logistics Agent
 
-**Folder:** [`task2-astar/`](./task2-astar/)
+**Repo:** [ProggePal/nm-ai-2026-task2-astar](https://github.com/ProggePal/nm-ai-2026-task2-astar) · **Folder:** [`task2-astar/`](./task2-astar/)
 
 An AI agent that controls warehouse robots in the Astar Island grocery simulation. The agent picks and delivers grocery orders across five difficulty levels (Easy → Nightmare), optimizing for throughput and delivery speed.
 
@@ -40,7 +40,7 @@ See [`task2-astar/README.md`](./task2-astar/README.md) for run instructions.
 
 ## Task 3 — NorgesGruppen: Retail Product Detection
 
-**Folder:** [`task3-norgesgruppen/`](./task3-norgesgruppen/)
+**Repo:** [ProggePal/nm-ai-2026-task3-norgesgruppen](https://github.com/ProggePal/nm-ai-2026-task3-norgesgruppen) · **Folder:** [`task3-norgesgruppen/`](./task3-norgesgruppen/)
 
 A two-stage computer vision pipeline for retail shelf analysis:
 1. **YOLOv11x** — detects product bounding boxes (70% of score)
