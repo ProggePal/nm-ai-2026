@@ -38,11 +38,11 @@ OBS_DIR = Path(__file__).resolve().parent.parent / "data" / "observations"
 # --- Tunable hyperparameters ---
 PHASE1_BUDGET_FRACTION = 0.6       # fraction of query budget for Phase 1 (rest for Phase 2)
 MIN_OBS_FOR_INFERENCE = 10         # minimum observations needed to run CMA-ES
-MC_RUNS_PER_EVAL_PHASE1 = 100     # MC runs per CMA-ES evaluation (Phase 1 inference)
-MC_RUNS_PER_EVAL_PHASE2 = 100     # MC runs per CMA-ES evaluation (Phase 2 re-inference)
-MAX_EVALS_PHASE1 = 400            # CMA-ES max evaluations (Phase 1)
-MAX_EVALS_PHASE2 = 600            # CMA-ES max evaluations (Phase 2, more budget after observations)
-MC_RUNS_PREDICTION = 4000         # MC runs for final hybrid prediction
+MC_RUNS_PER_EVAL_PHASE1 = 30      # MC runs per CMA-ES evaluation (Phase 1 inference)
+MC_RUNS_PER_EVAL_PHASE2 = 30      # MC runs per CMA-ES evaluation (Phase 2 re-inference)
+MAX_EVALS_PHASE1 = 200            # CMA-ES max evaluations (Phase 1)
+MAX_EVALS_PHASE2 = 300            # CMA-ES max evaluations (Phase 2, more budget after observations)
+MC_RUNS_PREDICTION = 2000         # MC runs for final hybrid prediction
 
 
 def _query_with_retry(round_id: str, query: dict) -> Observation | None:

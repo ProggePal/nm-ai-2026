@@ -13,8 +13,8 @@ set -euo pipefail
 PROJECT_ID="ai-nm26osl-1886"
 MACHINE_TYPE="c4d-highcpu-384"
 NUM_VMS=6
-CANDIDATES=50000
-MC_RUNS=50
+CANDIDATES=15000
+MC_RUNS=10
 TOP=20
 
 # Zones spread across regions (1 c4d-384 per region due to quota)
